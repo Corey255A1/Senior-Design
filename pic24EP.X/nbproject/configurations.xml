@@ -7,6 +7,7 @@
       <itemPath>configs.h</itemPath>
       <itemPath>ultrasonic.h</itemPath>
       <itemPath>globals.h</itemPath>
+      <itemPath>temperature.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -18,6 +19,7 @@
       <itemPath>pic24EP.c</itemPath>
       <itemPath>ultrasonic.c</itemPath>
       <itemPath>globals.c</itemPath>
+      <itemPath>temperature.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

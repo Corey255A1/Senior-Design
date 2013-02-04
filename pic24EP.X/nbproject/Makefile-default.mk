@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/pic24EP.o ${OBJECTDIR}/ultrasonic.o ${OBJECTDIR}/globals.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/pic24EP.o.d ${OBJECTDIR}/ultrasonic.o.d ${OBJECTDIR}/globals.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/pic24EP.o ${OBJECTDIR}/ultrasonic.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/temperature.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/pic24EP.o.d ${OBJECTDIR}/ultrasonic.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/temperature.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/pic24EP.o ${OBJECTDIR}/ultrasonic.o ${OBJECTDIR}/globals.o
+OBJECTFILES=${OBJECTDIR}/pic24EP.o ${OBJECTDIR}/ultrasonic.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/temperature.o
 
 
 CFLAGS=
@@ -87,6 +87,12 @@ ${OBJECTDIR}/globals.o: globals.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  globals.c  -o ${OBJECTDIR}/globals.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/globals.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/globals.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/temperature.o: temperature.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/temperature.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  temperature.c  -o ${OBJECTDIR}/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/temperature.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/temperature.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/pic24EP.o: pic24EP.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -105,6 +111,12 @@ ${OBJECTDIR}/globals.o: globals.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/globals.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  globals.c  -o ${OBJECTDIR}/globals.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/globals.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/globals.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/temperature.o: temperature.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/temperature.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  temperature.c  -o ${OBJECTDIR}/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/temperature.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/temperature.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
