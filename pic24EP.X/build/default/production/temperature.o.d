@@ -1,3 +1,4 @@
 build/default/production/temperature.o:  \
 temperature.c  \
-temperature.h 
+temperature.h  \
+ globals.h 

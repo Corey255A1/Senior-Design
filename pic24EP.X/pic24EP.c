@@ -20,6 +20,7 @@ int main( void ){
     //See the Ultrasonic.c file to check setup.
     initUltra();
     initTemperature();
+    setGlobalTemp();
 
 /**
  * Test Signal to ensure PIC operation when testing
@@ -29,7 +30,6 @@ int main( void ){
     int i=0;
     int theTempC;
     int theTempF;
-    setGlobalTemp();
     while(1)
     {
         for(i=0;i<10000;i++){
@@ -37,7 +37,8 @@ int main( void ){
         }//end for
         if(global_u1_time>0x400){
             _RB5 = HIGH;
-           theTempF = readTemperature();
+            theTempC = readTemperature(CEL);
+            theTempF = readTemperature(FAR);
         }
         else
             _RB5 = LOW;

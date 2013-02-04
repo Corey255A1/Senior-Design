@@ -8,16 +8,17 @@
  */
 
 #include "temperature.h"
-#include "globals.h"
 #include <p24EP32MC202.h>
+#include "globals.h"
 
+int global_temp = 0;
 
 /**
  * Sets up the AD channel for reading by the PIC. The temperature
  * sensor outputs a voltage that can be read by the read function.
  */
 void initTemperature( void ){
-    TEMPERATUREport = INPUT;
+    TEMPERATUREport = 1;
     TEMPCON1 = 0;
     TEMPCON2 = 0;
     TEMPCON3 = 0;
@@ -55,24 +56,25 @@ int readTemperature( char d ){
     while(!TEMPCON1bits.DONE){}; // Wait for the sample and conversion
     TEMPCON1bits.DONE=0; // Reset the done bit
     int ad = TEMPBUF0;
+    long t;
     switch(d){
-        case FAR: return (ad * VINx100) / BIT_10;
-        case CEL: return ((((ad * VINx100) / BIT_10)- 32)*5)/9;
-        case KEL: (return ((((ad * VINx100) / BIT_10)- 32)*5)/9)-271;
+        case FAR:
+            t = (ad * VINx100) / BIT_10;
+            return (int) t;
+        case CEL:
+            t =((((ad * VINx100) / BIT_10)- 32)*5)/9;
+            return (int) t;
+        case KEL: 
+            t = (((((ad * VINx100) / BIT_10)- 32)*5)/9)-271;
+            return t;
         default: return TEMPBUF0; // Store the result of the buffer to global
     }//endswitch
 }//endread
 
-
-/**
- * Does a read temperature converts the AD value to a temperature
- * and sets the global_temp value
- */
 void setGlobalTemp( void ){
-    //TO-DO Decide if we want a double precision
-    //here or if just ints will work
-    global_temp = (readTemperature(FAR) * VINx100) / BIT_10; // Remember Int div
-}//endGlobalTemp
+    global_temp = readTemperature(FAR);
+}
+
 
 /**
  * Fahrenheit to Celsius Converter

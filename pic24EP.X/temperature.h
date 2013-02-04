@@ -7,6 +7,7 @@
  * Created on February 4, 2013, 1:21 PM
  */
 #include <p24EP32MC202.h>
+#include "globals.h"
 
 #define FAR 'F'
 #define CEL 'C'
@@ -32,5 +33,4 @@
 void initTemperature( void );
 void setGlobalTemp( void );
 int readTemperature( char );
-int f2c( int )
-
+int f2c( int );
