@@ -1,4 +1,5 @@
-/***
+/**
+ * -- Global Header --
  * Any global value used should be declared with in this
  * file so that they can be found quickly and easily
  * Declarations are also found with in this header file
@@ -12,9 +13,13 @@
 #define OC1port 0b010000
 #define HIGH 1
 #define LOW 0
+#define VINx100 330
+#define BIT_10 1023
 
 extern short global_u1_edge;
 extern long global_u1_time;
 
 extern short global_u2_edge;
 extern long global_u2_time;
+
+extern int global_temp;

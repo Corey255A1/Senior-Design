@@ -1,5 +1,7 @@
 /**
- * Initilize the Ultrasonics
+ * -- Ultrasonic Header --
+ * These Defines masks the choises that I made so that if the port number
+ * changes al I have to do is change these definitions
  */
 #include <p24EP32MC202.h>
 #define U1_RPIport 47 // This is the RPI number which reads the ultra pulse

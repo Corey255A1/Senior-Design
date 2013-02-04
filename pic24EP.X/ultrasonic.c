@@ -1,16 +1,16 @@
-#include <p24EP32MC202.h>
-#include "ultrasonic.h"
-#include "globals.h"
 /**
- * Ultrasonic Sensor Header File
+ * -- Ultrasonic Sensor Reader --
  * This gets the Output Compare module set up to generate
  * A pulse to be used with the Ultrasonic sensor
  * It also sets up the input capture module to be
  * used to capture the return pulse from the ultrasonic
  * To do this it requires the use of a interrupt routine
- * 
+ *
  */
 
+#include <p24EP32MC202.h>
+#include "ultrasonic.h"
+#include "globals.h"
 
 //Local Variable Declarations
 int u1_time_i;
