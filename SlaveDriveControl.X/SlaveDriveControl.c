@@ -62,9 +62,11 @@ int main(void) {
 
     ANSELBbits.ANSB0 = 0;
     TRISBbits.TRISB0 = 0;
+    TRISBbits.TRISB6 = 0;
     configOutputCompare();
 
     PORTBbits.RB0 = 1;
+    
     while(1)
     {
         int i;
@@ -101,9 +103,10 @@ void configOutputCompare(void)
     OC1CON2             = 0;        // Clear out second configuration register
     OC1CON1bits.OCTSEL  = 0b001;    // Set TMR3 as the source timer.
     OC1CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
-    OC1CON2bits.SYNCSEL = 0b01101;  // Period Control to OC1RS
+    OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
     OC1RS               = OC1clkT;  // Set period of OC1
     OC1R                = 30;//OC1DCyc;     // Set duty duration of OC1
+    RPOR2bits.RP38R     = 0b010000;
 
     //-------------------------------------------------------------------------
     //  Ready to turn TMR3 on.
