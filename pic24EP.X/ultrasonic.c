@@ -22,21 +22,26 @@ int u2_time_f;
  * This function takes of initializing all of the stuff required to setup
  * The ultrasonic sensors
  */
-void initUTimer ( void ){
+void initUltra( void ){
+   /*Unused
+    IC1CON2bits.ICTRIG=0; //Trigger mode
+    IC1CON2bits.SYNCSEL=0b01101;//TMR3 used to sync IC1
+    */
+
+    _TRISB7 = OUTPUT;
+    _TRISB8 = OUTPUT;
+    //Setup the Ports correctly
+    U1_RPOreg=OC1port; // SET Ultra1 RPO register to OC1 output
+    U2_RPOreg=OC1port; //Set Ultra2 pulse out to OC1
+
+    U1_RBreg = INPUT; // Set Ultra1 Tris RB register to Input mode
+    U2_RBreg = INPUT;
+    RPINR7bits.IC1R = U1_RPIport; //set IC1 input to Ultra1 RP input **5V Tolerant
+    RPINR7bits.IC2R = U2_RPIport; //set IC2 input to Ultra2 RP input **5V Tolerant
+    //Setup the Output Compare Module timers
     TMR3=0; // Clear out the TMR3
     T3CONbits.TON = 0; // Turn off TMR3
     T3CONbits.TCKPS=0b01; //Set Prescaler to 1:8
-}
-void initUltra( struct ultrasonic U ){
-    U.PORT = OUTPUT;
-    //Setup the Ports correctly
-    U.RPO=OC1port; // SET Ultra1 RPO register to OC1 output
-
-    U.TRIS = INPUT; // Set Ultra1 Tris RB register to Input mode
-
-    U.TIC = U.RPI; //set IC1 input to Ultra1 RP input **5V Tolerant
-
-    //Setup the Output Compare Module timers
     OC1CON1=0; //clear out control regs
     OC1CON2=0; //clear out control regs
     OC1CON1bits.OCTSEL = 0x001; //set to TMR3
