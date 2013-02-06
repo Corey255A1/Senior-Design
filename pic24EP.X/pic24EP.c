@@ -14,12 +14,21 @@
 
 
 int main( void ){
+    unsigned *boob = &TRISBbits;
+
+//    struct ultrasonic u1 = {_RB14};
+//    struct ultrasonic u2 = {.PORT = _RB15 ,
+//                            .TRIS = _TRISB15,
+//                            .RPI = 47,
+//                            .RPO = _RP20R,
+//                            .TST = RPINR7bits.IC2R};
+
     TRISB = 0;
     PORTB = 0;
 
     //Initialize the Ultrasonic which is setup to run on PIN12-RP20
     //See the Ultrasonic.c file to check setup.
-    initUltra();
+//    initUltra( u1 );
     initTemperature();
     initServo();
     setGlobalTemp();

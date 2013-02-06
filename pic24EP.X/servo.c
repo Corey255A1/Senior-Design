@@ -33,6 +33,7 @@ void initServo( void ){
  * Position the servo with a value between 0-1800
  * @param pos - servo position
  */
+
 void posServo( int pos ){
     if(pos<=servo_STEPS && pos>=0)
         PDC2 = servo_MIN + pos;

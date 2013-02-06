@@ -14,5 +14,15 @@
 #define U2_RBreg TRISBbits.TRISB14
 #define U2_RPOreg RPOR2bits.RP38R // This is the reg that outputs
 
-void initUltra( void );
+extern struct ultrasonic{
+   unsigned R;
+//    unsigned TRIS;
+//    unsigned RPI;
+//    unsigned RPO;
+//    RPINR7BITS TST;
+};
+
+void initUTimer( void );
+void initUltra( struct ultrasonic );
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void);
+
