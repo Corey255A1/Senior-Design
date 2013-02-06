@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/pic24EP.o ${OBJECTDIR}/ultrasonic.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/temperature.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/pic24EP.o.d ${OBJECTDIR}/ultrasonic.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/temperature.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/pic24EP.o ${OBJECTDIR}/ultrasonic.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/temperature.o ${OBJECTDIR}/servo.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/pic24EP.o.d ${OBJECTDIR}/ultrasonic.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/temperature.o.d ${OBJECTDIR}/servo.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/pic24EP.o ${OBJECTDIR}/ultrasonic.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/temperature.o
+OBJECTFILES=${OBJECTDIR}/pic24EP.o ${OBJECTDIR}/ultrasonic.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/temperature.o ${OBJECTDIR}/servo.o
 
 
 CFLAGS=
@@ -93,6 +93,12 @@ ${OBJECTDIR}/temperature.o: temperature.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  temperature.c  -o ${OBJECTDIR}/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/temperature.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/temperature.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/servo.o: servo.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/servo.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  servo.c  -o ${OBJECTDIR}/servo.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/servo.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/servo.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/pic24EP.o: pic24EP.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -117,6 +123,12 @@ ${OBJECTDIR}/temperature.o: temperature.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/temperature.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  temperature.c  -o ${OBJECTDIR}/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/temperature.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/temperature.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/servo.o: servo.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/servo.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  servo.c  -o ${OBJECTDIR}/servo.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/servo.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/servo.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

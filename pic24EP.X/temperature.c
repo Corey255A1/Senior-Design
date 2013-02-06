@@ -59,13 +59,13 @@ int readTemperature( char d ){
     long t;
     switch(d){
         case FAR:
-            t = (ad * VINx100) / BIT_10;
+            t = ((long) ad * VINx100) / BIT_10;
             return (int) t;
         case CEL:
-            t =((((ad * VINx100) / BIT_10)- 32)*5)/9;
+            t =(((((long) ad * VINx100) / BIT_10)- 32)*5)/9;
             return (int) t;
         case KEL: 
-            t = (((((ad * VINx100) / BIT_10)- 32)*5)/9)-271;
+            t = ((((((long) ad * VINx100) / BIT_10)- 32)*5)/9)+271;
             return t;
         default: return TEMPBUF0; // Store the result of the buffer to global
     }//endswitch

@@ -29,7 +29,7 @@
 
 // FOSCSEL
 #pragma config FNOSC = FRCDIVN          // Oscillator Source Selection (Internal Fast RC (FRC) Oscillator with postscaler)
-#pragma config PWMLOCK = ON             // PWM Lock Enable bit (Certain PWM registers may only be written after key sequence)
+#pragma config PWMLOCK = OFF            //COREY-- TURNED THIS OFF// PWM Lock Enable bit (Certain PWM registers may only be written after key sequence)
 #pragma config IESO = ON                // Two-speed Oscillator Start-up Enable bit (Start up device with FRC, then switch to user-selected oscillator source)
 
 // FGS

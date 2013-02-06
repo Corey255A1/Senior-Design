@@ -28,6 +28,8 @@ void initUltra( void ){
     IC1CON2bits.SYNCSEL=0b01101;//TMR3 used to sync IC1
     */
 
+    _TRISB7 = OUTPUT;
+    _TRISB8 = OUTPUT;
     //Setup the Ports correctly
     U1_RPOreg=OC1port; // SET Ultra1 RPO register to OC1 output
     U2_RPOreg=OC1port; //Set Ultra2 pulse out to OC1
@@ -95,6 +97,11 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
         global_u1_edge = RISE;
         global_u1_time = u1_time_f - u1_time_i;
     }//endif
+    if(global_u1_time<300)
+        _RB7 = HIGH;
+    else
+        _RB7 = LOW;
+
 }
 
 /**
@@ -114,4 +121,8 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
         global_u2_edge = RISE;
         global_u2_time = u2_time_f - u2_time_i;
     }//endif
+    if(global_u2_time<300)
+        _RB8 = HIGH;
+    else
+        _RB8 = LOW;
 }

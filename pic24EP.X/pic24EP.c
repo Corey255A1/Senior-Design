@@ -9,6 +9,7 @@
 #include <p24EP32MC202.h>
 #include "ultrasonic.h"
 #include "temperature.h"
+#include "servo.h"
 #include "globals.h"
 
 
@@ -20,6 +21,7 @@ int main( void ){
     //See the Ultrasonic.c file to check setup.
     initUltra();
     initTemperature();
+    initServo();
     setGlobalTemp();
 
 /**
@@ -28,20 +30,31 @@ int main( void ){
  */
     _RB5=0;
     int i=0;
-    int theTempC;
-    int theTempF;
+    int theTempC=0;
+    int theTempF=0;
+    int theTempK=0;
+    short step=1;
+    int pos=0;
+    posServo(0);
     while(1)
     {
         for(i=0;i<10000;i++){
             Nop();
         }//end for
-        if(global_u1_time>0x400){
-            _RB5 = HIGH;
-            theTempC = readTemperature(CEL);
-            theTempF = readTemperature(FAR);
-        }
-        else
-            _RB5 = LOW;
+        
+        theTempC = readTemperature(CEL);
+        theTempF = readTemperature(FAR);
+        theTempK = readTemperature(KEL);
+
+
+        pos=pos+step;
+        posServo(pos);
+        if(pos == servo_STEPS){
+            step=-step;
+        }else if(pos == 0){
+            step=-step;
+        }//endif
+
     };//end while
     return 1;
 }//end main
