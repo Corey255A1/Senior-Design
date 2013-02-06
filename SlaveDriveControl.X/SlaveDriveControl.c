@@ -47,7 +47,7 @@
 int main(void);
 void configOutputCompare(void);
 int OC1clkT = DRIVER_PERIOD_US/CLK_PERIOD;
-int OC1DCyc = OC1clkT * 0.5;
+//int OC1DCyc = OC1clkT * 0.5;
 
 //=============================================================================
 //  Function:       main()
@@ -60,12 +60,19 @@ int OC1DCyc = OC1clkT * 0.5;
 //=============================================================================
 int main(void) {
 
-    
+    ANSELBbits.ANSB0 = 0;
+    TRISBbits.TRISB0 = 0;
     configOutputCompare();
 
+    PORTBbits.RB0 = 1;
     while(1)
     {
-
+        int i;
+        for (i = 0; i < 20000; ++i)
+        {
+            Nop();
+        }
+        PORTBbits.RB0 = ~PORTBbits.RB0;
     }
     return 0;
 }
@@ -96,7 +103,7 @@ void configOutputCompare(void)
     OC1CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
     OC1CON2bits.SYNCSEL = 0b01101;  // Period Control to OC1RS
     OC1RS               = OC1clkT;  // Set period of OC1
-    OC1R                = OC1DCyc;     // Set duty duration of OC1
+    OC1R                = 30;//OC1DCyc;     // Set duty duration of OC1
 
     //-------------------------------------------------------------------------
     //  Ready to turn TMR3 on.
