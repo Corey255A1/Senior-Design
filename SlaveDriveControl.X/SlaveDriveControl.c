@@ -63,18 +63,28 @@ int main(void) {
     ANSELBbits.ANSB0 = 0;
     TRISBbits.TRISB0 = 0;
     TRISBbits.TRISB6 = 0;
+    //TRISBbits.TRISB1 = 0;
     configOutputCompare();
 
+
     PORTBbits.RB0 = 1;
-    
+    //PORTBbits.RB1 = 1;
+    int i;
     while(1)
     {
-        int i;
-        for (i = 0; i < 20000; ++i)
+        /*
+        for (i = 0; i < 30000; ++i)
         {
             Nop();
         }
+        OC1R = OC1R + 15;
+
+        if (OC1R >= 60)
+        {
+            OC1R = 15;
+        }
         PORTBbits.RB0 = ~PORTBbits.RB0;
+         */
     }
     return 0;
 }
@@ -105,7 +115,7 @@ void configOutputCompare(void)
     OC1CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
     OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
     OC1RS               = OC1clkT;  // Set period of OC1
-    OC1R                = 30;//OC1DCyc;     // Set duty duration of OC1
+    OC1R                = 60;//OC1DCyc;     // Set duty duration of OC1
     RPOR2bits.RP38R     = 0b010000;
 
     //-------------------------------------------------------------------------
