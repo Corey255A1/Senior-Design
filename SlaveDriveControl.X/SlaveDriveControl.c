@@ -1,8 +1,13 @@
-/*
+/**
  * File:   SlaveDriveControl.c
- * Author: Nicholas
- *
  * Created on January 30, 2013, 3:20 PM
+ * <p>
+ * This code will be burned onto the two (x2) slave PICs that are used to
+ * control the both (left & right) DC motors for the Robo Waiter. This PIC will
+ * not drive the motor directly, but instead drive an H-Bridge (motor driver),
+ * which will handle and encapsulate the control of the DC motor.
+ *
+ * @author Nicholas Fragiskatos (Senior Design Team #12 - Robo Waiter)
  */
 
 //=============================================================================
@@ -45,58 +50,17 @@
 //  Function declarations.
 //-----------------------------------------------------------------------------
 int main(void);
-void configOutputCompare(void);
+//void configOutputCompare(void);
+//void configSPICommunication(void);
 int OC1clkT = DRIVER_PERIOD_US/CLK_PERIOD;
 //int OC1DCyc = OC1clkT * 0.5;
 
-//=============================================================================
-//  Function:       main()
-//  Description:    Main loop for the PIC. Purpose is to send appropriate
-//                  PWM to the motor driver based on input received from
-//                  the master PIC.
-//  Arguments:      - void
-//  Return:         - int (Should never return)
-//  Algorithm:
-//=============================================================================
-int main(void) {
-
-    ANSELBbits.ANSB0 = 0;
-    TRISBbits.TRISB0 = 0;
-    TRISBbits.TRISB6 = 0;
-    //TRISBbits.TRISB1 = 0;
-    configOutputCompare();
-
-
-    PORTBbits.RB0 = 1;
-    //PORTBbits.RB1 = 1;
-    int i;
-    while(1)
-    {
-        /*
-        for (i = 0; i < 30000; ++i)
-        {
-            Nop();
-        }
-        OC1R = OC1R + 15;
-
-        if (OC1R >= 60)
-        {
-            OC1R = 15;
-        }
-        PORTBbits.RB0 = ~PORTBbits.RB0;
-         */
-    }
-    return 0;
-}
-
-//=============================================================================
-//  Function:       configOutputCompare()
-//  Description:    Configure the Output Compare (OC1) that we will be using
-//                  to send the PWMs to the motor drivers.
-//  Arguments:      - void
-//  Return:         - void
-//  Algorithm:      - none
-//=============================================================================
+/**
+ * Configure the Output Compare (OC1) that will be used to send the PWMs to the
+ * motor drivers.
+ *
+ * @return void
+ */
 void configOutputCompare(void)
 {
     //-------------------------------------------------------------------------
@@ -122,4 +86,70 @@ void configOutputCompare(void)
     //  Ready to turn TMR3 on.
     //-------------------------------------------------------------------------
     T3CONbits.TON = 1;
+}
+
+/**
+ * Configure the Serial Peripheral Interface (SPI) module of the PIC to act as
+ * a slave.
+ *
+ * @return void
+ */
+void configSPICommunication(void)
+{
+    //-------------------------------------------------------------------------
+    //  Clear the SPI Buffer register
+    //-------------------------------------------------------------------------
+    SPI1BUF = 0;    // Clear the SPI buffer.
+
+    //-------------------------------------------------------------------------
+    //  Configure interrupts for the interface
+    //-------------------------------------------------------------------------
+    IFS0bits.SPI1IF = 0;    // Clear the interrupt flag
+    IEC0bits.SPI1IE = 0;    // Disable interrupt (for now)
+
+    //-------------------------------------------------------------------------
+    //  Configure SPI1CON1 register.
+    //-------------------------------------------------------------------------
+
+    //-------------------------------------------------------------------------
+    //  Configure SPI1STAT register.
+    //-------------------------------------------------------------------------
+}
+
+/**
+ * Main loop for the PIC. Purpose is to send appropriate PWMs to the motor
+ * drivers based on input received from the master PIC.
+ *
+ * @return int (But this should never happen)
+ */
+int main(void) {
+
+    ANSELBbits.ANSB0 = 0;
+    TRISBbits.TRISB0 = 0;
+    TRISBbits.TRISB6 = 0;
+    //TRISBbits.TRISB1 = 0;
+    configOutputCompare();
+    configSPICommunication();
+
+
+    PORTBbits.RB0 = 1;
+    //PORTBbits.RB1 = 1;
+    //int i;
+    while(1)
+    {
+        /*
+        for (i = 0; i < 30000; ++i)
+        {
+            Nop();
+        }
+        OC1R = OC1R + 15;
+
+        if (OC1R >= 60)
+        {
+            OC1R = 15;
+        }
+        PORTBbits.RB0 = ~PORTBbits.RB0;
+         */
+    }
+    return 0;
 }
