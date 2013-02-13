@@ -11,6 +11,7 @@
 #include "temperature.h"
 #include "servo.h"
 #include "globals.h"
+#include "i2c.h"
 
 
 int main( void ){
@@ -19,15 +20,22 @@ int main( void ){
 
     //Initialize the Ultrasonic which is setup to run on PIN12-RP20
     //See the Ultrasonic.c file to check setup.
-    initUltra();
-    initTemperature();
-    initServo();
-    setGlobalTemp();
+//    initUltra();
+//    initTemperature();
+//    initServo();
+//    setGlobalTemp();
 
 /**
  * Test Signal to ensure PIC operation when testing
  * 
  */
+    char tempB;
+    i2c_Init();
+    i2c_ResetBus();
+    i2c_Start(0x3C,1);
+    tempB = i2c_Read();
+    i2c_ResetBus();
+
     _RB5=0;
     int i=0;
     int theTempC=0;
