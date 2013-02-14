@@ -14,7 +14,7 @@
 
 #include <opencv2/opencv.hpp>
 
-IplImage* GetThresholdedImage(IplImage* img)
+IplImage* GetRedThresholdedImage(IplImage* img)
 {
     // Convert the image into an HSV image
     IplImage* imgHSV = cvCreateImage(cvGetSize(img), 8, 3);
@@ -22,7 +22,27 @@ IplImage* GetThresholdedImage(IplImage* img)
 
     IplImage* imgThreshed = cvCreateImage(cvGetSize(img), 8, 1);
 
+    // Red on phone
     cvInRangeS(imgHSV, cvScalar(0, 175, 200), cvScalar(25, 225, 255), imgThreshed);
+
+    cvReleaseImage(&imgHSV);
+
+    return imgThreshed;
+}
+
+IplImage* GetBlueThresholdedImage(IplImage* img)
+{
+    // Convert the image into an HSV image
+    IplImage* imgHSV = cvCreateImage(cvGetSize(img), 8, 3);
+    cvCvtColor(img, imgHSV, CV_BGR2HSV);
+
+    IplImage* imgThreshed = cvCreateImage(cvGetSize(img), 8, 1);
+
+    // Red on phone
+    cvInRangeS(imgHSV, cvScalar(0, 175, 200), cvScalar(25, 225, 255), imgThreshed);
+    
+    // Blue on phone
+    cvInRangeS(imgHSV, cvScalar(75, 225, 225), cvScalar(125 ,255, 255), imgThreshed);
 
     cvReleaseImage(&imgHSV);
 
@@ -40,7 +60,7 @@ int main(int argc, char** argv)
 {
 	// Initialize capturing live feed from the camera
 	CvCapture* capture = 0;
-	capture = cvCaptureFromCAM(0);	
+	capture = cvCaptureFromCAM( CV_CAP_ANY );	
 
 	// Couldn't get a device? Throw an error and quit
 	if(!capture)
@@ -54,10 +74,6 @@ int main(int argc, char** argv)
     cvNamedWindow("video");
     cvNamedWindow("thresh");
 
-	// This image holds the "scribble" data...
-	// the tracked positions of the ball
-	IplImage* imgScribble = NULL;
-
 	// An infinite loop
 	while(true)
     {
@@ -69,15 +85,12 @@ int main(int argc, char** argv)
         if(!frame)
             break;
 
-		// If this is the first frame, we need to initialize it
-		if(imgScribble == NULL)
-		{
-			imgScribble = cvCreateImage(cvGetSize(frame), 8, 3);
-		}
-
 		// Holds the thresholded image (threshold = white, rest = black)
-		IplImage* imgThresh = GetThresholdedImage(frame);
-
+		IplImage* imgThresh = GetRedThresholdedImage(frame);
+        IplImage* imgBlueThresh = GetBlueThresholdedImage(frame);
+        
+        cvAdd(imgThresh, imgBlueThresh, imgThresh);
+        
 		// Calculate the moments to estimate the position of the ball
 		CvMoments *moments = (CvMoments*)malloc(sizeof(CvMoments));
 		cvMoments(imgThresh, moments, 1);
@@ -112,7 +125,7 @@ int main(int argc, char** argv)
 		}
 
 		// Add the scribbling image and the frame... and we get a combination of the two
-		cvAdd(frame, imgScribble, frame);
+		//cvAdd(frame, imgScribble, frame);
 		cvShowImage("thresh", imgThresh);
 		cvShowImage("video", frame);
 
