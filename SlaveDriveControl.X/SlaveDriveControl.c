@@ -11,6 +11,12 @@
  */
 
 //=============================================================================
+//============================= SPI Protocol ==================================
+//=============================================================================
+//
+//  The SPI communication is word-wide (16-bits / 2 characters)
+
+//=============================================================================
 //================= Pin Configuration for PIC24EP32MC202 ======================
 //=============================================================================
 //
@@ -86,13 +92,11 @@
 #define CLEAR               0
 
 //-----------------------------------------------------------------------------
-//  Function declarations.
+//  Global Declarations.
 //-----------------------------------------------------------------------------
-int main(void);
-//void configOutputCompare(void);
-//void configSPICommunication(void);
 int OC1clkT = DRIVER_PERIOD_US/CLK_PERIOD;
-//int OC1DCyc = OC1clkT * 0.5;
+int spiReadVal = 0;     // Message we read from Master
+char msgQueued = CLEAR; // Let's us know if a message needs handled.
 
 /**
  * Configure the Output Compare (OC1) that will be used to send the PWMs to the
@@ -119,7 +123,10 @@ void configOutputCompare(void)
     OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
     OC1RS               = OC1clkT;  // Set period of OC1
     OC1R                = 60;//OC1DCyc;     // Set duty duration of OC1
-    RPOR2bits.RP38R     = 0b010000;
+    RPOR2bits.RP38R     = 0b010000; // Maps the OC1 output to the RP38R pin
+                                    // (pin 15) on the pick. The 0b010000 is
+                                    // defined in the "Output Mapping" section
+                                    // of the data sheet.
 
     //-------------------------------------------------------------------------
     //  Ready to turn TMR3 on.
@@ -171,20 +178,27 @@ void configSPICommunication(void)
     //-------------------------------------------------------------------------
     //  Final configuration for the interface interrupts.
     //-------------------------------------------------------------------------
-    IFS0bits.SPI1IF = CLEAR;// Clear the interrupt flag.
+    IFS0bits.SPI1IF = CLEAR; // Clear the interrupt flag.
     IEC0bits.SPI1IE = EN;    // Enable interrupt.
 }
 
 /**
- * Reads the buffer for any type of communications from the master PIC.
+ * Interrupt Service Routine to handle SPI communication. The ISR will do the
+ * following:
  * 
+ *      1. Read from the SPI buffer.<p>
+ *      2. Set the flag to let the program know a message is needs handled.<p>
+ *      3. Clear interrupt flag.
+ *
  * @return void
  */
-int readSPI(void)
+void _ISR _SPI1Interrupt()
 {
-
-    return 1;
+    spiReadVal = SPI1BUF;       // Read buffer.
+    msgQueued = EN;             // Message is available
+    IFS0bits.SPI1IF = CLEAR;    // Clear interrupt flag
 }
+
 
 /**
  * Setup the pin configurations (I/O)
@@ -215,15 +229,17 @@ int main(void) {
     configDevicePins();
     configOutputCompare();
     configSPICommunication();
-    DRIVE_EN = EN;
 
-    int SPIVal;
     while(1)
     {
         //---------------------------------------------------------------------
-        //
+        //  If a message needs decoding...
         //---------------------------------------------------------------------
-        SPIVal = readSPI();
+        if (msgQueued)
+        {
+
+            msgQueued = CLEAR;
+        }
 
         
     }
