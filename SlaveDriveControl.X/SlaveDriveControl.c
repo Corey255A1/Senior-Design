@@ -15,22 +15,54 @@
 //=============================================================================
 //
 //  Input Digital Pins:
-//      RB0 (pin 4)     -   Forward Signal
-//      RB1 (pin 5)     -   Reverse Signal
-//      RB2 (pin 6)     -   Speed
+//      SS1 (pin 4)     -   Slave Select (SPI)
+//      SCK1(pin 16)    -   Shift Clock Input (SPI)
+//      SDI1(pin 18)    -   Serial Data Input (SPI)
+//      RP42(pin 24)    -   Input Caption from DC Motor Feedback
 //
 //  Output Digital Pins:
-//      RB15(pin 26)    -   Forward/Back Signal
-//      OSC1(pin 9)     -   PWM Signal
+//      RB1 (pin 5)     -   Motor Driver Enable
+//      RP38(pin 15)    -   PWM Signal
+//      SDO1(pin 17)    -   Serial Data Output (SPI)
 //
-//=============================================================================
-
-//=============================================================================
-//  Function:
-//  Description:
-//  Arguments:
-//  Return:
-//  Algorithm:
+//  Voltages and Ground:
+//      Vss (pin 8)
+//      Vdd (pin 13)
+//      Vss (pin 19)
+//      Vcap(pin 20)
+//      AVss(pin 27)
+//      AVdd(pin 28)
+//
+//
+//      ---------------------------
+//      |1                      28|
+//      |                         |
+//      |2                      27|
+//      |                         |
+//      |3                      26|
+//      |                         |
+//      |4                      25|
+//      |                         |
+//      |5                      24|
+//      |                         |
+//      |6                      23|
+//      |                         |
+//      |7                      22|
+//      |                         |
+//      |8                      21|
+//      |                         |
+//      |9                      20|
+//      |                         |
+//      |10                     19|
+//      |                         |
+//      |11                     18|
+//      |                         |
+//      |12                     17|
+//      |                         |
+//      |13                     16|
+//      |                         |
+//      |14                     15|
+//      |-------------------------|
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -45,6 +77,13 @@
 //-----------------------------------------------------------------------------
 #define DRIVER_PERIOD_US    10
 #define CLK_PERIOD          0.135
+#define DRIVE_EN            _RB1
+#define OUTPUT              0
+#define INPUT               1
+#define DIGITAL             0
+#define EN                  1
+#define DISABLE             0
+#define CLEAR               0
 
 //-----------------------------------------------------------------------------
 //  Function declarations.
@@ -67,14 +106,14 @@ void configOutputCompare(void)
     //  Setup Output Compare Timer (Timer 3)
     //-------------------------------------------------------------------------
     TMR3            = 0;        // Clear TMR3
-    T3CONbits.TON   = 0;        // Turn off TMR3
+    T3CONbits.TON   = DISABLE;  // Turn off TMR3
     T3CONbits.TCKPS = 0b00;     // Set Pre-scalar to 1:8
 
     //-------------------------------------------------------------------------
     //  Setup Output Compare (OC1)
     //-------------------------------------------------------------------------
-    OC1CON1             = 0;        // Clear out first configuration register
-    OC1CON2             = 0;        // Clear out second configuration register
+    OC1CON1             = CLEAR;    // Clear out first configuration register
+    OC1CON2             = CLEAR;    // Clear out second configuration register
     OC1CON1bits.OCTSEL  = 0b001;    // Set TMR3 as the source timer.
     OC1CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
     OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
@@ -97,22 +136,71 @@ void configOutputCompare(void)
 void configSPICommunication(void)
 {
     //-------------------------------------------------------------------------
-    //  Clear the SPI Buffer register
+    //  1. Clear the SPI Buffer register
     //-------------------------------------------------------------------------
-    SPI1BUF = 0;    // Clear the SPI buffer.
+    SPI1BUF = CLEAR;    // Clear the SPI buffer.
 
     //-------------------------------------------------------------------------
-    //  Configure interrupts for the interface
+    //  2. Initial configuration for the interface interrupts.
     //-------------------------------------------------------------------------
-    IFS0bits.SPI1IF = 0;    // Clear the interrupt flag
-    IEC0bits.SPI1IE = 0;    // Disable interrupt (for now)
+    IFS0bits.SPI1IF = CLEAR;    // Clear the interrupt flag
+    IEC0bits.SPI1IE = DISABLE;  // Disable interrupt (for now)
 
     //-------------------------------------------------------------------------
-    //  Configure SPI1CON1 register.
+    //  3. Configure SPI1CON1 register.
     //-------------------------------------------------------------------------
+    SPI1CON1bits.DISSCK = EN;       // Internal Serial Clock is enabled.
+    SPI1CON1bits.DISSDO = 0;        // SDO1 pin is controlled by the module
+    SPI1CON1bits.MODE16 = 1;        // Communication is word-wide (16-bits)
+    SPI1CON1bits.SMP = 0;           // Input data is sampled at the middle of
+                                    // data output time.
+    SPI1CON1bits.CKE = 1;           // Serial output data changes on transition
+                                    // from active clock state to idle clock
+                                    // state.
+    SPI1CON1bits.SSEN = 1;          // Slave Select 1 (SS1-bar) is used for
+                                    // slave mode.
+    SPI1CON1bits.CKP = 0;           // Active high clock.
+    SPI1CON1bits.MSTEN = DISABLE;   // Master mode disabled.
 
     //-------------------------------------------------------------------------
-    //  Configure SPI1STAT register.
+    //  4. Configure SPI1STAT register.
+    //-------------------------------------------------------------------------
+    SPI1STATbits.SPIROV = CLEAR;// No receive overflow has occured
+    SPI1STATbits.SPIEN = EN;    // Enable SPI module
+
+    //-------------------------------------------------------------------------
+    //  Final configuration for the interface interrupts.
+    //-------------------------------------------------------------------------
+    IFS0bits.SPI1IF = CLEAR;// Clear the interrupt flag.
+    IEC0bits.SPI1IE = EN;    // Enable interrupt.
+}
+
+/**
+ * Reads the buffer for any type of communications from the master PIC.
+ * 
+ * @return void
+ */
+int readSPI(void)
+{
+
+    return 1;
+}
+
+/**
+ * Setup the pin configurations (I/O)
+ *
+ * @return void
+ */
+void configDevicePins(void)
+{
+    //-------------------------------------------------------------------------
+    //  RB1 Setup.
+    //-------------------------------------------------------------------------
+    ANSELBbits.ANSB1 = DIGITAL; // Change RB1 pin to digital
+    TRISBbits.TRISB1 = OUTPUT;  // Change RB1 pin to output.
+
+    //-------------------------------------------------------------------------
+    //
     //-------------------------------------------------------------------------
 }
 
@@ -124,32 +212,20 @@ void configSPICommunication(void)
  */
 int main(void) {
 
-    ANSELBbits.ANSB0 = 0;
-    TRISBbits.TRISB0 = 0;
-    TRISBbits.TRISB6 = 0;
-    //TRISBbits.TRISB1 = 0;
+    configDevicePins();
     configOutputCompare();
     configSPICommunication();
+    DRIVE_EN = EN;
 
-
-    PORTBbits.RB0 = 1;
-    //PORTBbits.RB1 = 1;
-    //int i;
+    int SPIVal;
     while(1)
     {
-        /*
-        for (i = 0; i < 30000; ++i)
-        {
-            Nop();
-        }
-        OC1R = OC1R + 15;
+        //---------------------------------------------------------------------
+        //
+        //---------------------------------------------------------------------
+        SPIVal = readSPI();
 
-        if (OC1R >= 60)
-        {
-            OC1R = 15;
-        }
-        PORTBbits.RB0 = ~PORTBbits.RB0;
-         */
+        
     }
     return 0;
 }
