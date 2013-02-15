@@ -15,8 +15,8 @@
 
 
 int main( void ){
-    TRISB = 0;
-    PORTB = 0;
+//    TRISB = 0;
+//    PORTB = 0;
 
     //Initialize the Ultrasonic which is setup to run on PIN12-RP20
     //See the Ultrasonic.c file to check setup.
@@ -32,7 +32,26 @@ int main( void ){
     char tempB;
     i2c_Init();
     i2c_ResetBus();
-    i2c_Start(0x3C,1);
+    i2c_Start(mag_i2c_addr,I2C_WRITE);
+    i2c_Write(0x00);
+    i2c_Write(0x18);
+    i2c_Write(0x01);
+    i2c_Write(0x60);
+    i2c_ResetBus();
+
+    i2c_Start(acc_i2c_addr,I2C_WRITE);
+    i2c_Write(0x20);
+    i2c_Write(0x37);
+    i2c_ResetBus();
+
+    i2c_Start(gyr_i2c_addr,I2C_WRITE);
+    i2c_Write(0x16);
+    i2c_Write(0x18);
+    i2c_ResetBus();
+
+    i2c_Start(mag_i2c_addr,I2C_WRITE);
+    i2c_Write(0x03);
+    i2c_Restart(mag_i2c_addr,I2C_READ);
     tempB = i2c_Read();
     i2c_ResetBus();
 
