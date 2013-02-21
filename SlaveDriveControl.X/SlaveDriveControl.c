@@ -14,7 +14,16 @@
 //============================= SPI Protocol ==================================
 //=============================================================================
 //
-//  The SPI communication is word-wide (16-bits / 2 characters)
+//  The SPI communication is word-wide (16-bits or 2 characters)
+//
+//  I'm assuming the master is going to send characters (C1 and C2)
+//
+//      - C1 will be used to set the speed of the motor (ie, the duty cycle).
+//          - There will be an arbitrary total of 10 different speeds
+//              - Speed 0 corresponds with no movement. (0% Duty Cycle)
+//              - Speed 9 corresponds with fastest movement (90% Duty Cycle)
+//      - C2 will be used as a forward or reverse.
+//          - The forward or reverse character will be used
 
 //=============================================================================
 //================= Pin Configuration for PIC24EP32MC202 ======================
@@ -90,13 +99,15 @@
 #define EN                  1
 #define DISABLE             0
 #define CLEAR               0
+#define SPEED               OC1R
 
 //-----------------------------------------------------------------------------
 //  Global Declarations.
 //-----------------------------------------------------------------------------
-int OC1clkT = DRIVER_PERIOD_US/CLK_PERIOD;
-int spiReadVal = 0;     // Message we read from Master
-char msgQueued = CLEAR; // Let's us know if a message needs handled.
+int OC1clkT = DRIVER_PERIOD_US/CLK_PERIOD;  // Set a period
+char spiReadVal = 0;                        // Message we read from Master
+char msgQueued = CLEAR;                     // Let's us know if a message
+                                            // needs handled.
 
 /**
  * Configure the Output Compare (OC1) that will be used to send the PWMs to the
@@ -111,7 +122,7 @@ void configOutputCompare(void)
     //-------------------------------------------------------------------------
     TMR3            = 0;        // Clear TMR3
     T3CONbits.TON   = DISABLE;  // Turn off TMR3
-    T3CONbits.TCKPS = 0b00;     // Set Pre-scalar to 1:8
+    T3CONbits.TCKPS = 0b00;     // Set Pre-scalar to 1:1
 
     //-------------------------------------------------------------------------
     //  Setup Output Compare (OC1)
@@ -158,7 +169,7 @@ void configSPICommunication(void)
     //-------------------------------------------------------------------------
     SPI1CON1bits.DISSCK = EN;       // Internal Serial Clock is enabled.
     SPI1CON1bits.DISSDO = 0;        // SDO1 pin is controlled by the module
-    SPI1CON1bits.MODE16 = 1;        // Communication is word-wide (16-bits)
+    SPI1CON1bits.MODE16 = 0;        // Communication is byte-wide (8-bits)
     SPI1CON1bits.SMP = 0;           // Input data is sampled at the middle of
                                     // data output time.
     SPI1CON1bits.CKE = 1;           // Serial output data changes on transition
@@ -229,14 +240,45 @@ int main(void) {
     configDevicePins();
     configOutputCompare();
     configSPICommunication();
+    char forward;
+    char speed;
+
+    DRIVE_EN = EN;
 
     while(1)
     {
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
-        if (msgQueued)
+        //if (msgQueued)
         {
+            //-----------------------------------------------------------------
+            //  Here we can parse the speed and direction from the
+            //  message received.
+            //
+            //  Bits (7-4) are the bits for speed.
+            //  Bits (3-0) are the bits for direction.
+            //-----------------------------------------------------------------
+            speed = (0b11110000 & spiReadVal) >> 4;
+            forward = 0b00001111 & spiReadVal;
+
+            //-----------------------------------------------------------------
+            //  The speed is based on the percentage of the duty cycle.
+            //
+            //      Speed 0: 0% (i.e, not moving)
+            //      Speed 1: 10%
+            //      Speed 2: 20%
+            //      Speed 3: 30%
+            //      Speed 4: 40%
+            //      Speed 5: 50%
+            //      Speed 6: 60%
+            //      Speed 7: 70%
+            //      Speed 8: 80%
+            //      Speed 9: 90%
+            //      Speed 10: 100% (Max Speed)
+            //-----------------------------------------------------------------
+            SPEED = (speed*OC1clkT)/10;
+            ++spiReadVal;
 
             msgQueued = CLEAR;
         }
