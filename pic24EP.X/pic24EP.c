@@ -12,6 +12,7 @@
 #include "servo.h"
 #include "globals.h"
 #include "i2c.h"
+#include "9axis.h"
 
 
 int main( void ){
@@ -29,31 +30,15 @@ int main( void ){
  * Test Signal to ensure PIC operation when testing
  * 
  */
-    char tempB;
-    i2c_Init();
-    i2c_ResetBus();
-    i2c_Start(mag_i2c_addr,I2C_WRITE);
-    i2c_Write(0x00);
-    i2c_Write(0x18);
-    i2c_Write(0x01);
-    i2c_Write(0x60);
-    i2c_ResetBus();
-
-    i2c_Start(acc_i2c_addr,I2C_WRITE);
-    i2c_Write(0x20);
-    i2c_Write(0x37);
-    i2c_ResetBus();
-
-    i2c_Start(gyr_i2c_addr,I2C_WRITE);
-    i2c_Write(0x16);
-    i2c_Write(0x18);
-    i2c_ResetBus();
-
-    i2c_Start(mag_i2c_addr,I2C_WRITE);
-    i2c_Write(0x03);
-    i2c_Restart(mag_i2c_addr,I2C_READ);
-    tempB = i2c_Read();
-    i2c_ResetBus();
+    init9axis();
+    unsigned int magArr[3];
+    unsigned int accArr[3];
+    unsigned int gyrArr[3];
+    while(1){
+        readMag(magArr);
+        readAcc(accArr);
+        readGyr(gyrArr);
+    }
 
     _RB5=0;
     int i=0;

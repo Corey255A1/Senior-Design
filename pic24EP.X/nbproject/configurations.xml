@@ -10,6 +10,7 @@
       <itemPath>temperature.h</itemPath>
       <itemPath>servo.h</itemPath>
       <itemPath>i2c.h</itemPath>
+      <itemPath>9axis.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -24,6 +25,7 @@
       <itemPath>temperature.c</itemPath>
       <itemPath>servo.c</itemPath>
       <itemPath>i2c.c</itemPath>
+      <itemPath>9axis.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

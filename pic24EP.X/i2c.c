@@ -6,7 +6,7 @@ int i2c_state;
 void i2c_Init( void ){
     	int temp;
         I2C1CONbits.I2CEN = 0; // Disable I2C Mode
-	I2C1BRG = 40; //BRG=0x27 for Fosc=8Mhz,SCK 100kHz
+	I2C1BRG = 30; //BRG=0x27 for Fosc=8Mhz,SCK 100kHz
 	I2C1CONbits.DISSLW = 1; // Disable slew rate control
 	IFS1bits.MI2C1IF = 0; // Clear Interrupt
         I2C1CONbits.I2CEN=1; // start module; configure SDA & SCK
@@ -30,6 +30,13 @@ void i2c_ResetBus(void)
 	for(i=0;i<5000;i++)
                  Nop();
 }
+void i2c_Write(char data){
+    while (I2C1STATbits.TBF){};
+    IFS1bits.MI2C1IF = 0;
+    I2C1TRN = data;
+    while (I2C1STATbits.TRSTAT){};
+    Nop();Nop();
+}
 
 void i2c_Start(char addr, char rw){
     I2C1CONbits.ACKDT = 0;
@@ -37,26 +44,24 @@ void i2c_Start(char addr, char rw){
     for(i=0;i<1000;i++)
         Nop();
     I2C1CONbits.SEN = 1;
-    //while (I2C1CONbits.SEN){};
     while(I2C1CONbits.SEN){};
-    while (I2C1STATbits.TBF){};
-    IFS1bits.MI2C1IF = 0;
-    I2C1TRN = addr | rw;
-    while (I2C1STATbits.TRSTAT){};
+    i2c_Write(addr | rw);
 
 }
 
-char i2c_Read(void){
-    I2C1CONbits.RCEN =1;
+unsigned char i2c_Read(void){
+    I2C1CONbits.RCEN=1;
     while(!I2C1STATbits.RBF){};
-    return I2C1RCV;
+    I2C1CONbits.ACKEN=1;
+    return (unsigned) I2C1RCV;
+}
+unsigned char i2c_ReadFinal(void){
+    I2C1CONbits.RCEN=1;
+    while(!I2C1STATbits.RBF){};
+    return (unsigned) I2C1RCV;
 }
 
-void i2c_Write(char data){
-    I2C1TRN = data;
-    while (I2C1STATbits.TRSTAT){};
 
-}
 
 void i2c_Restart(char addr, char rw)
 {
@@ -69,3 +74,7 @@ void i2c_Restart(char addr, char rw)
         I2C1TRN = addr | rw;
         while (I2C1STATbits.TRSTAT){};
 }//end restart
+
+void i2c_Ack( void ){
+  I2C1CONbits.ACKEN=1;
+}
