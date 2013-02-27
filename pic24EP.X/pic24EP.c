@@ -13,11 +13,11 @@
 #include "globals.h"
 #include "i2c.h"
 #include "9axis.h"
-
+#define pi 3.141592653589
 
 int main( void ){
-//    TRISB = 0;
-//    PORTB = 0;
+    TRISB = 0;
+    PORTB = 0;
 
     //Initialize the Ultrasonic which is setup to run on PIN12-RP20
     //See the Ultrasonic.c file to check setup.
@@ -31,21 +31,22 @@ int main( void ){
  * 
  */
     init9axis();
-    int magArr[3];
+    initServo();
+   // int magArr[3];
    // int accArr[3];
-    int gyrArr[3];
+   // int gyrArr[3];
     double heading;
     _TRISB6 = OUTPUT;
     _RB6 = 0;
     while(1){
-        //readMag(magArr);
         heading = getHeading();
         if (heading<=.1 && heading>=-.1)
             _RB6=1;
         else
             _RB6=0;
-        //readGyr(gyrArr);
-    }
+        float h2s =(pi + heading)*900/pi;
+        posServo((int)h2s);
+    }//end while
 
     _RB5=0;
     int i=0;
