@@ -1,4 +1,5 @@
 #include <p24EP32MC202.h>
+#include "i2c.h"
 
 int i2c_state;
 

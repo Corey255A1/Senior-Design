@@ -31,13 +31,20 @@ int main( void ){
  * 
  */
     init9axis();
-    unsigned int magArr[3];
-    unsigned int accArr[3];
-    unsigned int gyrArr[3];
+    int magArr[3];
+   // int accArr[3];
+    int gyrArr[3];
+    double heading;
+    _TRISB6 = OUTPUT;
+    _RB6 = 0;
     while(1){
-        readMag(magArr);
-        readAcc(accArr);
-        readGyr(gyrArr);
+        //readMag(magArr);
+        heading = getHeading();
+        if (heading<=.1 && heading>=-.1)
+            _RB6=1;
+        else
+            _RB6=0;
+        //readGyr(gyrArr);
     }
 
     _RB5=0;

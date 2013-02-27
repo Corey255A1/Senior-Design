@@ -29,9 +29,18 @@
 #define gyr_zH_addr 0x21
 #define gyr_zL_addr 0x22
 
+#define maxAccG 2
+#define maxAccGRaw 32768
+#define maxMag 2.5
+#define maxMagRaw 32768
+
+#define xaxis 0
+#define yaxis 1
+#define zaxis 2
 
 void init9axis(void);
-void readMag(unsigned int[]);
-void readAcc(unsigned int[]);
-void readGyr(unsigned int[]);
+void readMag(int[]);
+void readAcc(int[]);
+void readGyr(int[]);
+float getHeading(void);
 
