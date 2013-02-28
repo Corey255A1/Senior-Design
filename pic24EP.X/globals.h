@@ -15,6 +15,12 @@
 #define LOW 0
 #define VINx100 330
 #define BIT_10 1023
+#define LOCKED 1
+#define UNLOCKED 0
+#define DISABLE 0
+#define CLEAR 0
+#define EN 1
+#define DIS 0
 
 extern short global_u1_edge;
 extern long global_u1_time;

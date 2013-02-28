@@ -38,6 +38,10 @@
 #define yaxis 1
 #define zaxis 2
 
+extern int global_mag[3];
+extern int global_acc[3];
+extern int global_gyr[3];
+
 void init9axis(void);
 void readMag(int[]);
 void readAcc(int[]);

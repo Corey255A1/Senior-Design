@@ -6,11 +6,21 @@
  * used to capture the return pulse from the ultrasonic
  * To do this it requires the use of a interrupt routine
  *
+ * --Corey Wunderlich
+ *
  */
 
 #include <p24EP32MC202.h>
 #include "ultrasonic.h"
 #include "globals.h"
+
+//Global Variables
+short global_u1_edge = RISE;
+long global_u1_time = 0;
+short global_u2_edge = RISE;
+long global_u2_time = 0;
+
+
 
 //Local Variable Declarations
 int u1_time_i;

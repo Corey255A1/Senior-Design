@@ -4,6 +4,8 @@
  * The servo in this case has been put on the PWM2L port
  * not super general but was more for testing
  *
+ * --Corey Wunderlich
+ * 
  */
 #include "servo.h"
 #include <p24EP32MC202.h>

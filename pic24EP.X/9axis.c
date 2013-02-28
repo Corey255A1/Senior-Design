@@ -1,7 +1,26 @@
 #include "i2c.h"
 #include "9axis.h"
 #include "math.h"
+#include "globals.h"
 
+
+int global_mag[3];
+int global_acc[3];
+int global_gyr[3];
+int neinAxis_semaphore=0;
+void __attribute__((__interrupt__, no_auto_psv)) _T4Interrupt(void)
+{
+/* Interrupt Service Routine code goes here */
+_T4IF = 0; //Clear Timer4 interrupt flag
+//if(neinAxis_semaphore==UNLOCKED){
+    readMag(global_mag);
+    readAcc(global_acc);
+    readGyr(global_gyr);
+//}
+
+}
+
+//to-do write in comments what these do.
 void init9axis(){
     i2c_Init();
     i2c_ResetBus();
@@ -34,7 +53,17 @@ void init9axis(){
     i2c_Write(0x16);
     i2c_Write(0x18);
     i2c_ResetBus();
+
+    //Setup Timer4 to be used as a trigger for information collection
+    TMR4 =0;
+    T4CON=0;
+    T4CONbits.TCKPS = 0b11; // 1:8 for now
+    _T4IP = 0x01; // Set Timer4 Interrupt Priority Level
+    IFS1bits.T4IF = 0; // Clear Timer4 Interrupt Flag
+    IEC1bits.T4IE = 1; // Enable Timer4 interrupt
+    T4CONbits.TON = 1; // turn on T4
 }
+
 
 void readMag(int magArr[3]){
         i2c_Start(mag_i2c_addr,I2C_WRITE);
@@ -163,12 +192,19 @@ void readGyr(int gyrArr[6]){
 }
 
 float getHeading( void ){
+    neinAxis_semaphore = LOCKED;
     int acc[3];
+    acc[xaxis] = global_acc[xaxis];
+    acc[yaxis] = global_acc[yaxis];
+    acc[zaxis] = global_acc[zaxis];
     int mag[3];
+    mag[xaxis] = global_mag[xaxis];
+    mag[yaxis] = global_mag[yaxis];
+    mag[zaxis] = global_mag[zaxis];
     float acc_norm[3];
     float mag_norm[3];
-    readAcc(acc);
-    readMag(mag);
+    //readAcc(acc);
+    //readMag(mag);
     acc_norm[xaxis]=maxAccG*((float) acc[xaxis]/maxAccGRaw);
     acc_norm[yaxis]=maxAccG*((float) acc[yaxis]/maxAccGRaw);
     acc_norm[zaxis]=maxAccG*((float) acc[zaxis]/maxAccGRaw);
@@ -189,6 +225,7 @@ float getHeading( void ){
 
     float Xh = mag_norm[xaxis] * cosPitch + mag_norm[zaxis] * sinPitch;
     float Yh = mag_norm[xaxis] * sinRoll * sinPitch + mag_norm[yaxis] * cosRoll - mag_norm[zaxis] * sinRoll * cosPitch;
+    neinAxis_semaphore = UNLOCKED;
     return atan2f(Yh, Xh);
 }
 
