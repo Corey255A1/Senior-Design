@@ -5,14 +5,65 @@
  * Created on February 28, 2013, 6:35 PM
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <p24EP32MC202.h>
+#include "ultrasonic.h"
+#include "globals.h"
 
-/*
- * 
- */
-int main(int argc, char** argv) {
+void init_ultra( void ){
+    _TRISB7 = OUTPUT;
+    _TRISB8 = OUTPUT;
 
-    return (EXIT_SUCCESS);
+    U1_RPOreg = OC1port; // set ultra1 RPO register to OC1 output
+    U2_RPOreg = OC1port; // set ultra2 pulse out to OC1
+
+    U1_RBreg = INPUT; // Set ultra1 Tris RB register to input mode
+    U2_RBreg = INPUT;
+    RPINR7bits.IC1R = U1_RPIport; // set IC1 input to ultra1 RP input
+    RPINR7bits.IC2R = U2_RPIport;
+
+    //Setup OCM timers
+    TMR3 = 0;   // clear
+    T3CONbits.TON = 0; // turn off
+
+    T3CONbits.TCKPS = 0b01; // set prescaler to 1:8
+    OC1CON1 = 0; // clear control registers
+    OC1CON2 = 0;
+
+    OC1CON1bits.OCTSEL = 0x001; // set to TMR3
+    OC1CON1bits.OCM = 0b110; // set to edge-aligned PWM
+    OC1CON2bits.SYNCSEL = 0x1F; // set period control to OC1RS
+
+    OC1RS = 50000; // set period of OC1
+    OC1R = 5000; // set duration of OC1
+
+    // setup input capture module 1
+    IC1CON1bits.ICM = 0x000; // turn off
+    IC1TMR = 0; // clear IC1TMR
+    IC1CON1 = 0; // clear config1
+    IC1CON2 = 0;
+
+    IPC0bits.IC1IP = 1; // Turn on IC1
+    IFS0bits.IC1IF = 0; // clear IC1 interrupt status flag
+
+    IC1CON1bits.ICTSEL = 0b000; // set IC1 to TMR3
+    IC1CON1bits.ICI = 0;    // interrupt every capture
+
+    // setup the input capture module 2
+    IC2CON1bits.ICM = 0x000;
+    IC2TMR = 0;
+    IC2CON1 = 0;
+    IC2CON2 = 0;
+
+    IPC1bits.IC2IP = 1;
+    IFS0bits.IC2IF = 0;
+
+    IC2CON1bits.ICTSEL = 0b000;
+    IC2CON1bits.ICI = 0;
+
+    // turn all on
+    IC1CON1bits.ICM = 0x001; // IC1 for every edge
+    IEC0bits.IC1IE = 1; // IC1 interrupts
+    IC2CON1bits.ICM = 0x001; // IC2 for every edge
+    IEC0bits.IC2IE = 1; // IC2 interrupts
+    T3CONbits.TON = 1;  // TMR3
 }
-
