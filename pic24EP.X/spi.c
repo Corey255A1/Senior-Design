@@ -10,8 +10,8 @@
  */
 
 
-int spiReadVal;
-int SPImsg;
+int SPI_msg;
+int SPI_msg_rdy;
 /**
  * Interrupt Service Routine to handle SPI communication. The ISR will do the
  * following:
@@ -24,9 +24,9 @@ int SPImsg;
  */
 void __attribute__((__interrupt__, auto_psv)) _SPI1Interrupt()
 {
-    if(SPImsg == DIS){
-        spiReadVal = SPI1BUF;       // Read buffer.
-        SPImsg = EN;             // Message is available
+    if(SPI_msg_rdy == DIS){
+        SPI_msg = SPI1BUF;       // Read buffer.
+        SPI_msg_rdy = EN;             // Message is available
     }
     IFS0bits.SPI1IF = CLEAR;    // Clear interrupt flag
 }

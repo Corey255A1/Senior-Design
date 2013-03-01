@@ -11,6 +11,6 @@
  * @return void
  */
 void configSPICommunication(void);
-extern int spiReadVal;
-extern int SPImsg;
+extern int SPI_msg;
+extern int SPI_msg_rdy;
 

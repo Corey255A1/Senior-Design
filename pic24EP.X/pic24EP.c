@@ -14,7 +14,8 @@
 #include "i2c.h"
 #include "9axis.h"
 #include "spi.h"
-
+#include "../Global_PIC/spiMessages.h"
+#define WAIT_FOR_MSG 0x11
 
 int main( void ){
 //SPI communication Test Code
@@ -23,18 +24,33 @@ int main( void ){
     _TRISB5 = OUTPUT;
     _RB6 = LOW;
     _RB5 = LOW;
+    int STATE=WAIT_FOR_MSG;
     while(1){
-        _RB5 = ~_RB5;
-        if(SPImsg == EN){
-            SPImsg = DIS;
-            if(spiReadVal==0xAA){
-                _RB6=HIGH;
-            }
-            if(spiReadVal==0x7F){
-                _RB6=LOW;
-            }
-            spiReadVal = 0;
-        }//end if
+        switch(STATE){
+            case WAIT_FOR_MSG:
+                if(SPI_msg_rdy == EN){
+                    SPI_msg_rdy = DIS;
+                    switch(SPI_msg){
+                        case WRITE_DATA:
+                            SPI1BUF = 0xFF;
+                            STATE = WRITE_DATA;break;
+                        case READ_DATA:
+                            STATE = READ_DATA;break;
+                    }//endswitch
+                }//end if
+                break;//break formsg
+            case WRITE_DATA:
+                if(SPI_msg_rdy == EN){
+                    SPI_msg_rdy = DIS;
+                    switch(SPI_msg){
+                        case OUT_ON: _RB6 = HIGH;break;
+                        case OUT_OFF: _RB6 = LOW;break;
+                        case END_TRANSMISSION:STATE = WAIT_FOR_MSG;break;
+                    }//end switch
+                }//endif
+                break;//end writedata
+        }//endcase
+
     }//end while
 
     //TRISB = 0;

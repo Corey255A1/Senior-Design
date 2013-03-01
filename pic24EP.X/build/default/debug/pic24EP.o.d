@@ -7,4 +7,5 @@ globals.h  \
 servo.h  \
 i2c.h  \
 9axis.h  \
-spi.h 
+spi.h  \
+ ../Global_PIC/spiMessages.h 

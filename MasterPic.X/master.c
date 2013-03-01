@@ -11,6 +11,7 @@
 #include "lcd.h"
 #include "spi.h"
 #include "globals.h"
+#include "../Global_PIC/spiMessages.h"
 
 
 /*
@@ -20,12 +21,26 @@ int main( void ) {
     initPMP();
     initLCD(7);
     initSPI();
-    writeLCD("Dan is sexy");
+    int spi_recv;
     while(1){
-        writeSPI1(0xAA);
-        msDelay(500);
-        writeSPI1(0x7F);
-        msDelay(500);
+        writeSPI1(WRITE_DATA);
+        msDelay(1);
+        spi_recv = writeSPI1(OUT_ON);
+        if(spi_recv == 0xFF){
+            writeLCD("ASS");
+        }
+        msDelay(5);
+        writeSPI1(END_TRANSMISSION);
+        msDelay(5);
+        writeSPI1(WRITE_DATA);
+        msDelay(5);
+        spi_recv = writeSPI1(OUT_OFF);
+        if(spi_recv == 0xFF){
+            writeLCD("ASS");
+        }
+        msDelay(5);
+        writeSPI1(END_TRANSMISSION);
+        msDelay(5);
     };
     return (EXIT_SUCCESS);
 }
