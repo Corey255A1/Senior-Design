@@ -85,6 +85,8 @@
 //-----------------------------------------------------------------------------
 #include <p24EP32MC202.h>
 #include "Configuration.h"
+#include "globals.h"
+#include "../pic24EP.X/spi.h"
 
 
 //-----------------------------------------------------------------------------
@@ -118,11 +120,18 @@ char msgQueued = CLEAR;                     // Let's us know if a message
 void configOutputCompare(void)
 {
     //-------------------------------------------------------------------------
-    //  Setup Output Compare Timer (Timer 3)
+    //  Setup Output Compare Timer 1 (Timer 3)
     //-------------------------------------------------------------------------
     TMR3            = 0;        // Clear TMR3
     T3CONbits.TON   = DISABLE;  // Turn off TMR3
     T3CONbits.TCKPS = 0b00;     // Set Pre-scalar to 1:1
+
+    //-------------------------------------------------------------------------
+    //  Setup Output Compare Timer 2 (Timer 2)
+    //-------------------------------------------------------------------------
+    TMR2            = 0;        // Clear TMR2
+    T2CONbits.TON   = DISABLE;  // Turn off TMR2
+    T2CONbits.TCKPS = 0b00;     // Set Pre-scalar to 1:1
 
     //-------------------------------------------------------------------------
     //  Setup Output Compare (OC1)
@@ -140,74 +149,25 @@ void configOutputCompare(void)
                                     // of the data sheet.
 
     //-------------------------------------------------------------------------
-    //  Ready to turn TMR3 on.
+    //  Setup Output Compare (OC2)
     //-------------------------------------------------------------------------
-    T3CONbits.TON = 1;
-}
-
-/**
- * Configure the Serial Peripheral Interface (SPI) module of the PIC to act as
- * a slave.
- *
- * @return void
- */
-void configSPICommunication(void)
-{
-    //-------------------------------------------------------------------------
-    //  1. Clear the SPI Buffer register
-    //-------------------------------------------------------------------------
-    SPI1BUF = CLEAR;    // Clear the SPI buffer.
+    OC2CON1             = CLEAR;    // Clear out first configuration register
+    OC2CON2             = CLEAR;    // Clear out second configuration register
+    OC2CON1bits.OCTSEL  = 0b000;    // Set TMR2 as the source timer.
+    OC2CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
+    OC2CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
+    OC2RS               = OC1clkT;  // Set period of OC1
+    OC2R                = 60;//OC1DCyc;     // Set duty duration of OC1
+    RPOR1bits.RP37R     = 0b010001; // Maps the OC2 output to the RP37R pin
+                                    // (pin 15) on the pick. The 0b010000 is
+                                    // defined in the "Output Mapping" section
+                                    // of the data sheet.
 
     //-------------------------------------------------------------------------
-    //  2. Initial configuration for the interface interrupts.
+    //  Ready to turn TMR3 and TMR2 on.
     //-------------------------------------------------------------------------
-    IFS0bits.SPI1IF = CLEAR;    // Clear the interrupt flag
-    IEC0bits.SPI1IE = DISABLE;  // Disable interrupt (for now)
-
-    //-------------------------------------------------------------------------
-    //  3. Configure SPI1CON1 register.
-    //-------------------------------------------------------------------------
-    SPI1CON1bits.DISSCK = EN;       // Internal Serial Clock is enabled.
-    SPI1CON1bits.DISSDO = 0;        // SDO1 pin is controlled by the module
-    SPI1CON1bits.MODE16 = 0;        // Communication is byte-wide (8-bits)
-    SPI1CON1bits.SMP = 0;           // Input data is sampled at the middle of
-                                    // data output time.
-    SPI1CON1bits.CKE = 1;           // Serial output data changes on transition
-                                    // from active clock state to idle clock
-                                    // state.
-    SPI1CON1bits.SSEN = 1;          // Slave Select 1 (SS1-bar) is used for
-                                    // slave mode.
-    SPI1CON1bits.CKP = 0;           // Active high clock.
-    SPI1CON1bits.MSTEN = DISABLE;   // Master mode disabled.
-
-    //-------------------------------------------------------------------------
-    //  4. Configure SPI1STAT register.
-    //-------------------------------------------------------------------------
-    SPI1STATbits.SPIROV = CLEAR;// No receive overflow has occured
-    SPI1STATbits.SPIEN = EN;    // Enable SPI module
-
-    //-------------------------------------------------------------------------
-    //  Final configuration for the interface interrupts.
-    //-------------------------------------------------------------------------
-    IFS0bits.SPI1IF = CLEAR; // Clear the interrupt flag.
-    IEC0bits.SPI1IE = EN;    // Enable interrupt.
-}
-
-/**
- * Interrupt Service Routine to handle SPI communication. The ISR will do the
- * following:
- * 
- *      1. Read from the SPI buffer.<p>
- *      2. Set the flag to let the program know a message is needs handled.<p>
- *      3. Clear interrupt flag.
- *
- * @return void
- */
-void _ISR _SPI1Interrupt()
-{
-    spiReadVal = SPI1BUF;       // Read buffer.
-    msgQueued = EN;             // Message is available
-    IFS0bits.SPI1IF = CLEAR;    // Clear interrupt flag
+    T3CONbits.TON = EN;
+    T2CONbits.TON = EN;
 }
 
 
