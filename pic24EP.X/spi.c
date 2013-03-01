@@ -1,5 +1,36 @@
 #include "globals.h"
 #include <p24EP32MC202.h>
+#include "spi.h"
+/**
+ * This Is code for SPI SLAVE MODE
+ * It will wait for the Clock to start running 
+ * and transmit it's buffer along with receive the
+ * bits from the MASTER
+ * 
+ */
+
+
+int spiReadVal;
+int SPImsg;
+/**
+ * Interrupt Service Routine to handle SPI communication. The ISR will do the
+ * following:
+ *
+ *      1. Read from the SPI buffer.<p>
+ *      2. Set the flag to let the program know a message is needs handled.<p>
+ *      3. Clear interrupt flag.
+ *
+ * @return void
+ */
+void __attribute__((__interrupt__, auto_psv)) _SPI1Interrupt()
+{
+    if(SPImsg == DIS){
+        spiReadVal = SPI1BUF;       // Read buffer.
+        SPImsg = EN;             // Message is available
+    }
+    IFS0bits.SPI1IF = CLEAR;    // Clear interrupt flag
+}
+
 
 /**
  * Configure the Serial Peripheral Interface (SPI) module of the PIC to act as
@@ -23,7 +54,7 @@ void configSPICommunication(void)
     //-------------------------------------------------------------------------
     //  3. Configure SPI1CON1 register.
     //-------------------------------------------------------------------------
-    SPI1CON1bits.DISSCK = EN;       // Internal Serial Clock is enabled.
+    SPI1CON1bits.DISSCK = 0;       // Internal Serial Clock is enabled.
     SPI1CON1bits.DISSDO = 0;        // SDO1 pin is controlled by the module
     SPI1CON1bits.MODE16 = 0;        // Communication is byte-wide (8-bits)
     SPI1CON1bits.SMP = 0;           // Input data is sampled at the middle of

@@ -6,4 +6,5 @@ ultrasonic.h  \
 globals.h  \
 servo.h  \
 i2c.h  \
-9axis.h 
+9axis.h  \
+spi.h 

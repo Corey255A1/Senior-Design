@@ -21,6 +21,7 @@
 #define CLEAR 0
 #define EN 1
 #define DIS 0
+#define pi 3.141592653589
 
 extern short global_u1_edge;
 extern long global_u1_time;
