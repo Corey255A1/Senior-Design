@@ -41,10 +41,12 @@
 extern int global_mag[3];
 extern int global_acc[3];
 extern int global_gyr[3];
+extern int f_UPDATE_9AXIS;
 
 void init9axis(void);
 void readMag(int[]);
 void readAcc(int[]);
 void readGyr(int[]);
 float getHeading(void);
+float updateHeading(void);
 

@@ -1,6 +1,9 @@
-#define OUT_ON 0xAA
+#define OUT_ON 0xA1
 #define OUT_OFF 0xA0
 #define READ_DATA 0x55
+#define READ 0x50
+#define DATA_RDY 0x71
+#define DATA_PROCESSING 0x70
 #define WRITE_DATA 0x22
-#define GET_STATE 0x38
+#define GET_STATE 0x40
 #define END_TRANSMISSION 0x7F

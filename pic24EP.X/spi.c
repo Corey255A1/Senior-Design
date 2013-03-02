@@ -1,6 +1,3 @@
-#include "globals.h"
-#include <p24EP32MC202.h>
-#include "spi.h"
 /**
  * This Is code for SPI SLAVE MODE
  * It will wait for the Clock to start running 
@@ -8,6 +5,11 @@
  * bits from the MASTER
  * 
  */
+
+#include "globals.h"
+#include <p24EP32MC202.h>
+#include "spi.h"
+#include "../Global_PIC/spiMessages.h"
 
 
 int SPI_msg;
@@ -24,10 +26,10 @@ int SPI_msg_rdy;
  */
 void __attribute__((__interrupt__, auto_psv)) _SPI1Interrupt()
 {
-    if(SPI_msg_rdy == DIS){
-        SPI_msg = SPI1BUF;       // Read buffer.
-        SPI_msg_rdy = EN;             // Message is available
-    }
+    //if(SPI_msg_rdy == DIS){
+     //   SPI_msg = SPI1BUF;       // Read buffer.
+//        SPI_msg_rdy = EN;             // Message is available
+   // }
     IFS0bits.SPI1IF = CLEAR;    // Clear interrupt flag
 }
 

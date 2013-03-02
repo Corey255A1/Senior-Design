@@ -8,14 +8,13 @@ int global_mag[3];
 int global_acc[3];
 int global_gyr[3];
 int neinAxis_semaphore=0;
+int f_UPDATE_9AXIS=0;
 void __attribute__((__interrupt__, no_auto_psv)) _T4Interrupt(void)
 {
 /* Interrupt Service Routine code goes here */
 _T4IF = 0; //Clear Timer4 interrupt flag
 //if(neinAxis_semaphore==UNLOCKED){
-    readMag(global_mag);
-    readAcc(global_acc);
-    readGyr(global_gyr);
+f_UPDATE_9AXIS=1;
 //}
 
 }
@@ -209,6 +208,47 @@ float getHeading( void ){
     acc_norm[yaxis]=maxAccG*((float) acc[yaxis]/maxAccGRaw);
     acc_norm[zaxis]=maxAccG*((float) acc[zaxis]/maxAccGRaw);
     
+    mag_norm[xaxis]=maxMag*((float) mag[xaxis]/maxMagRaw);
+    mag_norm[yaxis]=maxMag*((float) mag[yaxis]/maxMagRaw);
+    mag_norm[zaxis]=maxMag*((float) mag[zaxis]/maxMagRaw);
+
+    float pitch = asin(acc_norm[xaxis]);
+    float roll = asin(acc_norm[yaxis]);
+
+
+    float cosRoll = cos(roll);
+    float sinRoll = sin(roll);
+    float cosPitch = cos(pitch);
+    float sinPitch = sin(pitch);
+
+
+    float Xh = mag_norm[xaxis] * cosPitch + mag_norm[zaxis] * sinPitch;
+    float Yh = mag_norm[xaxis] * sinRoll * sinPitch + mag_norm[yaxis] * cosRoll - mag_norm[zaxis] * sinRoll * cosPitch;
+    neinAxis_semaphore = UNLOCKED;
+    return atan2f(Yh, Xh);
+}
+//force a read and update the global values
+float updateHeading( void ){
+    neinAxis_semaphore = LOCKED;
+    readMag(global_mag);
+    readAcc(global_acc);
+    readGyr(global_gyr);
+    int acc[3];
+    acc[xaxis] = global_acc[xaxis];
+    acc[yaxis] = global_acc[yaxis];
+    acc[zaxis] = global_acc[zaxis];
+    int mag[3];
+    mag[xaxis] = global_mag[xaxis];
+    mag[yaxis] = global_mag[yaxis];
+    mag[zaxis] = global_mag[zaxis];
+    float acc_norm[3];
+    float mag_norm[3];
+    //readAcc(acc);
+    //readMag(mag);
+    acc_norm[xaxis]=maxAccG*((float) acc[xaxis]/maxAccGRaw);
+    acc_norm[yaxis]=maxAccG*((float) acc[yaxis]/maxAccGRaw);
+    acc_norm[zaxis]=maxAccG*((float) acc[zaxis]/maxAccGRaw);
+
     mag_norm[xaxis]=maxMag*((float) mag[xaxis]/maxMagRaw);
     mag_norm[yaxis]=maxMag*((float) mag[yaxis]/maxMagRaw);
     mag_norm[zaxis]=maxMag*((float) mag[zaxis]/maxMagRaw);

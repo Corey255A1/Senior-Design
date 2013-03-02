@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/master.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/lcd.o ${OBJECTDIR}/spi.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/master.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/lcd.o.d ${OBJECTDIR}/spi.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/master.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/lcd.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/communication.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/master.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/lcd.o.d ${OBJECTDIR}/spi.o.d ${OBJECTDIR}/communication.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/master.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/lcd.o ${OBJECTDIR}/spi.o
+OBJECTFILES=${OBJECTDIR}/master.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/lcd.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/communication.o
 
 
 CFLAGS=
@@ -93,6 +93,12 @@ ${OBJECTDIR}/spi.o: spi.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  spi.c  -o ${OBJECTDIR}/spi.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/spi.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/spi.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/communication.o: communication.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/communication.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  communication.c  -o ${OBJECTDIR}/communication.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/communication.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/communication.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/master.o: master.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -117,6 +123,12 @@ ${OBJECTDIR}/spi.o: spi.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/spi.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  spi.c  -o ${OBJECTDIR}/spi.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/spi.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/spi.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/communication.o: communication.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/communication.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  communication.c  -o ${OBJECTDIR}/communication.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/communication.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/communication.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

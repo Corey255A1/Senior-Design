@@ -5,7 +5,7 @@
  */
 
 
-
+#include "../Global_PIC/spiMessages.h"
 #include <p24FJ128GA010.h>
 
 /**
@@ -27,7 +27,7 @@ void initSPI(void){
  * @param input - byte to write
  * @return  returns the buffer after sending
  */
-int writeSPI1(int input) {
+char writeSPI1(int input) {
     //TO-DO Write code to pick the slaves and add parameter
     SPI1BUF = 0x00FF & input;
     while(!_SPIRBF);

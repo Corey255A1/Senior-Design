@@ -1,2 +1,3 @@
 build/default/production/spi.o:  \
-spi.c 
+spi.c  \
+../Global_PIC/spiMessages.h 

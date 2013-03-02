@@ -6,5 +6,5 @@
  */
 
 void initSPI(void);
-int writeSPI1(int);
+char writeSPI1(int);
 
