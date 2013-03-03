@@ -10,7 +10,8 @@
  *
  * @return void
  */
-void configSPICommunication(void);
 extern int SPI_msg;
 extern int SPI_msg_rdy;
+void configSPICommunication(void);
+void writeSPI_slave(char);
 

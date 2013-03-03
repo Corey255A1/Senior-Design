@@ -81,3 +81,8 @@ void configSPICommunication(void)
     IFS0bits.SPI1IF = CLEAR; // Clear the interrupt flag.
     IEC0bits.SPI1IE = EN;    // Enable interrupt.
 }
+
+void writeSPI_slave(char msg){
+    SPI1BUF=msg;
+    while(SPI1STATbits.SPITBF);
+}
