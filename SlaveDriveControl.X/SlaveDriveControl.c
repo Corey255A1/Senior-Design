@@ -30,14 +30,25 @@
 //=============================================================================
 //
 //  Input Digital Pins:
-//      SS1 (pin 4)     -   Slave Select (SPI)
+//      MCLR (pin 1)    -   Programming Pin (Master Clear)
+//      PGEC1(pin 6)    -   Programming Pin
+//      PGED1(pin 7)    -   Programming Pin
 //      SCK1(pin 16)    -   Shift Clock Input (SPI)
 //      SDI1(pin 18)    -   Serial Data Input (SPI)
-//      RP42(pin 24)    -   Input Caption from DC Motor Feedback
+//      SS1!(pin 21)    -   Slave Select (SPI)
+//      RB11(pin 22)    -   H-Bridge Enable
+//      RPI44(pin 23)   -   Input Capture Motor 2B
+//      RPI45(pin 24)   -   Input Capture Motor 2A
+//      RPI46(pin 25)   -   Input Capture Motor 1B
+//      RPI47(pin 26)   -   Input Capture Motor 1A
 //
 //  Output Digital Pins:
-//      RB1 (pin 5)     -   Motor Driver Enable
-//      RP38(pin 15)    -   PWM Signal
+//      RA0 (pin 2)     -   H-Bridge 1 Forward Enable
+//      RA1 (pin 3)     -   H-Bridge 1 Reverse Enable
+//      RB0 (pin 4)     -   H-Bridge 2 Forward Enable
+//      RB1 (pin 5)     -   H-Bridge 2 Reverse Enable
+//      RP37(pin14)     -   OC1 PWM Output
+//      RP38(pin 15)    -   OC2 PWM Output
 //      SDO1(pin 17)    -   Serial Data Output (SPI)
 //
 //  Voltages and Ground:
