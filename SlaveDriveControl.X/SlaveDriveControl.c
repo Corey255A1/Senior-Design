@@ -105,7 +105,7 @@
 //-----------------------------------------------------------------------------
 #define DRIVER_PERIOD_US    10
 #define CLK_PERIOD          0.135
-#define DRIVE_EN            _RB1
+#define DRIVE_EN            _RB11
 #define OUTPUT              0
 #define INPUT               1
 #define DIGITAL             0
@@ -154,7 +154,7 @@ void configOutputCompare(void)
     OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
     OC1RS               = OC1clkT;  // Set period of OC1
     OC1R                = 60;//OC1DCyc;     // Set duty duration of OC1
-    RPOR2bits.RP38R     = 0b010000; // Maps the OC1 output to the RP38R pin
+    RPOR2bits.RP38R     = 0b010001; // Maps the OC1 output to the RP37R pin
                                     // (pin 15) on the pick. The 0b010000 is
                                     // defined in the "Output Mapping" section
                                     // of the data sheet.
@@ -169,7 +169,7 @@ void configOutputCompare(void)
     OC2CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
     OC2RS               = OC1clkT;  // Set period of OC1
     OC2R                = 60;//OC1DCyc;     // Set duty duration of OC1
-    RPOR1bits.RP37R     = 0b010001; // Maps the OC2 output to the RP37R pin
+    RPOR1bits.RP37R     = 0b010000; // Maps the OC2 output to the RP38R pin
                                     // (pin 15) on the pick. The 0b010000 is
                                     // defined in the "Output Mapping" section
                                     // of the data sheet.
@@ -190,14 +190,17 @@ void configOutputCompare(void)
 void configDevicePins(void)
 {
     //-------------------------------------------------------------------------
-    //  RB1 Setup.
+    //  Setup Pins for H-Bridge Direction Control
     //-------------------------------------------------------------------------
+    ANSELAbits.ANSA0 = DIGITAL; // Change RA0 pin to digital
+    ANSELAbits.ANSA1 = DIGITAL; // Change RA1 pin to digital
+    ANSELBbits.ANSB0 = DIGITAL; // Change RB0 pin to digital
     ANSELBbits.ANSB1 = DIGITAL; // Change RB1 pin to digital
-    TRISBbits.TRISB1 = OUTPUT;  // Change RB1 pin to output.
 
-    //-------------------------------------------------------------------------
-    //
-    //-------------------------------------------------------------------------
+    TRISAbits.TRISA0 = OUTPUT;  // Change RA0 pin to output
+    TRISAbits.TRISA1 = OUTPUT;  // Change RA1 pin to output
+    TRISBbits.TRISB0 = OUTPUT;  // Change RB0 pin to output
+    TRISBbits.TRISB1 = OUTPUT;  // Change RB1 pin to output
 }
 
 /**
