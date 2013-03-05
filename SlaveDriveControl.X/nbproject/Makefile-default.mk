@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/SlaveDriveControl.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/SlaveDriveControl.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/SlaveDriveControl.o ${OBJECTDIR}/_ext/1126441362/spi.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/SlaveDriveControl.o.d ${OBJECTDIR}/_ext/1126441362/spi.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/SlaveDriveControl.o
+OBJECTFILES=${OBJECTDIR}/SlaveDriveControl.o ${OBJECTDIR}/_ext/1126441362/spi.o
 
 
 CFLAGS=
@@ -75,12 +75,24 @@ ${OBJECTDIR}/SlaveDriveControl.o: SlaveDriveControl.c  nbproject/Makefile-${CND_
 	${MP_CC} $(MP_EXTRA_CC_PRE)  SlaveDriveControl.c  -o ${OBJECTDIR}/SlaveDriveControl.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/SlaveDriveControl.o.d"        -g -D__DEBUG   -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/SlaveDriveControl.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/_ext/1126441362/spi.o: ../pic24EP.X/spi.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
+	@${RM} ${OBJECTDIR}/_ext/1126441362/spi.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/spi.c  -o ${OBJECTDIR}/_ext/1126441362/spi.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/spi.o.d"        -g -D__DEBUG   -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/spi.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/SlaveDriveControl.o: SlaveDriveControl.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/SlaveDriveControl.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  SlaveDriveControl.c  -o ${OBJECTDIR}/SlaveDriveControl.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/SlaveDriveControl.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/SlaveDriveControl.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/_ext/1126441362/spi.o: ../pic24EP.X/spi.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
+	@${RM} ${OBJECTDIR}/_ext/1126441362/spi.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/spi.c  -o ${OBJECTDIR}/_ext/1126441362/spi.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/spi.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/spi.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
