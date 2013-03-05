@@ -8,6 +8,7 @@
 #include <p24EP32MC202.h>
 #include "ultrasonic.h"
 #include "globals.h"
+#include <math.h>
 
 short global_u1_edge = RISE;
 long global_u1_time = 0;

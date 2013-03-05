@@ -11,7 +11,6 @@
       <itemPath>servo.h</itemPath>
       <itemPath>i2c.h</itemPath>
       <itemPath>9axis.h</itemPath>
-      <itemPath>spi.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -27,7 +26,7 @@
       <itemPath>servo.c</itemPath>
       <itemPath>i2c.c</itemPath>
       <itemPath>9axis.c</itemPath>
-      <itemPath>spi.c</itemPath>
+      <itemPath>frontUltrasonic.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -45,7 +44,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
-        <languageToolchainVersion>1.10</languageToolchainVersion>
+        <languageToolchainVersion>1.11</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>
