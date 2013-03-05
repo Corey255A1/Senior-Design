@@ -14,15 +14,11 @@ short global_u1_edge = RISE;
 long global_u1_time = 0;
 short global_u2_edge = RISE;
 long global_u2_time = 0;
-short global_u3_edge = RISE;
-long global_u3_time = 0;
 
 int u1_time_i;
 int u1_time_f;
 int u2_time_i;
 int u2_time_f;
-int u3_time_i;
-int u3_time_f;
 
 void init_ultra( void ){
     _TRISB7 = OUTPUT;
@@ -30,14 +26,11 @@ void init_ultra( void ){
 
     U1_RPOreg = OC1port; // set ultra1 RPO register to OC1 output
     U2_RPOreg = OC1port; // set ultra2 pulse out to OC1
-    U3_RPOreg = OC1port; // set ultra3 pulse out to OC1
 
     U1_RBreg = INPUT; // Set ultra1 Tris RB register to input mode
     U2_RBreg = INPUT;
-    U3_RBreg = INPUT;
     RPINR7bits.IC1R = U1_RPIport; // set IC1 input to ultra1 RP input
     RPINR7bits.IC2R = U2_RPIport;
-    RPINR8bits.IC3R = U3_RPIport;
 
     //Setup OCM timers
     TMR3 = 0;   // clear
@@ -116,23 +109,6 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
         global_u2_time = u2_time_f - u2_time_i;
     }
     if (global_u2_time<300)
-        _RB8 = HIGH;
-    else
-        _RB8 = LOW;
-}
-
-void __attribute__((__interrupt__,, auto_psv)) _IC3Interrupt(void)
-{
-    _IC3IF = 0;
-    if ((global_u2_edge == RISE) && (U2_RBIport == HIGH)){
-        u3_time_i = IC3BUF;
-        global_u2_edge = FALL;
-    }else{
-        u3_time_f = IC2BUF;
-        global_u3_edge = RISE;
-        global_u3_time = u3_time_f - u3_time_i;
-    }
-    if (global_u3_time < 300)
         _RB8 = HIGH;
     else
         _RB8 = LOW;

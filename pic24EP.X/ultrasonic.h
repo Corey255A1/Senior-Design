@@ -14,10 +14,5 @@
 #define U2_RBreg TRISBbits.TRISB14
 #define U2_RPOreg RPOR2bits.RP38R // This is the reg that outputs
 
-#define U3_RPIport 45 // Thisis RPI number whichreads ultra pulse
-#define U3_RBIport _RB13
-#define U3_RBreg TRISBbits.TRISB13
-#define U3_RPOreg RPOR3bits.RP40R
-
 void initUltra( void );
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void);
