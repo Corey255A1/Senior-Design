@@ -13,5 +13,12 @@
 extern int SPI_msg;
 extern int SPI_msg_rdy;
 void configSPICommunication(void);
-void writeSPI_slave(char);
-
+//void writeSPI_slave(char);
+enum SPI_STATES  {SPI_RDY, SPI_W, SPI_R};
+typedef struct {
+    enum SPI_STATES State;
+    char MsgRecv;
+    int TxBuffer;
+    int RxBuffer;
+} SPISTATUS;
+extern SPISTATUS SPISTATUSbits;

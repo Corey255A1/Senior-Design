@@ -7,3 +7,4 @@
 
 void writeSlave(char);
 char readSlave(char);
+int writeSPI_master(int);
