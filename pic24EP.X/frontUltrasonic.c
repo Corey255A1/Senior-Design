@@ -10,6 +10,8 @@
 #include "globals.h"
 #include <math.h>
 
+double baseLength = 10.0;
+
 short global_u1_edge = RISE;
 long global_u1_time = 0;
 short global_u2_edge = RISE;
@@ -112,4 +114,38 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
         _RB8 = HIGH;
     else
         _RB8 = LOW;
+}
+
+double convertToDistance(int time){
+    // take in time and convert to distance - need conversion still
+    return 10.0;
+}
+
+// return angle to turn
+double findObject(){
+    // one edge is global_u1_time, other is global_u2_time
+
+    // perform law of cosines, let u1 = a, u2 = b, and base = c
+    double a = convertToDistance(global_u1_time);
+    double b = convertToDistance(global_u2_time);
+    double c = baseLength;
+
+    double preAngleA = (b * b + c * c - a * a) / (2 * b * c);
+    double angleA = acos(preAngleA);
+
+    double preAngleB = (a * a + c * c - b * b) / (2 * a * c);
+    double angleB = acos(preAngleB);
+
+    double angleDiff = angleA - angleB;
+
+    // if the angles are less than 5 degrees apart consider it straight ahead
+    if (fabs(angleDiff) <= 5 ){
+        return 45.0;    // simulate turning 45 degrees
+    }
+    else { 
+        return angleDiff;   // angle diff will represent how much it needs to turn
+    }
+
+    // still needs conditions if facing the fridge/etc
+    // need to find the distance to the object
 }
