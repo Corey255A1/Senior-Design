@@ -221,8 +221,10 @@ int main(void) {
     configDevicePins();
     configOutputCompare();
     configSPICommunication();
-    char forwardDir;
-    char speed;
+    char forwardDirM1;
+    char speedM1;
+    char forwardDirM2;
+    char speedM2;
 
     DRIVE_EN = EN;
     SPEEDM1 = 0;
@@ -239,11 +241,16 @@ int main(void) {
             //  Here we can parse the speed and direction from the
             //  message received.
             //
-            //  Bits (7-4) are the bits for speed.
-            //  Bits (3-0) are the bits for direction.
+            //  Bits (3-0) are the bits for direction on Motor 1
+            //  Bits (7-4) are the bits for speed on Motor 1
+            //  Bits (11-8) are the bits for direction on Motor 2
+            //  Bits (15-12) are the bits for speed on Motor 2
             //-----------------------------------------------------------------
-            speed = (0b11110000 & spiReadVal) >> 4;
-            forwardDir = 0b00001111 & spiReadVal;
+            forwardDirM1    = 0x000F & spiReadVal;
+            speedM1         = (0x00F0 & spiReadVal) >> 4;
+            forwardDirM2    = (0x0F000 & spiReadVal) >> 8;
+            speedM2         = (0xF0000 & spiReadVal) >> 12;
+
 
             //-----------------------------------------------------------------
             //  The speed is based on the percentage of the duty cycle.
@@ -260,29 +267,61 @@ int main(void) {
             //      Speed 9: 90%
             //      Speed 10: 100% (Max Speed)
             //-----------------------------------------------------------------
-            if (forwardDir)
+
+            //-----------------------------------------------------------------
+            //  If Motor 1 is going forward...
+            //-----------------------------------------------------------------
+            if (forwardDirM1)
             {
                 //-------------------------------------------------------------
-                //  Set the speed of both motors.
+                //  - Disable the reverse signal for Motor 1. (Safe Check)
+                //  - Enable the forward signal for Motor 1.
                 //-------------------------------------------------------------
-                SPEEDM1 = speed;
-                SPEEDM2 = speed;
+                M1REV = DISABLE;
+                M1FWD = EN;
 
+            //-----------------------------------------------------------------
+            //  ... Else Motor 1 is in reverse...
+            //-----------------------------------------------------------------
+            } else {
                 //-------------------------------------------------------------
-                //  Disable the reverse signal for both motors. (Safe Check)
+                //  - Disable the forward signal for Motor 1. (Safe Check)
+                //  - Enable the reverse signal for Motor 1.
                 //-------------------------------------------------------------
-                M1REV   = DISABLE;
-                M2REV   = DISABLE;
-
-                //-------------------------------------------------------------
-                //  Enable the forward signal for both motors.
-                //-------------------------------------------------------------
-                M1FWD   = EN;
-                M2FWD   = EN;
+                M1FWD = DISABLE;
+                M1REV = EN;
             }
-            SPEEDM1 = (speed*OC1clkT)/10;
-            ++spiReadVal;
 
+            //-----------------------------------------------------------------
+            //  If Motor 2 is going forward...
+            //-----------------------------------------------------------------
+            if (forwardDirM2)
+            {
+                //-------------------------------------------------------------
+                //  - Disable the reverse signal for Motor 2. (Safe Check)
+                //  - Enable the forward signal for Motor 2.
+                //-------------------------------------------------------------
+                M2REV = DISABLE;
+                M2FWD = EN;
+
+            //-----------------------------------------------------------------
+            //  ... Else Motor 2 is in reverse...
+            //-----------------------------------------------------------------
+            } else {
+                //-------------------------------------------------------------
+                //  - Disable the forward signal for Motor 2. (Safe Check)
+                //  - Enable the reverse signal for Motor 2.
+                //-------------------------------------------------------------
+                M2FWD = DISABLE;
+                M2REV = EN;
+            }
+
+            //-------------------------------------------------------------
+            //  Set the speed of both motors.
+            //-------------------------------------------------------------
+            SPEEDM1 = (speedM1*OC1clkT)/10;
+            SPEEDM2 = (speedM2*OC1clkT)/10;
+            ++spiReadVal;
             msgQueued = CLEAR;
         }
 
