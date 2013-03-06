@@ -100,6 +100,7 @@
 #include "../pic24EP.X/spi.h"
 
 
+
 //-----------------------------------------------------------------------------
 //  Defines
 //-----------------------------------------------------------------------------
@@ -112,7 +113,12 @@
 #define EN                  1
 #define DISABLE             0
 #define CLEAR               0
-#define SPEED               OC1R
+#define SPEEDM1             OC1R
+#define SPEEDM2             OC2R
+#define M1FWD               _RA0
+#define M1REV               _RA1
+#define M2FWD               _RB0
+#define M2REV               _RB1
 
 //-----------------------------------------------------------------------------
 //  Global Declarations.
@@ -153,8 +159,8 @@ void configOutputCompare(void)
     OC1CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
     OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
     OC1RS               = OC1clkT;  // Set period of OC1
-    OC1R                = 60;//OC1DCyc;     // Set duty duration of OC1
-    RPOR2bits.RP38R     = 0b010001; // Maps the OC1 output to the RP37R pin
+    OC1R                = 0;        // Set duty duration of OC1
+    RPOR1bits.RP37R     = 0b010000; // Maps the OC1 output to the RP37R pin
                                     // (pin 15) on the pick. The 0b010000 is
                                     // defined in the "Output Mapping" section
                                     // of the data sheet.
@@ -166,11 +172,11 @@ void configOutputCompare(void)
     OC2CON2             = CLEAR;    // Clear out second configuration register
     OC2CON1bits.OCTSEL  = 0b000;    // Set TMR2 as the source timer.
     OC2CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
-    OC2CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
-    OC2RS               = OC1clkT;  // Set period of OC1
-    OC2R                = 60;//OC1DCyc;     // Set duty duration of OC1
-    RPOR1bits.RP37R     = 0b010000; // Maps the OC2 output to the RP38R pin
-                                    // (pin 15) on the pick. The 0b010000 is
+    OC2CON2bits.SYNCSEL = 0x1F;     // Period Control to OC2RS
+    OC2RS               = OC1clkT;  // Set period of OC2
+    OC2R                = 0;        // Set duty duration of OC2
+    RPOR2bits.RP38R     = 0b010001; // Maps the OC2 output to the RP38R pin
+                                    // (pin 15) on the pick. The 0b010001 is
                                     // defined in the "Output Mapping" section
                                     // of the data sheet.
 
@@ -201,6 +207,7 @@ void configDevicePins(void)
     TRISAbits.TRISA1 = OUTPUT;  // Change RA1 pin to output
     TRISBbits.TRISB0 = OUTPUT;  // Change RB0 pin to output
     TRISBbits.TRISB1 = OUTPUT;  // Change RB1 pin to output
+    TRISBbits.TRISB11= OUTPUT;  // Change RB11 pin to output
 }
 
 /**
@@ -214,17 +221,19 @@ int main(void) {
     configDevicePins();
     configOutputCompare();
     configSPICommunication();
-    char forward;
+    char forwardDir;
     char speed;
 
     DRIVE_EN = EN;
-
+    SPEEDM1 = 0;
+    SPEEDM2 = 70;
     while(1)
     {
+
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
-        //if (msgQueued)
+        if (msgQueued)
         {
             //-----------------------------------------------------------------
             //  Here we can parse the speed and direction from the
@@ -234,7 +243,7 @@ int main(void) {
             //  Bits (3-0) are the bits for direction.
             //-----------------------------------------------------------------
             speed = (0b11110000 & spiReadVal) >> 4;
-            forward = 0b00001111 & spiReadVal;
+            forwardDir = 0b00001111 & spiReadVal;
 
             //-----------------------------------------------------------------
             //  The speed is based on the percentage of the duty cycle.
@@ -251,7 +260,27 @@ int main(void) {
             //      Speed 9: 90%
             //      Speed 10: 100% (Max Speed)
             //-----------------------------------------------------------------
-            SPEED = (speed*OC1clkT)/10;
+            if (forwardDir)
+            {
+                //-------------------------------------------------------------
+                //  Set the speed of both motors.
+                //-------------------------------------------------------------
+                SPEEDM1 = speed;
+                SPEEDM2 = speed;
+
+                //-------------------------------------------------------------
+                //  Disable the reverse signal for both motors. (Safe Check)
+                //-------------------------------------------------------------
+                M1REV   = DISABLE;
+                M2REV   = DISABLE;
+
+                //-------------------------------------------------------------
+                //  Enable the forward signal for both motors.
+                //-------------------------------------------------------------
+                M1FWD   = EN;
+                M2FWD   = EN;
+            }
+            SPEEDM1 = (speed*OC1clkT)/10;
             ++spiReadVal;
 
             msgQueued = CLEAR;
