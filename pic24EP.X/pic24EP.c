@@ -126,7 +126,6 @@ int main( void ){
                     SPISTATUSbits.MsgRecv=0;
                 }//endif
             }//endcase
-
     }//end while
 
     //TRISB = 0;
