@@ -124,7 +124,7 @@
 //  Global Declarations.
 //-----------------------------------------------------------------------------
 int OC1clkT = DRIVER_PERIOD_US/CLK_PERIOD;  // Set a period
-char spiReadVal = 0;                        // Message we read from Master
+int spiReadVal = 0;                        // Message we read from Master
 char msgQueued = CLEAR;                     // Let's us know if a message
                                             // needs handled.
 
@@ -227,11 +227,14 @@ int main(void) {
     char speedM2;
 
     DRIVE_EN = EN;
-    SPEEDM1 = 0;
-    SPEEDM2 = 70;
+    SPEEDM1 = 70;
+    SPEEDM2 = 0;
+    msgQueued = EN;
+
+    spiReadVal = 0x00AF;
     while(1)
     {
-
+        
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
@@ -271,7 +274,7 @@ int main(void) {
             //-----------------------------------------------------------------
             //  If Motor 1 is going forward...
             //-----------------------------------------------------------------
-            if (forwardDirM1)
+            if (forwardDirM1 == 0x0F)
             {
                 //-------------------------------------------------------------
                 //  - Disable the reverse signal for Motor 1. (Safe Check)
@@ -295,7 +298,7 @@ int main(void) {
             //-----------------------------------------------------------------
             //  If Motor 2 is going forward...
             //-----------------------------------------------------------------
-            if (forwardDirM2)
+            if (forwardDirM2 == 0x0F)
             {
                 //-------------------------------------------------------------
                 //  - Disable the reverse signal for Motor 2. (Safe Check)
@@ -321,8 +324,8 @@ int main(void) {
             //-------------------------------------------------------------
             SPEEDM1 = (speedM1*OC1clkT)/10;
             SPEEDM2 = (speedM2*OC1clkT)/10;
-            ++spiReadVal;
-            msgQueued = CLEAR;
+            //++spiReadVal;
+            //msgQueued = CLEAR;
         }
 
         
