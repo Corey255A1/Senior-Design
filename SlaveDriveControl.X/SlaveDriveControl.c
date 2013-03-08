@@ -394,9 +394,19 @@ void configInputCaptures()
  * Trips when an input shows up on port 26 (RPI47)
  *
  * For the capture of Motor 1 A feedback (motor direction)
+ * <p>
+ * The pulses for direction are 90 degrees out of phase from the speed pulses.
+ * If the speed pulses arrive before the direction pulses, then the motor is
  */
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
+    //-------------------------------------------------------------------------
+    //  Check to see if the M1-B input capture came first.
+    //-------------------------------------------------------------------------
+    if (M1FdBckBSet)
+    {
+
+    }
     // Get Direction of motor
 }
 

@@ -49,6 +49,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void);
 //-----------------------------------------------------------------------------
 //  Global Declarations.
 //-----------------------------------------------------------------------------
-int OC1clkT = 100;      // Set a period
-int spiReadVal = 0;     // Message we read from Master
-char msgQueued = CLEAR; // Let's us know if a message needs handled.
+int OC1clkT         = 100;      // Set a period
+int spiReadVal      = 0;        // Message we read from Master
+char msgQueued      = CLEAR;    // Let's us know if a message needs handled.
+char M1FdBckASet    = 0;        // Whether or not M1 feedback A has arrived
+char M1FdBckBSet    = 0;        // Whether or not M1 feedback B has arrived
+char M2FdBckASet    = 0;        // Whether or not M2 feedback A has arrived
+char M2FdBckBSet    = 0;        // Whether or not M2 feedback B has arrived
