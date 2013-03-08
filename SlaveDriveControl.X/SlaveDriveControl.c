@@ -389,12 +389,43 @@ void configInputCaptures()
     IEC2bits.IC4IE  = 1;    // Enable IC4 interrupts
     T4CONbits.TON   = 1;    // Turn on Timer 4
 }
+
 /**
  * Trips when an input shows up on port 26 (RPI47)
  *
- * For the capture of Motor 1 A feedback.
+ * For the capture of Motor 1 A feedback (motor direction)
  */
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
-    
+    // Get Direction of motor
+}
+
+/**
+ * Trips when an input shows up on port 25 (RPI46)
+ *
+ * For the capture of Motor 1 B feedback (motor speed)
+ */
+void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
+{
+    // Get speed of motor
+}
+
+/**
+ * Trips when an input shows up on port 24 (RPI45)
+ *
+ * For the capture of Motor 2 A feedback (motor direction)
+ */
+void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
+{
+    // Get Direction of motor
+}
+
+/**
+ * Trips when an input shows up on port 24 (RPI45)
+ *
+ * For the capture of Motor 2 B feedback (motor speed)
+ */
+void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
+{
+    // Get speed of motor
 }
