@@ -27,8 +27,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void);
 #define SPEEDM2             OC2R
 #define M1FWD               _RA0
 #define M1REV               _RA1
-#define M2FWD               _RB0
+#define M2FWD               _RB4
 #define M2REV               _RB1
+#define MMSG                0
+#define INMSG               SLAVEData.inData[MMSG]
 
 #define M1FDBCKA_RPIPORT    47
 #define M1FDBCKA_RBPORT     _RB15
@@ -50,7 +52,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void);
 //  Global Declarations.
 //-----------------------------------------------------------------------------
 int OC1clkT         = 100;      // Set a period
-int spiReadVal      = 0;        // Message we read from Master
+int curConfig      = 0;        // Message we read from Master
 char msgQueued      = CLEAR;    // Let's us know if a message needs handled.
 char M1FdBckASet    = 0;        // Whether or not M1 feedback A has arrived
 char M1FdBckBSet    = 0;        // Whether or not M1 feedback B has arrived

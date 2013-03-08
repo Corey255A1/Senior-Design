@@ -98,7 +98,7 @@
 #include "SlaveDriveControl.h"
 #include "Configuration.h"
 #include "globals.h"
-#include "../pic24EP.X/spi.h"
+#include "../pic24EP_spibeta.X/spi.h"
 
 /**
  * Main loop for the PIC. Purpose is to send appropriate PWMs to the motor
@@ -121,16 +121,19 @@ int main(void) {
     SPEEDM1 = 70;
     SPEEDM2 = 0;
     msgQueued = EN;
-
-    spiReadVal = 0x0050;
+    //int curConfig = INMSG;
+    int curConfig = 0x00AF;
     while(1)
     {
+
 
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
-        if (msgQueued)
+        if (curConfig != INMSG)
         {
+            //curConfig = INMSG;
+                    
             //-----------------------------------------------------------------
             //  Here we can parse the speed and direction from the
             //  message received.
@@ -140,10 +143,10 @@ int main(void) {
             //  Bits (11-8) are the bits for direction on Motor 2
             //  Bits (15-12) are the bits for speed on Motor 2
             //-----------------------------------------------------------------
-            forwardDirM1    = 0x000F & spiReadVal;
-            speedM1         = (0x00F0 & spiReadVal) >> 4;
-            forwardDirM2    = (0x0F000 & spiReadVal) >> 8;
-            speedM2         = (0xF0000 & spiReadVal) >> 12;
+            forwardDirM1    = 0x000F & curConfig;
+            speedM1         = (0x00F0 & curConfig) >> 4;
+            forwardDirM2    = (0x0F000 & curConfig) >> 8;
+            speedM2         = (0xF0000 & curConfig) >> 12;
 
 
             //-----------------------------------------------------------------
@@ -303,6 +306,7 @@ void configDevicePins(void)
     TRISAbits.TRISA1 = OUTPUT;  // Change RA1 pin to output
     TRISBbits.TRISB0 = OUTPUT;  // Change RB0 pin to output
     TRISBbits.TRISB1 = OUTPUT;  // Change RB1 pin to output
+    //TRISBbits.TRISB4 = OUTPUT;  // Change RB4 pin to output
     TRISBbits.TRISB11= OUTPUT;  // Change RB11 pin to output
 }
 

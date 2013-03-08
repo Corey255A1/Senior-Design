@@ -3,4 +3,4 @@ SlaveDriveControl.c  \
  SlaveDriveControl.h  \
 Configuration.h  \
 globals.h  \
-../pic24EP.X/spi.h 
+../pic24EP_spibeta.X/spi.h 
