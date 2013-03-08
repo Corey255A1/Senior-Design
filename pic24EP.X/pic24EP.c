@@ -63,7 +63,7 @@ int main( void ){
     while(1){
         switch(local_state){
             case NO_MESSAGE:
-                if(SPI1STATbits.SPIRBF){
+                if(SPISTATUSbits.MsgRecv){
                     local_state = MESSAGE_RECV;
                 }//end if
                 else{
@@ -71,69 +71,61 @@ int main( void ){
                 }//end else
                 break;//break formsg
             case PROCESS_DATA:
-                writeSPI_slave(DATA_PROCESSING);
                 doWork();
-                writeSPI_slave(DATA_RDY);
                 local_state = NO_MESSAGE;
                 break;
             case MESSAGE_RECV:
-                switch(SPI1BUF){
-                    case WRITE_DATA:
-                        writeSPI_slave(WRITE_DATA);
+                switch(SPISTATUSbits.State){
+                    case SPI_W:
                         local_state = WRITE_MODE;
                         break;
-                    case READ_DATA:
-                        writeSPI_slave(READ_DATA);
+                    case SPI_R:
                         local_state = READ_MODE;
                         break;
                     default:
-                        writeSPI_slave(DATA_ERROR);
                         local_state = NO_MESSAGE;
                         break;
                     }//endswitch
+                SPISTATUSbits.MsgRecv=0;
                 break;
             case WRITE_MODE:
-                while(!SPI1STATbits.SPIRBF);
-                    switch(SPI1BUF){
+                if(SPISTATUSbits.MsgRecv){
+                    switch(SPISTATUSbits.RxBuffer){
                         case OUT_ON:
-                            writeSPI_slave(OUT_ON);
                             _RB4 = HIGH;
                             break;
                         case OUT_OFF:
-                            writeSPI_slave(OUT_OFF);
                             _RB4 = LOW;
                             break;
                         case END_TRANSMISSION:
-                            writeSPI_slave(END_TRANSMISSION);
                             local_state=NO_MESSAGE;
                             break;
                         default: 
-                            writeSPI_slave(DATA_ERROR);
                             local_state = NO_MESSAGE;
                             break;
                     }//end switch
+                    SPISTATUSbits.MsgRecv=0;
+                }//endif
                 break;//end writedata
             case READ_MODE:
-                while(!SPI1STATbits.SPIRBF);
-                    switch(SPI1BUF){
+                if(SPISTATUSbits.MsgRecv){
+                    switch(SPISTATUSbits.RxBuffer){
                         case GET_STATE:
-                            writeSPI_slave(GET_STATE);
-                            writeSPI_slave('A');
+                            SPISTATUSbits.TxBuffer=getData();
                             break;
                         case READ: 
-                            writeSPI_slave(0);
+                            SPISTATUSbits.TxBuffer=0;
                             break; //TO_DO increment through slave transmit buffer to be implemented
                         case END_TRANSMISSION:
-                            writeSPI_slave(END_TRANSMISSION);
                             local_state=NO_MESSAGE;
                             break;
                         default:
-                            writeSPI_slave(DATA_ERROR);
                             local_state = NO_MESSAGE;
                             break;
                     }//end switch
+                    SPISTATUSbits.MsgRecv=0;
+                }//endif
             }//endcase
-
     }//end while
 
     //TRISB = 0;
