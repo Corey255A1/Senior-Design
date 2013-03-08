@@ -34,46 +34,45 @@ void __attribute__((__interrupt__, auto_psv)) _SPI1Interrupt()
 {
         //SPISTATUSbits.MsgRecv=1;
         SPISTATUSbits.RxBuffer=SPI1BUF;
-                switch(SPISTATUSbits.State){
-                    case SPI_RDY:
-                      switch(SPISTATUSbits.RxBuffer){
-                        case WRITE_DATA:
-                            SPISTATUSbits.State = SPI_WriteSlot;
-                            SPI1BUF=WRITE_DATA;
-                            break;
-                        case READ_DATA:
-                            SPISTATUSbits.State = SPI_ReadSlot;
-                            SPI1BUF=READ_DATA;
-                            break;
-                        default:
-                            SPI1BUF=DATA_ERROR;
-                            break;
-                      }
-                      break;
-                    case SPI_WriteSlot:
-                        writeSlot=SPISTATUSbits.RxBuffer;
-                        SPI1BUF = SPISTATUSbits.RxBuffer;
-                        SPISTATUSbits.State = SPI_WriteData;
-                        break;
-                    case SPI_WriteData:
-                        SLAVEData.inData[writeSlot]=SPISTATUSbits.RxBuffer;
-                        SPI1BUF = DATA_RDY;
-                        SPISTATUSbits.State = SPI_RDY;
-                        break;
-                    case SPI_ReadSlot:
-                        SPI1BUF=SLAVEData.outData[SPISTATUSbits.RxBuffer];
-                        SPISTATUSbits.State=SPI_ReadData;
-                        break;
-                    case SPI_ReadData:
-                        SPI1BUF = DATA_RDY;
-                        SPISTATUSbits.State = SPI_RDY;
-                        break;
-                    default:
-                        //what the fuck?
-                        break;
+        switch(SPISTATUSbits.State){
+            case SPI_RDY:
+              switch(SPISTATUSbits.RxBuffer){
+                case WRITE_DATA:
+                    SPISTATUSbits.State = SPI_WriteSlot;
+                    SPI1BUF=WRITE_DATA;
+                    break;
+                case READ_DATA:
+                    SPISTATUSbits.State = SPI_ReadSlot;
+                    SPI1BUF=READ_DATA;
+                    break;
+                case 0x5555:
+                    SPI1BUF=0x1818;
+                    break;
+                default:
+                    SPI1BUF=0xFFFF;
+              }
+              break;
+            case SPI_WriteSlot:
+                writeSlot=SPISTATUSbits.RxBuffer;
+                SPI1BUF = SPISTATUSbits.RxBuffer;
+                SPISTATUSbits.State = SPI_WriteData;
+                break;
+            case SPI_WriteData:
+                SLAVEData.inData[writeSlot]=SPISTATUSbits.RxBuffer;
+                SPI1BUF = DATA_RDY;
+                SPISTATUSbits.State = SPI_RDY;
+                break;
+            case SPI_ReadSlot:
+                SPI1BUF=SLAVEData.outData[SPISTATUSbits.RxBuffer];
+                SPISTATUSbits.State=SPI_ReadData;
+                break;
+            case SPI_ReadData:
+                SPI1BUF = DATA_RDY;
+                SPISTATUSbits.State = SPI_RDY;
+                break;
         }//endswtich
     IFS0bits.SPI1IF = CLEAR;    // Clear interrupt flag
-}
+}//end interrupt
 
 /**
  * Configure the Serial Peripheral Interface (SPI) module of the PIC to act as
@@ -99,7 +98,7 @@ void configSPICommunication(void)
     //-------------------------------------------------------------------------
     SPI1CON1bits.DISSCK = 0;       // Internal Serial Clock is enabled.
     SPI1CON1bits.DISSDO = 0;        // SDO1 pin is controlled by the module
-    SPI1CON1bits.MODE16 = 1;        // Communication is byte-wide (8-bits)
+    SPI1CON1bits.MODE16 = 1;        // Communication is byte-wide (16-bits)
     SPI1CON1bits.SMP = 0;           // Input data is sampled at the middle of
                                     // data output time.
     SPI1CON1bits.CKE = 1;           // Serial output data changes on transition

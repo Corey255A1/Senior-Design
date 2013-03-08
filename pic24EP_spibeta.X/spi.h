@@ -18,8 +18,8 @@ enum SPI_STATES  {SPI_RDY, SPI_WriteSlot, SPI_WriteData, SPI_ReadSlot, SPI_ReadD
 typedef struct {
     enum SPI_STATES State;
     char MsgRecv;
-    int TxBuffer;
-    int RxBuffer;
+    unsigned int TxBuffer;
+    unsigned int RxBuffer;
 } SPISTATUS;
 typedef struct {
     int outData[255];

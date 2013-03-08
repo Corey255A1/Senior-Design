@@ -97,12 +97,12 @@ int main( void ){
 //
     //SPI communication Test Code
     configSPICommunication();
-    initTemperature();
+    //initTemperature();
     _TRISB4 = OUTPUT;
     _RB4 = HIGH;
     while(1)
     {   
-         SLAVEData.outData[CURRENT_TEMPERATURE] = readTemperature(FAR);
+        // SLAVEData.outData[CURRENT_TEMPERATURE] = readTemperature(FAR);
          _RB4 = SLAVEData.inData[LED_OUT];
     };//end while
     return 1;

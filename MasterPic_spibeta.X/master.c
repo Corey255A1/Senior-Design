@@ -26,17 +26,20 @@ int main( void ) {
     cmdLCD(0b00000010); //return home??
     int currentTemp;
     while(1){
-        putLCD('A');
-        writeSlave(1,LED_OUT,0x1);
-        msDelay(5);
-        putLCD('B');
-        writeSlave(1,LED_OUT,0x0);
-        msDelay(5);
-        putLCD('C');
-        msDelay(5);
-        putLCD(readSlave(1,CURRENT_TEMPERATURE));
-        msDelay(5);
+        writeSlave(SLAVE1,LED_OUT,0x1);
+        msDelay(50);
+        writeSlave(SLAVE1,LED_OUT,0x0);
+        msDelay(50);
+        putLCD(readSlave(SLAVE2,CURRENT_TEMPERATURE));
+        msDelay(20);
         cmdLCD(0b00000010); //return home??
+//        putLCD('A');
+//        writeSlave(SLAVE1,LED_OUT,0x1);
+//        putLCD('B');
+//        writeSlave(SLAVE1,LED_OUT,0x0);
+//        putLCD('C');
+//        putLCD(readSlave(SLAVE1,CURRENT_TEMPERATURE));
+//        cmdLCD(0b00000010); //return home??
     };
     return (EXIT_SUCCESS);
 }
