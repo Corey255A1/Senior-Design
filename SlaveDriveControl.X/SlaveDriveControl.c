@@ -56,7 +56,7 @@
 //      Vdd (pin 13)
 //      Vss (pin 19)
 //      Vcap(pin 20)
-//      AVss(pin 27)
+//      AVss(pin 27)d
 //      AVdd(pin 28)
 //
 //
@@ -111,7 +111,7 @@ int main(void) {
     configDevicePins();
     configOutputCompare();
     configSPICommunication();
-    configInputCaptures();
+    //configInputCaptures();
     char forwardDirM1;
     char speedM1;
     char forwardDirM2;
@@ -121,8 +121,10 @@ int main(void) {
     SPEEDM1 = 70;
     SPEEDM2 = 0;
     msgQueued = EN;
-    //int curConfig = INMSG;
-    int curConfig = 0x00AF;
+    int curConfig = INMSG;
+    //int curConfig = 0x009F;
+    M1FWD=0;
+    M1REV=0;
     while(1)
     {
 
@@ -132,7 +134,7 @@ int main(void) {
         //---------------------------------------------------------------------
         if (curConfig != INMSG)
         {
-            //curConfig = INMSG;
+            curConfig = INMSG;
                     
             //-----------------------------------------------------------------
             //  Here we can parse the speed and direction from the
@@ -168,14 +170,15 @@ int main(void) {
             //-----------------------------------------------------------------
             //  If Motor 1 is going forward...
             //-----------------------------------------------------------------
-            if (forwardDirM1 == 0x0F)
+            if (forwardDirM1 == 0x01)
             {
                 //-------------------------------------------------------------
                 //  - Disable the reverse signal for Motor 1. (Safe Check)
                 //  - Enable the forward signal for Motor 1.
                 //-------------------------------------------------------------
-                M1REV = DISABLE;
-                M1FWD = EN;
+                M1REV = 0;
+                M1REV = 0;
+                M1FWD = 1;
 
             //-----------------------------------------------------------------
             //  ... Else Motor 1 is in reverse...
@@ -185,14 +188,15 @@ int main(void) {
                 //  - Disable the forward signal for Motor 1. (Safe Check)
                 //  - Enable the reverse signal for Motor 1.
                 //-------------------------------------------------------------
-                M1FWD = DISABLE;
-                M1REV = EN;
+                M1FWD = 0;
+                M1FWD = 0;
+                M1REV = 1;
             }
 
             //-----------------------------------------------------------------
             //  If Motor 2 is going forward...
             //-----------------------------------------------------------------
-            if (forwardDirM2 == 0x0F)
+            if (forwardDirM2 == 0x01)
             {
                 //-------------------------------------------------------------
                 //  - Disable the reverse signal for Motor 2. (Safe Check)
@@ -299,14 +303,14 @@ void configDevicePins(void)
     //-------------------------------------------------------------------------
     ANSELAbits.ANSA0 = DIGITAL; // Change RA0 pin to digital
     ANSELAbits.ANSA1 = DIGITAL; // Change RA1 pin to digital
-    ANSELBbits.ANSB0 = DIGITAL; // Change RB0 pin to digital
+    //ANSELBbits.ANSB0 = DIGITAL; // Change RB0 pin to digital
     ANSELBbits.ANSB1 = DIGITAL; // Change RB1 pin to digital
 
     TRISAbits.TRISA0 = OUTPUT;  // Change RA0 pin to output
     TRISAbits.TRISA1 = OUTPUT;  // Change RA1 pin to output
-    TRISBbits.TRISB0 = OUTPUT;  // Change RB0 pin to output
+    //TRISBbits.TRISB0 = OUTPUT;  // Change RB0 pin to output
     TRISBbits.TRISB1 = OUTPUT;  // Change RB1 pin to output
-    //TRISBbits.TRISB4 = OUTPUT;  // Change RB4 pin to output
+    TRISBbits.TRISB4 = OUTPUT;  // Change RB4 pin to output
     TRISBbits.TRISB11= OUTPUT;  // Change RB11 pin to output
 }
 
