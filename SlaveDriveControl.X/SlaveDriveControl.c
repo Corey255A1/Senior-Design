@@ -43,10 +43,10 @@
 //      RPI47(pin 26)   -   Input Capture Motor 1A
 //
 //  Output Digital Pins:
-//      RA0 (pin 2)     -   H-Bridge 1 Forward Enable
-//      RA1 (pin 3)     -   H-Bridge 1 Reverse Enable
-//      RB0 (pin 4)     -   H-Bridge 2 Forward Enable
-//      RB1 (pin 5)     -   H-Bridge 2 Reverse Enable
+//      RA2 (pin 2)     -   H-Bridge 1 Forward Enable
+//      RA3 (pin 3)     -   H-Bridge 1 Reverse Enable
+//      RB4 (pin 4)     -   H-Bridge 2 Forward Enable
+//      RA4 (pin 5)     -   H-Bridge 2 Reverse Enable
 //      RP37(pin14)     -   OC1 PWM Output
 //      RP38(pin 15)    -   OC2 PWM Output
 //      SDO1(pin 17)    -   Serial Data Output (SPI)
@@ -117,14 +117,16 @@ int main(void) {
     char forwardDirM2;
     char speedM2;
 
-    DRIVE_EN = EN;
-    SPEEDM1 = 70;
-    SPEEDM2 = 0;
-    msgQueued = EN;
-    int curConfig = INMSG;
-    //int curConfig = 0x009F;
-    M1FWD=0;
-    M1REV=0;
+    DRIVE_EN        = EN;
+    SPEEDM1         = 70;
+    SPEEDM2         = 0;
+    msgQueued       = EN;
+    int curConfig   = INMSG;
+    M1FWD           = 1;
+    M1REV           = 1;
+    M2FWD           = 1;
+    M2REV           = 1;
+
     while(1)
     {
 
@@ -301,17 +303,26 @@ void configDevicePins(void)
     //-------------------------------------------------------------------------
     //  Setup Pins for H-Bridge Direction Control
     //-------------------------------------------------------------------------
-    ANSELAbits.ANSA0 = DIGITAL; // Change RA0 pin to digital
-    ANSELAbits.ANSA1 = DIGITAL; // Change RA1 pin to digital
-    //ANSELBbits.ANSB0 = DIGITAL; // Change RB0 pin to digital
-    ANSELBbits.ANSB1 = DIGITAL; // Change RB1 pin to digital
+    //ANSELAbits.ANSA0 = DIGITAL; // Change RA0 pin to digital
+    //ANSELAbits.ANSA1 = DIGITAL; // Change RA1 pin to digital
+    //ANSELBbits.ANSB1 = DIGITAL; // Change RB1 pin to digital
 
-    TRISAbits.TRISA0 = OUTPUT;  // Change RA0 pin to output
-    TRISAbits.TRISA1 = OUTPUT;  // Change RA1 pin to output
-    //TRISBbits.TRISB0 = OUTPUT;  // Change RB0 pin to output
-    TRISBbits.TRISB1 = OUTPUT;  // Change RB1 pin to output
-    TRISBbits.TRISB4 = OUTPUT;  // Change RB4 pin to output
+    //TRISAbits.TRISA0 = OUTPUT;  // Change RA0 pin to output
+    //TRISAbits.TRISA1 = OUTPUT;  // Change RA1 pin to output
+    //TRISBbits.TRISB1 = OUTPUT;  // Change RB1 pin to output
+    //TRISBbits.TRISB4 = OUTPUT;  // Change RB4 pin to output
     TRISBbits.TRISB11= OUTPUT;  // Change RB11 pin to output
+
+
+
+    ANSELAbits.ANSA4 = DIGITAL; // Change RA4 pin to digital
+
+    TRISAbits.TRISA2 = OUTPUT;  // Change RA2 pin to output
+    TRISAbits.TRISA3 = OUTPUT;  // Change RA3 pin to output
+    TRISAbits.TRISA4 = OUTPUT;  // Change RA4 pin to output
+    TRISBbits.TRISB4 = OUTPUT;  // Change RB4 pin to output
+
+
 }
 
 /**

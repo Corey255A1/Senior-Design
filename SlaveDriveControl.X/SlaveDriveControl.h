@@ -25,10 +25,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void);
 #define CLEAR               0
 #define SPEEDM1             OC1R
 #define SPEEDM2             OC2R
-#define M1FWD               _RA0
-#define M1REV               _RA1
+#define M1FWD               _RA2
+#define M1REV               _RA3
 #define M2FWD               _RB4
-#define M2REV               _RB1
+#define M2REV               _RA4
 #define MMSG                0
 #define INMSG               SLAVEData.inData[MMSG]
 
