@@ -45,11 +45,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1126441362/9axis.o ${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o ${OBJECTDIR}/_ext/1126441362/globals.o ${OBJECTDIR}/_ext/1126441362/i2c.o ${OBJECTDIR}/_ext/1126441362/pic24EP.o ${OBJECTDIR}/_ext/1126441362/servo.o ${OBJECTDIR}/_ext/1126441362/spi.o ${OBJECTDIR}/_ext/1126441362/temperature.o ${OBJECTDIR}/_ext/1126441362/ultrasonic.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1126441362/9axis.o.d ${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o.d ${OBJECTDIR}/_ext/1126441362/globals.o.d ${OBJECTDIR}/_ext/1126441362/i2c.o.d ${OBJECTDIR}/_ext/1126441362/pic24EP.o.d ${OBJECTDIR}/_ext/1126441362/servo.o.d ${OBJECTDIR}/_ext/1126441362/spi.o.d ${OBJECTDIR}/_ext/1126441362/temperature.o.d ${OBJECTDIR}/_ext/1126441362/ultrasonic.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/frontUltrasonic.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/frontUltrasonic.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1126441362/9axis.o ${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o ${OBJECTDIR}/_ext/1126441362/globals.o ${OBJECTDIR}/_ext/1126441362/i2c.o ${OBJECTDIR}/_ext/1126441362/pic24EP.o ${OBJECTDIR}/_ext/1126441362/servo.o ${OBJECTDIR}/_ext/1126441362/spi.o ${OBJECTDIR}/_ext/1126441362/temperature.o ${OBJECTDIR}/_ext/1126441362/ultrasonic.o
+OBJECTFILES=${OBJECTDIR}/frontUltrasonic.o
 
 
 CFLAGS=
@@ -73,114 +73,18 @@ MP_LINKER_FILE_OPTION=,--script=p24EP32MC202.gld
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/1126441362/9axis.o: ../pic24EP.X/9axis.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/9axis.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/9axis.c  -o ${OBJECTDIR}/_ext/1126441362/9axis.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/9axis.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/9axis.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o: ../pic24EP.X/frontUltrasonic.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/frontUltrasonic.c  -o ${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/globals.o: ../pic24EP.X/globals.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/globals.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/globals.c  -o ${OBJECTDIR}/_ext/1126441362/globals.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/globals.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/globals.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/i2c.o: ../pic24EP.X/i2c.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/i2c.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/i2c.c  -o ${OBJECTDIR}/_ext/1126441362/i2c.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/i2c.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/i2c.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/pic24EP.o: ../pic24EP.X/pic24EP.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/pic24EP.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/pic24EP.c  -o ${OBJECTDIR}/_ext/1126441362/pic24EP.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/pic24EP.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/pic24EP.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/servo.o: ../pic24EP.X/servo.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/servo.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/servo.c  -o ${OBJECTDIR}/_ext/1126441362/servo.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/servo.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/servo.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/spi.o: ../pic24EP.X/spi.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/spi.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/spi.c  -o ${OBJECTDIR}/_ext/1126441362/spi.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/spi.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/spi.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/temperature.o: ../pic24EP.X/temperature.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/temperature.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/temperature.c  -o ${OBJECTDIR}/_ext/1126441362/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/temperature.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/temperature.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/ultrasonic.o: ../pic24EP.X/ultrasonic.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/ultrasonic.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/ultrasonic.c  -o ${OBJECTDIR}/_ext/1126441362/ultrasonic.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/ultrasonic.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/ultrasonic.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+${OBJECTDIR}/frontUltrasonic.o: frontUltrasonic.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/frontUltrasonic.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  frontUltrasonic.c  -o ${OBJECTDIR}/frontUltrasonic.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/frontUltrasonic.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/frontUltrasonic.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 else
-${OBJECTDIR}/_ext/1126441362/9axis.o: ../pic24EP.X/9axis.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/9axis.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/9axis.c  -o ${OBJECTDIR}/_ext/1126441362/9axis.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/9axis.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/9axis.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o: ../pic24EP.X/frontUltrasonic.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/frontUltrasonic.c  -o ${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/frontUltrasonic.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/globals.o: ../pic24EP.X/globals.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/globals.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/globals.c  -o ${OBJECTDIR}/_ext/1126441362/globals.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/globals.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/globals.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/i2c.o: ../pic24EP.X/i2c.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/i2c.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/i2c.c  -o ${OBJECTDIR}/_ext/1126441362/i2c.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/i2c.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/i2c.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/pic24EP.o: ../pic24EP.X/pic24EP.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/pic24EP.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/pic24EP.c  -o ${OBJECTDIR}/_ext/1126441362/pic24EP.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/pic24EP.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/pic24EP.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/servo.o: ../pic24EP.X/servo.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/servo.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/servo.c  -o ${OBJECTDIR}/_ext/1126441362/servo.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/servo.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/servo.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/spi.o: ../pic24EP.X/spi.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/spi.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/spi.c  -o ${OBJECTDIR}/_ext/1126441362/spi.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/spi.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/spi.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/temperature.o: ../pic24EP.X/temperature.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/temperature.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/temperature.c  -o ${OBJECTDIR}/_ext/1126441362/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/temperature.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/temperature.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/_ext/1126441362/ultrasonic.o: ../pic24EP.X/ultrasonic.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/_ext/1126441362 
-	@${RM} ${OBJECTDIR}/_ext/1126441362/ultrasonic.o.d 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP.X/ultrasonic.c  -o ${OBJECTDIR}/_ext/1126441362/ultrasonic.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/1126441362/ultrasonic.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1126441362/ultrasonic.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+${OBJECTDIR}/frontUltrasonic.o: frontUltrasonic.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/frontUltrasonic.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  frontUltrasonic.c  -o ${OBJECTDIR}/frontUltrasonic.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/frontUltrasonic.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/frontUltrasonic.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
