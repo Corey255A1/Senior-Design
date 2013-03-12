@@ -39,3 +39,9 @@ extern long global_u2_time;
 
 extern int global_temp;
 
+// THESE WILL NEED TO BE ADDED TO MAIN GLOBALS HEADER FILE FOR MAIN PROJECT
+extern short global_front1_edge;
+extern long global_front1_time;
+
+extern short global_front2_edge;
+extern long global_front2_time;
