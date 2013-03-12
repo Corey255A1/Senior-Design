@@ -4,7 +4,7 @@
 #include "../Global_PIC/spiMessages.h"
 #include "lcd.h"
 int writeSPI_master(int slave,int msg){
-    PORTD = PORTD & (0<<slave);
+    PORTG = PORTG & ~(1<<slave);
      char feedback;
      _Bool retry=1;
      int retry_cnt=0;
@@ -18,20 +18,24 @@ int writeSPI_master(int slave,int msg){
             continue;
         }
      }
-     PORTD = PORTD | (1<<slave);
+     PORTG = PORTG | (1<<slave);
      return feedback;
 }
 
 void writeSlave(int slave, int mem, int value){
     writeSPI_master(slave,WRITE_DATA);
+    msDelay(20);
     writeSPI_master(slave,mem);
+    msDelay(20);
     writeSPI_master(slave,value);
 }
 
 int readSlave(int slave, int toRead){
         char msg=0;
         writeSPI_master(slave,READ_DATA);
+         msDelay(20);
         writeSPI_master(slave,toRead);
+         msDelay(20);
         msg=writeSPI_master(slave,READ);
         return msg;
 }

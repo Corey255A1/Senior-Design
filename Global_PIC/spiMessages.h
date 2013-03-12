@@ -8,3 +8,6 @@
 #define WRITE_DATA 'W'
 #define GET_STATE 'G'
 #define END_TRANSMISSION 'T'
+#define LED_OUT 55
+#define COMPASS_HEADING 25
+#define CURRENT_TEMPERATURE 10

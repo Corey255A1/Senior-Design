@@ -24,6 +24,10 @@ void initSPI(void){
     TRISDbits.TRISD12=0;
     SLAVE1portEN;
     SLAVE2portEN;
+    MOTOR_DRIVERportEN;
+    PORTG = PORTG | (1<<SLAVE1);
+    PORTG = PORTG | (1<<SLAVE2);
+    PORTG = PORTG | (1<<MOTOR_DRIVER);
 }//init
 
 /**

@@ -14,6 +14,7 @@
 #include "i2c.h"
 #include "9axis.h"
 #include "spi.h"
+#include "stepper.h"
 #include "../Global_PIC/spiMessages.h"
 
 enum CARDINAL {NORTH, EAST, SOUTH, WEST};
@@ -96,14 +97,18 @@ int main( void ){
 
 //
     //SPI communication Test Code
-    configSPICommunication();
-    //initTemperature();
-    _TRISB4 = OUTPUT;
-    _RB4 = HIGH;
-    while(1)
-    {   
-        // SLAVEData.outData[CURRENT_TEMPERATURE] = readTemperature(FAR);
-         _RB4 = SLAVEData.inData[LED_OUT];
-    };//end while
-    return 1;
+//    configSPICommunication();
+//    //initTemperature();
+//    _TRISB4 = OUTPUT;
+//    _RB4 = HIGH;
+//    while(1)
+//    {
+//        // SLAVEData.outData[CURRENT_TEMPERATURE] = readTemperature(FAR);
+//         _RB4 = SLAVEData.inData[LED_OUT];
+//    };//end while
+//    return 1;
+    PORTB = 0;
+    initServo();
+    posServo(1000);
+    while(1){};
 }//end main

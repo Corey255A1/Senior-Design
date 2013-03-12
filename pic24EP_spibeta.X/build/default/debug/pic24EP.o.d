@@ -8,4 +8,5 @@ servo.h  \
 i2c.h  \
 9axis.h  \
 spi.h  \
+stepper.h  \
  ../Global_PIC/spiMessages.h 

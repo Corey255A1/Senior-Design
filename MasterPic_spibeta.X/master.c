@@ -25,14 +25,29 @@ int main( void ) {
     initSPI();
     cmdLCD(0b00000010); //return home??
     int currentTemp;
+    int motorTestCounter=0;
+    _TRISD11 = 0;
+    _RG13=1;
     while(1){
-        writeSlave(SLAVE1,LED_OUT,0x1);
+        writeSlave(SLAVE2,LED_OUT,0x1);
         msDelay(10);
-        writeSlave(SLAVE1,LED_OUT,0x0);
+        writeSlave(SLAVE2,LED_OUT,0x0);
         msDelay(10);
-        putLCD(readSlave(SLAVE2,CURRENT_TEMPERATURE));
+        putLCD(readSlave(SLAVE1,CURRENT_TEMPERATURE));
         msDelay(10);
         cmdLCD(0b00000010); //return home??
+        motorTestCounter++;
+        if(motorTestCounter==30){
+            writeSlave(MOTOR_DRIVER,0,0x00A1);
+            writeSlave(SERVO_DRIVER,0,45);
+        }
+        else if(motorTestCounter==60){
+            writeSlave(SERVO_DRIVER,0,135);
+            writeSlave(MOTOR_DRIVER,0,0x00A0);
+            motorTestCounter=0;
+        }
+        msDelay(10);
+
 //        putLCD('A');
 //        writeSlave(SLAVE1,LED_OUT,0x1);
 //        putLCD('B');

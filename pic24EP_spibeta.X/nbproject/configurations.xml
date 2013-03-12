@@ -13,6 +13,7 @@
       <itemPath>9axis.h</itemPath>
       <itemPath>spi.h</itemPath>
       <itemPath>C:/Users/student/Documents/GitHub/Senior-Design/Global_PIC/spiMessages.h</itemPath>
+      <itemPath>stepper.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -29,6 +30,7 @@
       <itemPath>i2c.c</itemPath>
       <itemPath>9axis.c</itemPath>
       <itemPath>spi.c</itemPath>
+      <itemPath>stepper.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
