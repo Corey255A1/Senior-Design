@@ -1,3 +1,4 @@
 build/default/production/frontUltrasonic.o:  \
 frontUltrasonic.c  \
- frontUltrasonic.h 
+ frontUltrasonic.h  \
+globalsTemp.h 

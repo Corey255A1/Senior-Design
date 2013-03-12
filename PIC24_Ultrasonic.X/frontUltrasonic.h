@@ -20,6 +20,9 @@
 #define U2_RPOreg RPOR2bits.RP38R // This is the reg that outputs
 
 void initFrontUltras(void);
-void __attribute__((__interrupt__, auto_psv)) _frontInterrupt1(void);
-void __attribute__((__interrupt__, auto_psv)) _frontInterrupt2(void);
+// THESE ARE OVERLAPPING WITH ULTRASONIC.H
+void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void);
+void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void);
 
+double convertToDistance(int time);
+double findObject(void);

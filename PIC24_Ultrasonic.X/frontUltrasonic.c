@@ -14,6 +14,9 @@ long global_front1_time = 0;
 short global_front2_edge = RISE;
 long global_front2_time = 0;
 
+// going to be static in end, this is just a placeholder
+int baseLength = 10;
+
 int front1_time_i;
 int front1_time_f;
 int front2_time_i;
@@ -78,7 +81,7 @@ void initFrontUltras( void ){
     T3CONbits.TON = 1;  // TMR3
 } // end init
 
-void __attribute__((__interrupt__, auto_psv)) _frontInterrupt1(void)
+void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
     _IC1IF = 0;
     if((global_front1_edge == RISE) && (U1_RBIport == HIGH)){
@@ -96,7 +99,7 @@ void __attribute__((__interrupt__, auto_psv)) _frontInterrupt1(void)
         _RB7 = LOW;
 }
 
-void __attribute__((__interrupt__, auto_psv)) _frontInterrupt2(void)
+void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 {
     _IC2IF = 0;
     if((global_front2_edge == RISE) && (U2_RBIport == HIGH)){
@@ -111,6 +114,40 @@ void __attribute__((__interrupt__, auto_psv)) _frontInterrupt2(void)
         _RB8 = HIGH;
     else
         _RB8 = LOW;
+}
+
+double convertToDistance(int time){
+    // take in time and convert to distance - need conversion still
+    return 10.0;
+}
+
+// return angle to turn
+double findObject(void){
+    // one edge is global_u1_time, other is global_u2_time
+
+    // perform law of cosines, let u1 = a, u2 = b, and base = c
+    double a = convertToDistance(global_front1_time);
+    double b = convertToDistance(global_front2_time);
+    double c = baseLength;
+
+    double preAngleA = (b * b + c * c - a * a) / (2 * b * c);
+    double angleA = acos(preAngleA);
+
+    double preAngleB = (a * a + c * c - b * b) / (2 * a * c);
+    double angleB = acos(preAngleB);
+
+    double angleDiff = angleA - angleB;
+
+    // if the angles are less than 5 degrees apart consider it straight ahead
+    if (fabs(angleDiff) <= 5 ){
+        return 45.0;    // simulate turning 45 degrees
+    }
+    else {
+        return angleDiff;   // angle diff will represent how much it needs to turn
+    }
+
+    // still needs conditions if facing the fridge/etc
+    // need to find the distance to the object
 }
 
 int main()
