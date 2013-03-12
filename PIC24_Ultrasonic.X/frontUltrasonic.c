@@ -27,12 +27,11 @@ void initFrontUltras( void ){
     _TRISB8 = OUTPUT;
 
     U1_RPOreg = OC1port; // set ultra1 RPO register to OC1 output
-    U2_RPOreg = OC1port; // set ultra2 pulse out to OC1
 
-    U1_RBreg = INPUT; // Set ultra1 Tris RB register to input mode
-    U2_RBreg = INPUT;
-    RPINR7bits.IC1R = U1_RPIport; // set IC1 input to ultra1 RP input
-    RPINR7bits.IC2R = U2_RPIport;
+    U2_RBreg = INPUT; // Set ultra1 Tris RB register to input mode
+    U3_RBreg = INPUT;
+    RPINR7bits.IC1R = U2_RPIport; // set IC1 input to ultra1 RP input
+    RPINR7bits.IC2R = U3_RPIport;
 
     //Setup OCM timers
     TMR3 = 0;   // clear
@@ -84,7 +83,7 @@ void initFrontUltras( void ){
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
     _IC1IF = 0;
-    if((global_front1_edge == RISE) && (U1_RBIport == HIGH)){
+    if((global_front1_edge == RISE) && (U2_RBIport == HIGH)){
         front1_time_i = IC1BUF;
         global_front1_edge = FALL;
     }else{
@@ -102,7 +101,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 {
     _IC2IF = 0;
-    if((global_front2_edge == RISE) && (U2_RBIport == HIGH)){
+    if((global_front2_edge == RISE) && (U3_RBIport == HIGH)){
         front2_time_i = IC2BUF;
         global_front2_edge = FALL;
     }else{
@@ -152,5 +151,7 @@ double findObject(void){
 
 int main()
 {
+    initFrontUltras();
+
     return 0;
 }
