@@ -16,3 +16,6 @@
 
 void initUltra( void );
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void);
+void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void);
+void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void);
+void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void);
