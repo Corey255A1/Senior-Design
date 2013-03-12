@@ -130,7 +130,7 @@ int main(void) {
     while(1)
     {
 
-
+        /*
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
@@ -228,7 +228,7 @@ int main(void) {
             //msgQueued = CLEAR;
         }
 
-
+        */
     }
     return 0;
 }
@@ -313,10 +313,8 @@ void configDevicePins(void)
     //TRISBbits.TRISB4 = OUTPUT;  // Change RB4 pin to output
     TRISBbits.TRISB11= OUTPUT;  // Change RB11 pin to output
 
-
-
     ANSELAbits.ANSA4 = DIGITAL; // Change RA4 pin to digital
-
+    
     TRISAbits.TRISA2 = OUTPUT;  // Change RA2 pin to output
     TRISAbits.TRISA3 = OUTPUT;  // Change RA3 pin to output
     TRISAbits.TRISA4 = OUTPUT;  // Change RA4 pin to output
