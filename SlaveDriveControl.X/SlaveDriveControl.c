@@ -117,7 +117,7 @@ int main(void) {
     char forwardDirM2;
     char speedM2;
 
-    DRIVE_EN        = EN;
+    //DRIVE_EN        = EN;
     SPEEDM1         = 70;
     SPEEDM2         = 0;
     msgQueued       = EN;
@@ -303,20 +303,21 @@ void configDevicePins(void)
     //-------------------------------------------------------------------------
     //  Setup Pins for H-Bridge Direction Control
     //-------------------------------------------------------------------------
-    //ANSELAbits.ANSA0 = DIGITAL; // Change RA0 pin to digital
-    //ANSELAbits.ANSA1 = DIGITAL; // Change RA1 pin to digital
+    ANSELAbits.ANSA0 = DIGITAL; // Change RA0 pin to digital
+    ANSELAbits.ANSA1 = DIGITAL; // Change RA1 pin to digital
+    ANSELAbits.ANSA4 = DIGITAL; // Change RA4 pin to digital
     //ANSELBbits.ANSB1 = DIGITAL; // Change RB1 pin to digital
 
-    //TRISAbits.TRISA0 = OUTPUT;  // Change RA0 pin to output
-    //TRISAbits.TRISA1 = OUTPUT;  // Change RA1 pin to output
+    TRISAbits.TRISA0 = OUTPUT;  // Change RA0 pin to output
+    TRISAbits.TRISA1 = OUTPUT;  // Change RA1 pin to output
     //TRISBbits.TRISB1 = OUTPUT;  // Change RB1 pin to output
     //TRISBbits.TRISB4 = OUTPUT;  // Change RB4 pin to output
     TRISBbits.TRISB11= OUTPUT;  // Change RB11 pin to output
 
-    ANSELAbits.ANSA4 = DIGITAL; // Change RA4 pin to digital
     
-    TRISAbits.TRISA2 = OUTPUT;  // Change RA2 pin to output
-    TRISAbits.TRISA3 = OUTPUT;  // Change RA3 pin to output
+    
+    //TRISAbits.TRISA2 = OUTPUT;  // Change RA2 pin to output
+    //TRISAbits.TRISA3 = OUTPUT;  // Change RA3 pin to output
     TRISAbits.TRISA4 = OUTPUT;  // Change RA4 pin to output
     TRISBbits.TRISB4 = OUTPUT;  // Change RB4 pin to output
 
