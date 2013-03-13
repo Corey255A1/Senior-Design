@@ -1,6 +1,6 @@
 /* 
  * File:   servo.h
- * Author: student
+ * Author: Corey Wunderlich
  *
  * Created on February 5, 2013, 4:12 PM
  */

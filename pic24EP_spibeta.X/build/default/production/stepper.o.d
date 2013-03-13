@@ -1,4 +1,4 @@
 build/default/production/stepper.o:  \
 stepper.c  \
-servo.h  \
+stepper.h  \
 globals.h 

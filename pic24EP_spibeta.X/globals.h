@@ -4,6 +4,8 @@
  * file so that they can be found quickly and easily
  * Declarations are also found with in this header file
  * Making it easy to know where stuff is defined.
+ *
+ * --Corey Wunderlich
  */
 #include <p24EP32MC202.h>
 #define RISE 1
@@ -22,6 +24,8 @@
 #define EN 1
 #define DIS 0
 #define pi 3.141592653589
+#define FWD 'F'
+#define REV 'R'
 
 extern short global_u1_edge;
 extern long global_u1_time;

@@ -1,24 +1,11 @@
 /* 
  * File:   stepper.h
- * Author: student
+ * Author: Corey Wunderlich
  *
  * Created on March 11, 2013, 4:25 PM
  */
 
-#ifndef STEPPER_H
-#define	STEPPER_H
-
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
-
-
-
-#ifdef	__cplusplus
-}
-#endif
-
-#endif	/* STEPPER_H */
-
-void initstepper( void );
+extern char global_stepper_active;
+void initStepper( void );
+void stepperSpeed(unsigned int);
+void takeSteps(unsigned int,char);

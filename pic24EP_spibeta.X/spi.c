@@ -1,4 +1,5 @@
 /**
+ * --SPI Control--
  * This Is code for SPI SLAVE MODE
  * It will wait for the Clock to start running 
  * and transmit it's buffer along with receive the
@@ -24,9 +25,13 @@ SLAVESPIDATA SLAVEData;
  * Interrupt Service Routine to handle SPI communication. The ISR will do the
  * following:
  *
- *      1. Read from the SPI buffer.<p>
- *      2. Set the flag to let the program know a message is needs handled.<p>
- *      3. Clear interrupt flag.
+ *      1. Read from the SPI buffer.
+ *      2. Sets up the the state to either be write or read
+ *      3. The sets sets the appropriate send/recv buffer slot
+ *      4. The writes or reads the appropriate slot information gathered
+ *
+ * The SPI state machine steps through each section depending upon a message
+ * that has been recieved
  *
  * @return void
  */

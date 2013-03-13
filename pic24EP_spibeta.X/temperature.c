@@ -4,7 +4,7 @@
  * sensors voltage output.
  * Reads in the value of the temperature sensor on the AD channel.
  *
- *
+ *--Corey Wunderlich
  */
 
 #include "temperature.h"

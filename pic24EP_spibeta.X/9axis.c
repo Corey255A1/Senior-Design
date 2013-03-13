@@ -1,3 +1,11 @@
+/**
+ * --9 axis--
+ * The 9 axis code provides an interface for communicating with the module
+ * It can read each piece individually or just read the current calculated
+ * heading.
+ *
+ */
+
 #include "i2c.h"
 #include "9axis.h"
 #include "math.h"
@@ -19,7 +27,10 @@ f_UPDATE_9AXIS=1;
 
 }
 
-//to-do write in comments what these do.
+/**
+ * Setsup the 9 axis with the appropriate intial settings
+ * --todo remember these settings
+ */
 void init9axis(){
     i2c_Init();
     i2c_ResetBus();
@@ -63,7 +74,11 @@ void init9axis(){
     T4CONbits.TON = 1; // turn on T4
 }
 
-
+/**
+ * Reads the Magnetic value and stores its X,Y,Z into the
+ * array
+ * @param magArr
+ */
 void readMag(int magArr[3]){
         i2c_Start(mag_i2c_addr,I2C_WRITE);
         i2c_Write(mag_xH_addr);
@@ -106,6 +121,11 @@ void readMag(int magArr[3]){
         magArr[2] = (zH<<8) | zL;
 }//end read mag
 
+/**
+ * Reads the Acceleration value and stores its X,Y,Z into the
+ * array
+ * @param magArr
+ */
 void readAcc(int accArr[6]){
         i2c_Start(acc_i2c_addr,I2C_WRITE);
         i2c_Write(acc_xH_addr);
@@ -147,7 +167,11 @@ void readAcc(int accArr[6]){
         accArr[1] = (yH<<8) + yL;
         accArr[2] = (zH<<8) + zL;
 }
-
+/**
+ * Reads the Gyroscope value and stores its X,Y,Z into the
+ * array
+ * @param magArr
+ */
 void readGyr(int gyrArr[6]){
         i2c_Start(gyr_i2c_addr,I2C_WRITE);
         i2c_Write(gyr_xH_addr);
@@ -190,6 +214,11 @@ void readGyr(int gyrArr[6]){
         gyrArr[2] = (zH<<8) | zL;
 }
 
+/**
+ * Calculates the heading based on the tilt compsenation algorithm
+ *
+ * @return a value between -pi and pi
+ */
 float getHeading( void ){
     neinAxis_semaphore = LOCKED;
     int acc[3];

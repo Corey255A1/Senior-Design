@@ -51,82 +51,82 @@ void doWork(){
 }
 
 int main( void ){
-    i2c_Init();
-    init9axis();
-//SPI communication Test Code
-    configSPICommunication();
-    _TRISB4 = OUTPUT;
-    _RB4 = LOW;
-
-
-    SPI1BUF = DATA_RDY;
-    while(1){
-        switch(local_state){
-            case NO_MESSAGE:
-                if(SPISTATUSbits.MsgRecv){
-                    local_state = MESSAGE_RECV;
-                }//end if
-                else{
-                    local_state = PROCESS_DATA;
-                }//end else
-                break;//break formsg
-            case PROCESS_DATA:
-                doWork();
-                local_state = NO_MESSAGE;
-                break;
-            case MESSAGE_RECV:
-                switch(SPISTATUSbits.State){
-                    case SPI_W:
-                        local_state = WRITE_MODE;
-                        break;
-                    case SPI_R:
-                        local_state = READ_MODE;
-                        break;
-                    default:
-                        local_state = NO_MESSAGE;
-                        break;
-                    }//endswitch
-                SPISTATUSbits.MsgRecv=0;
-                break;
-            case WRITE_MODE:
-                if(SPISTATUSbits.MsgRecv){
-                    switch(SPISTATUSbits.RxBuffer){
-                        case OUT_ON:
-                            _RB4 = HIGH;
-                            break;
-                        case OUT_OFF:
-                            _RB4 = LOW;
-                            break;
-                        case END_TRANSMISSION:
-                            local_state=NO_MESSAGE;
-                            break;
-                        default: 
-                            local_state = NO_MESSAGE;
-                            break;
-                    }//end switch
-                    SPISTATUSbits.MsgRecv=0;
-                }//endif
-                break;//end writedata
-            case READ_MODE:
-                if(SPISTATUSbits.MsgRecv){
-                    switch(SPISTATUSbits.RxBuffer){
-                        case GET_STATE:
-                            SPISTATUSbits.TxBuffer=getData();
-                            break;
-                        case READ: 
-                            SPISTATUSbits.TxBuffer=0;
-                            break; //TO_DO increment through slave transmit buffer to be implemented
-                        case END_TRANSMISSION:
-                            local_state=NO_MESSAGE;
-                            break;
-                        default:
-                            local_state = NO_MESSAGE;
-                            break;
-                    }//end switch
-                    SPISTATUSbits.MsgRecv=0;
-                }//endif
-            }//endcase
-    }//end while
+//    i2c_Init();
+//    init9axis();
+////SPI communication Test Code
+//    configSPICommunication();
+//    _TRISB4 = OUTPUT;
+//    _RB4 = LOW;
+//
+//
+//    SPI1BUF = DATA_RDY;
+//    while(1){
+//        switch(local_state){
+//            case NO_MESSAGE:
+//                if(SPISTATUSbits.MsgRecv){
+//                    local_state = MESSAGE_RECV;
+//                }//end if
+//                else{
+//                    local_state = PROCESS_DATA;
+//                }//end else
+//                break;//break formsg
+//            case PROCESS_DATA:
+//                doWork();
+//                local_state = NO_MESSAGE;
+//                break;
+//            case MESSAGE_RECV:
+//                switch(SPISTATUSbits.State){
+//                    case SPI_W:
+//                        local_state = WRITE_MODE;
+//                        break;
+//                    case SPI_R:
+//                        local_state = READ_MODE;
+//                        break;
+//                    default:
+//                        local_state = NO_MESSAGE;
+//                        break;
+//                    }//endswitch
+//                SPISTATUSbits.MsgRecv=0;
+//                break;
+//            case WRITE_MODE:
+//                if(SPISTATUSbits.MsgRecv){
+//                    switch(SPISTATUSbits.RxBuffer){
+//                        case OUT_ON:
+//                            _RB4 = HIGH;
+//                            break;
+//                        case OUT_OFF:
+//                            _RB4 = LOW;
+//                            break;
+//                        case END_TRANSMISSION:
+//                            local_state=NO_MESSAGE;
+//                            break;
+//                        default:
+//                            local_state = NO_MESSAGE;
+//                            break;
+//                    }//end switch
+//                    SPISTATUSbits.MsgRecv=0;
+//                }//endif
+//                break;//end writedata
+//            case READ_MODE:
+//                if(SPISTATUSbits.MsgRecv){
+//                    switch(SPISTATUSbits.RxBuffer){
+//                        case GET_STATE:
+//                            SPISTATUSbits.TxBuffer=getData();
+//                            break;
+//                        case READ:
+//                            SPISTATUSbits.TxBuffer=0;
+//                            break; //TO_DO increment through slave transmit buffer to be implemented
+//                        case END_TRANSMISSION:
+//                            local_state=NO_MESSAGE;
+//                            break;
+//                        default:
+//                            local_state = NO_MESSAGE;
+//                            break;
+//                    }//end switch
+//                    SPISTATUSbits.MsgRecv=0;
+//                }//endif
+//            }//endcase
+//    }//end while
 
     //TRISB = 0;
     //PORTB = 0;
@@ -142,22 +142,22 @@ int main( void ){
  * 
  */
 //    init9axis();
-//    initServo();
-   // int magArr[3];
-   // int accArr[3];
-   // int gyrArr[3];
+    initServo();
+//    int magArr[3];
+//    int accArr[3];
+//    int gyrArr[3];
 //    double heading;
 //    _TRISB6 = OUTPUT;
 //    _RB6 = 0;
-//    while(1){
+    while(1){
 //        heading = getHeading();
 //        if (heading<=.1 && heading>=-.1)
 //            _RB6=1;
 //        else
 //            _RB6=0;
 //        float h2s =(pi + heading)*900/pi;
-//        posServo((int)h2s);
-//    }//end while
+        posServo(1700);
+    }//end while
 //
 //    _RB5=0;
 //    int i=0;

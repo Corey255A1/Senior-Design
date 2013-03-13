@@ -17,23 +17,31 @@
 #include "stepper.h"
 #include "../Global_PIC/spiMessages.h"
 
-enum CARDINAL {NORTH, EAST, SOUTH, WEST};
-enum STATES {NO_MESSAGE, MESSAGE_RECV, WRITE_MODE, READ_MODE, PROCESS_DATA};
-//Local Variables
-char data;
-enum CARDINAL local_dir = NORTH;
-enum STATES local_state = NO_MESSAGE;
-double heading=0;
-
-//char getData(){
-//
-//    return rdata;
-//}
-//void doWork(){
-//
-//}
-
 int main( void ){
+    TRISB=0;
+    PORTB=0;
+    initStepper();
+    int i=0;
+    int c;
+    stepperSpeed(30000);
+    while(1){
+        takeSteps(1000,REV);
+        while(PTCONbits.PTEN);
+        takeSteps(1000,FWD);
+        while(PTCONbits.PTEN);
+    };
+
+}//end main
+
+
+//enum CARDINAL {NORTH, EAST, SOUTH, WEST};
+//enum STATES {NO_MESSAGE, MESSAGE_RECV, WRITE_MODE, READ_MODE, PROCESS_DATA};
+////Local Variables
+//char data;
+//enum CARDINAL local_dir = NORTH;
+//enum STATES local_state = NO_MESSAGE;
+//double heading=0;
+
 //    i2c_Init();
 //    init9axis();
 //    SLAVEData.inData[LED_OUT]=0;
@@ -75,28 +83,30 @@ int main( void ){
 
 /**
  * Test Signal to ensure PIC operation when testing
- * 
+ *
  */
 //    init9axis();
+//        initUltra();
+//    initTemperature();
 //    initServo();
-   // int magArr[3];
-   // int accArr[3];
-   // int gyrArr[3];
-//    double heading;
-//    _TRISB6 = OUTPUT;
-//    _RB6 = 0;
+////    int magArr[3];
+////    int accArr[3];
+////    int gyrArr[3];
+////    double heading;
+//
+//    posServo(0);
 //    while(1){
-//        heading = getHeading();
-//        if (heading<=.1 && heading>=-.1)
-//            _RB6=1;
-//        else
-//            _RB6=0;
-//        float h2s =(pi + heading)*900/pi;
-//        posServo((int)h2s);
+////        heading = getHeading();
+////        if (heading<=.1 && heading>=-.1)
+////            _RB6=1;
+////        else
+////            _RB6=0;
+////        float h2s =(pi + heading)*900/pi;
+//        posServo(1500);
 //    }//end while
 
 //
-    //SPI communication Test Code
+//    SPI communication Test Code
 //    configSPICommunication();
 //    //initTemperature();
 //    _TRISB4 = OUTPUT;
@@ -107,8 +117,11 @@ int main( void ){
 //         _RB4 = SLAVEData.inData[LED_OUT];
 //    };//end while
 //    return 1;
-    PORTB = 0;
-    initServo();
-    posServo(1000);
-    while(1){};
-}//end main
+//    TRISBbits.TRISB13=0;
+//    PORTB = 0;
+//
+//    initServo();
+//
+//    while(1){
+//        posServo(20000);
+//    };
