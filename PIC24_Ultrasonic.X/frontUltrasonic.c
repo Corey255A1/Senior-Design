@@ -10,7 +10,8 @@
 #include "globalsTemp.h"
 #include <stdbool.h>
 
-int global_temp = 10;   // test
+int global_temp = 15;   // test
+int i = 0;
 
 short global_front1_edge = RISE;
 long global_front1_time = 0;
@@ -18,7 +19,9 @@ short global_front2_edge = RISE;
 long global_front2_time = 0;
 
 // going to be static in end, this is just a placeholder
-int baseLength = 10;
+unsigned baseLength = 10;
+unsigned a = 0.0;
+unsigned b = 0.0;
 
 int front1_time_i;
 int front1_time_f;
@@ -27,6 +30,8 @@ int front2_time_f;
 
 bool leftFound = false;
 bool rightFound = false;
+
+unsigned angle = 0.0;
 
 void initFrontUltras( void ){
     _TRISB7 = OUTPUT;
@@ -51,7 +56,7 @@ void initFrontUltras( void ){
     OC1CON1bits.OCM = 0b110; // set to edge-aligned PWM
     OC1CON2bits.SYNCSEL = 0x1F; // set period control to OC1RS
 
-    OC1RS = 50000; // set period of OC1
+    OC1RS = 30000; // set period of OC1
     OC1R = 5000; // set duration of OC1
 
     // setup input capture module 1
@@ -64,7 +69,7 @@ void initFrontUltras( void ){
     IFS0bits.IC1IF = 0; // clear IC1 interrupt status flag
 
     IC1CON1bits.ICTSEL = 0b000; // set IC1 to TMR3
-    IC1CON1bits.ICI = 0;    // interrupt every capture
+    //IC1CON1bits.ICI = 0;    // interrupt every capture
 
     // setup the input capture module 2
     IC2CON1bits.ICM = 0x000; // turn off
@@ -76,12 +81,12 @@ void initFrontUltras( void ){
     IFS0bits.IC2IF = 0;
 
     IC2CON1bits.ICTSEL = 0b000; // IC2 to TMR3
-    IC2CON1bits.ICI = 0;    // interrupt every capture
+    //IC2CON1bits.ICI = 0;    // interrupt every capture
 
     // turn all on
-    IC1CON1bits.ICM = 0x001; // IC1 for every edge
+    IC1CON1bits.ICM = 0b001; // IC1 for every edge
     IEC0bits.IC1IE = 1; // IC1 interrupts
-    IC2CON1bits.ICM = 0x001; // IC2 for every edge
+    IC2CON1bits.ICM = 0b001; // IC2 for every edge
     IEC0bits.IC2IE = 1; // IC2 interrupts
     T3CONbits.TON = 1;  // TMR3
 } // end init
@@ -128,12 +133,12 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     */
 }
 
-double convertToDistance(int time){
+unsigned convertToDistance(long time){
     // take in time and convert to distance
-    double distance = 0.0;
+    unsigned distance = 0.0;
 
     // S = Cair * time (S = distance traveled)
-    double Cair = 33150 + 60 * global_temp;
+    unsigned Cair = 33150 + 60 * global_temp;
 
     // S/2 = distance to object
     distance = (Cair * time) / 2;
@@ -142,21 +147,21 @@ double convertToDistance(int time){
 }
 
 // return angle to turn
-double findObject(void){
+unsigned findObject(void){
     // one edge is global_u1_time, other is global_u2_time
 
     // perform law of cosines, let u1 = a, u2 = b, and base = c
-    double a = convertToDistance(global_front1_time);
-    double b = convertToDistance(global_front2_time);
-    double c = baseLength;
+    a = convertToDistance(global_front1_time);
+    b = convertToDistance(global_front2_time);
+    unsigned c = baseLength;
 
-    double preAngleA = (b * b + c * c - a * a) / (2 * b * c);
-    double angleA = acos(preAngleA);
+    unsigned preAngleA = (b * b + c * c - a * a) / (2 * b * c);
+    unsigned angleA = acos(preAngleA);
 
-    double preAngleB = (a * a + c * c - b * b) / (2 * a * c);
-    double angleB = acos(preAngleB);
+    unsigned preAngleB = (a * a + c * c - b * b) / (2 * a * c);
+    unsigned angleB = acos(preAngleB);
 
-    double angleDiff = angleA - angleB;
+    unsigned angleDiff = angleA - angleB;
 
     // if the angles are less than 5 degrees apart consider it straight ahead
     if (fabs(angleDiff) <= 5 ){
@@ -176,8 +181,13 @@ int main()
     while (1)
     {
         // if we have found both signals, find the object
-        if (leftFound && rightFound)
-            findObject();
+        //if (leftFound && rightFound)
+            angle = findObject();
+            for (i = 0; i < 10000; ++i)
+            {
+                Nop();
+            }
+            i = 0;
     }
 
     return 0;

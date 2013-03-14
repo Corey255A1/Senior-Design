@@ -9,7 +9,7 @@
 #include <p24EP32MC202.h>
 
 // BROUGHT OVER FROM ULTRASONIC.H FROM MAIN PROJECT
-#define U1_RPOreg RPOR4bits.RP43R   // output
+#define U1_RPOreg RPOR4bits.RP42R   // output
 
 #define U2_RPIport 47 // This is the RPI number which reads the ultra pulse
 #define U2_RBIport _RB15
@@ -27,5 +27,5 @@ void initFrontUltras(void);
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void);
 void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void);
 
-double convertToDistance(int time);
-double findObject(void);
+unsigned convertToDistance(long time);
+unsigned findObject(void);
