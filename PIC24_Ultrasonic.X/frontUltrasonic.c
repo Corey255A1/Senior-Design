@@ -8,6 +8,7 @@
 #include <math.h>
 #include "frontUltrasonic.h"
 #include "globalsTemp.h"
+#include <stdbool.h>
 
 short global_front1_edge = RISE;
 long global_front1_time = 0;
@@ -21,6 +22,9 @@ int front1_time_i;
 int front1_time_f;
 int front2_time_i;
 int front2_time_f;
+
+bool leftFound = false;
+bool rightFound = false;
 
 void initFrontUltras( void ){
     _TRISB7 = OUTPUT;
@@ -82,6 +86,7 @@ void initFrontUltras( void ){
 
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
+    leftFound = false;
     _IC1IF = 0;
     if((global_front1_edge == RISE) && (U2_RBIport == HIGH)){
         front1_time_i = IC1BUF;
@@ -91,15 +96,18 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
         global_front1_edge = RISE;
         global_front1_time = front1_time_f - front1_time_i;
     }
-
+    leftFound = true;
+    /*
     if (global_front1_time<300)
         _RB7 = HIGH;
     else
         _RB7 = LOW;
+    */
 }
 
 void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 {
+    rightFound = false;
     _IC2IF = 0;
     if((global_front2_edge == RISE) && (U3_RBIport == HIGH)){
         front2_time_i = IC2BUF;
@@ -109,15 +117,26 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
         global_front2_edge = RISE;
         global_front2_time = front2_time_f - front2_time_i;
     }
+    rightFound = true;
+    /*
     if (global_front2_time<300)
         _RB8 = HIGH;
     else
         _RB8 = LOW;
+    */
 }
 
 double convertToDistance(int time){
-    // take in time and convert to distance - need conversion still
-    return 10.0;
+    // take in time and convert to distance
+    double distance = 0.0;
+
+    // S = Cair * time (S = distance traveled)
+    double Cair = 33150 + 60 * global_temp;
+
+    // S/2 = distance to object
+    distance = (Cair * time) / 2;
+
+    return distance;
 }
 
 // return angle to turn
@@ -152,6 +171,12 @@ double findObject(void){
 int main()
 {
     initFrontUltras();
+    while (1)
+    {
+        // if we have found both signals, find the object
+        if (leftFound && rightFound)
+            findObject();
+    }
 
     return 0;
 }
