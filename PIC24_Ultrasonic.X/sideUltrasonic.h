@@ -28,3 +28,11 @@
 #define U7_RPIport 44 // This is the RPI number which reads the ultra pulse for left rear
 #define U7_RBIport _RB12
 #define U7_RBreg TRISBbits.TRISB12
+
+// init for sides
+// sides also have IC1 interrupt
+// sides also have IC2 interrupt
+// sides also have IC3 interrupt
+// sides also have IC4 interrupt
+// sides also have getDistance method
+// sides also have findObject method
