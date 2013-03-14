@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>frontUltrasonic.h</itemPath>
       <itemPath>globalsTemp.h</itemPath>
+      <itemPath>sideUltrasonic.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

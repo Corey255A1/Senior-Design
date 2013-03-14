@@ -10,6 +10,8 @@
 #include "globalsTemp.h"
 #include <stdbool.h>
 
+int global_temp = 10;   // test
+
 short global_front1_edge = RISE;
 long global_front1_time = 0;
 short global_front2_edge = RISE;
