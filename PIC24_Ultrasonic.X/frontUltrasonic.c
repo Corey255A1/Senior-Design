@@ -5,10 +5,10 @@
  */
 
 #include <p24EP32MC202.h>
-#include <math.h>
 #include "frontUltrasonic.h"
 #include "globalsTemp.h"
 #include <stdbool.h>
+#include <math.h>
 
 int global_temp = 15;   // test
 int i = 0;
@@ -20,8 +20,8 @@ long global_front2_time = 0;
 
 // going to be static in end, this is just a placeholder
 unsigned baseLength = 10;
-unsigned a = 0.0;
-unsigned b = 0.0;
+long a = 0;
+long b = 0;
 
 int front1_time_i;
 int front1_time_f;
@@ -31,7 +31,7 @@ int front2_time_f;
 bool leftFound = false;
 bool rightFound = false;
 
-unsigned angle = 0.0;
+unsigned angle = 0;
 
 void initFrontUltras( void ){
     _TRISB7 = OUTPUT;
@@ -133,9 +133,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     */
 }
 
-unsigned convertToDistance(long time){
+long convertToDistance(long time){
     // take in time and convert to distance
-    unsigned distance = 0.0;
+    long distance = 0.0;
 
     // S = Cair * time (S = distance traveled)
     unsigned Cair = 33150 + 60 * global_temp;
@@ -146,14 +146,14 @@ unsigned convertToDistance(long time){
     return distance;
 }
 
-// return angle to turn
+//// return angle to turn
 unsigned findObject(void){
     // one edge is global_u1_time, other is global_u2_time
 
     // perform law of cosines, let u1 = a, u2 = b, and base = c
     a = convertToDistance(global_front1_time);
     b = convertToDistance(global_front2_time);
-    unsigned c = baseLength;
+    long c = baseLength;
 
     unsigned preAngleA = (b * b + c * c - a * a) / (2 * b * c);
     unsigned angleA = acos(preAngleA);
@@ -165,12 +165,12 @@ unsigned findObject(void){
 
     // if the angles are less than 5 degrees apart consider it straight ahead
     if (fabs(angleDiff) <= 5 ){
-        return 45.0;    // simulate turning 45 degrees
+        return 45;    // simulate turning 45 degrees
     }
     else {
         return angleDiff;   // angle diff will represent how much it needs to turn
     }
-
+    
     // still needs conditions if facing the fridge/etc
     // need to find the distance to the object
 }
