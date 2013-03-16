@@ -1,6 +1,9 @@
 /* 
  * File:   compassMain.c
- * Author: student
+ * Author: Corey Wunderlich
+ * Description: Basically main for the compass, continuously polls the I2C
+ * compass and stores the calculated heading value into the SPI send/receive
+ * buffer for processing by the master pic. 
  *
  * Created on March 15, 2013, 5:26 PM
  */
@@ -15,10 +18,11 @@
 #include "../Global_PIC/spiMessages.h"
 
 /*
- * 
+ * Defines
  */
-#define HEADING SLAVEData.outData[0]
-#define FIXEDPOINT_13BIT 8192
+#define HEADING SLAVEData.outData[0] // The port that will be read by mcp
+#define FIXEDPOINT_13BIT 8192 // the Shifting value to pass the radians value
+                              // as a fixed point integer.
 int main( void ) {
     //i2c_Init();
     //init9axis();

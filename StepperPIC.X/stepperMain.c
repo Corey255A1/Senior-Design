@@ -1,6 +1,11 @@
-/* 
+/**
+ * -- Stepper Main --
  * File:   stepperMain.c
- * Author: student
+ * Author: Corey Wunderlich
+ * Description: This is the main function for converting the spi messages into
+ * stepper motor movements. The stepper can be effected by values for speed
+ * direction and the amount of steps to take. It will give information back to
+ * the mcp with things such as steps left in current motion.
  *
  * Created on March 14, 2013, 5:15 PM
  */
@@ -14,13 +19,13 @@
 #include "configs.h"
 #include "../Global_PIC/spiMessages.h"
 
-
+//Define the ports for information passing over SPI
 #define STEPPER_SPEED SLAVEData.inData[SPI_STEPPER_SPEED]
 #define STEPPER_DIR SLAVEData.inData[SPI_STEPPER_DIR]
 #define STEPPER_STEPS SLAVEData.inData[SPI_STEPPER_STEPS]
 #define STEPPER_MOVING SLAVEData.outData[SPI_STEPPER_MOVING]
 #define STEPPER_STEPSINPROG SLAVEData.outData[SPI_STEPPER_INPROG]
-#define STEPPER_ENABLED PTCONbits.PTEN
+#define STEPPER_ENABLED PTCONbits.PTEN //is High (1) when PWM is active
 /*
  * 
  */
