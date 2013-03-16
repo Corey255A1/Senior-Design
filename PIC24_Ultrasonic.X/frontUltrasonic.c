@@ -20,8 +20,8 @@ long global_front2_time = 0;
 
 // going to be static in end, this is just a placeholder
 unsigned baseLength = 10;
-long a = 0;
-long b = 0;
+unsigned a = 0;
+unsigned b = 0;
 
 int front1_time_i;
 int front1_time_f;
@@ -33,6 +33,8 @@ bool rightFound = false;
 
 unsigned angle = 0;
 unsigned echoWidth = 0;
+
+
 
 void initFrontUltras( void ){
     _TRISB7 = OUTPUT;
@@ -89,15 +91,25 @@ void initFrontUltras( void ){
     //IC2CON1bits.ICI = 0;    // interrupt every capture
 
     // turn all on
-    IC1CON1bits.ICM = 0b001; // IC1 for every edge
+    IC1CON1bits.ICM = 0b011; // IC1 for rising edge
     IEC0bits.IC1IE = 1; // IC1 interrupts
     IC2CON1bits.ICM = 0b011; // IC2 for rising edge
     IEC0bits.IC2IE = 1; // IC2 interrupts
+    
+    IEC0bits.OC1IE = 1; // OC1 interrupts
     T3CONbits.TON = 1;  // TMR3
 } // end init
 
+void __attribute__((__interrupt__, auto_psv)) _OC1Interrupt(void)
+{
+    _OC1IF = 0;
+}
+
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
+    _IC1IF = 0;
+    a = convertToDistance(IC1BUF);
+    /*
     leftFound = false;
     _IC1IF = 0;
     if((global_front1_edge == RISE) && (U2_RBIport == HIGH)){
@@ -112,6 +124,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     a = convertToDistance(global_front1_time);
 
     leftFound = true;
+    */
     /*
     if (global_front1_time<300)
         _RB7 = HIGH;
@@ -122,7 +135,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 
 void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 {
-
+    _IC2IF = 0;
+    //b = convertToDistance(IC2BUF);
+    b = IC2BUF;
+    /*
     static enum {PingEchoLow, PingEchoHigh}PingState = PingEchoHigh;
     
     static unsigned timeStart, timeStop;
@@ -142,6 +158,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
             IC2CON1 = 0x0000; // disable IC2 module
             IC2CON1 = 0x0003;
     }
+    */
 
     /*
     rightFound = false;
@@ -167,9 +184,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     */
 }
 
-long convertToDistance(long time){
+unsigned convertToDistance(unsigned time){
     // take in time and convert to distance
-    long distance = 0.0;
+    unsigned distance = 0.0;
 
     // S = Cair * time (S = distance traveled)
     unsigned Cair = 33150 + 60 * global_temp;
