@@ -32,6 +32,7 @@ bool leftFound = false;
 bool rightFound = false;
 
 unsigned angle = 0;
+unsigned echoWidth = 0;
 
 void initFrontUltras( void ){
     _TRISB7 = OUTPUT;
@@ -57,7 +58,11 @@ void initFrontUltras( void ){
     OC1CON2bits.SYNCSEL = 0x1F; // set period control to OC1RS
 
     OC1RS = 30000; // set period of OC1
-    OC1R = 5000; // set duration of OC1
+    OC1R = 10000; // set duration of OC1
+
+    // setup output compare to interrupt
+    IPC0bits.OC1IP = 1;
+    IFS0bits.OC1IF = 0;
 
     // setup input capture module 1
     IC1CON1bits.ICM = 0x000; // turn off
@@ -86,7 +91,7 @@ void initFrontUltras( void ){
     // turn all on
     IC1CON1bits.ICM = 0b001; // IC1 for every edge
     IEC0bits.IC1IE = 1; // IC1 interrupts
-    IC2CON1bits.ICM = 0b001; // IC2 for every edge
+    IC2CON1bits.ICM = 0b011; // IC2 for rising edge
     IEC0bits.IC2IE = 1; // IC2 interrupts
     T3CONbits.TON = 1;  // TMR3
 } // end init
@@ -103,6 +108,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
         global_front1_edge = RISE;
         global_front1_time = front1_time_f - front1_time_i;
     }
+
+    a = convertToDistance(global_front1_time);
+
     leftFound = true;
     /*
     if (global_front1_time<300)
@@ -114,6 +122,28 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 
 void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 {
+
+    static enum {PingEchoLow, PingEchoHigh}PingState = PingEchoHigh;
+    
+    static unsigned timeStart, timeStop;
+
+    switch(PingState)
+    {
+        case PingEchoHigh:
+            PingState = PingEchoLow;
+            timeStart = IC2BUF;
+            IC2CON1 = 0x0000; // disable IC2 module
+            IC2CON1 = 0x0002; // enable on falling edge
+            break;
+        case PingEchoLow:
+            PingState = PingEchoHigh;
+            timeStop = IC2BUF;
+            echoWidth = timeStop - timeStart;
+            IC2CON1 = 0x0000; // disable IC2 module
+            IC2CON1 = 0x0003;
+    }
+
+    /*
     rightFound = false;
     _IC2IF = 0;
     if((global_front2_edge == RISE) && (U3_RBIport == HIGH)){
@@ -124,7 +154,11 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
         global_front2_edge = RISE;
         global_front2_time = front2_time_f - front2_time_i;
     }
+
+    b = convertToDistance(global_front2_time);
+
     rightFound = true;
+    */
     /*
     if (global_front2_time<300)
         _RB8 = HIGH;
@@ -182,12 +216,12 @@ int main()
     {
         // if we have found both signals, find the object
         //if (leftFound && rightFound)
-            angle = findObject();
-            for (i = 0; i < 10000; ++i)
-            {
-                Nop();
-            }
-            i = 0;
+            //angle = findObject();
+            //for (i = 0; i < 10000; ++i)
+            //{
+              //  Nop();
+            //}
+            //i = 0;
     }
 
     return 0;
