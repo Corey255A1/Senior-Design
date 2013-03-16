@@ -1,3 +1,6 @@
+#include "../Global_PIC/spiMessages.h"
+#include <p24FJ128GA010.h>
+#include "spi.h"
 /**
  * SPI MASTER communication setup
  * This will communicate with the slave pics
@@ -5,29 +8,21 @@
  */
 
 
-#include "../Global_PIC/spiMessages.h"
-#include <p24FJ128GA010.h>
-#include "spi.h"
-
 
 /**
  * Setup the SPI ports for communication
  */
 void initSPI(void){
+    COMPASSportEN;
+    STEPPER_DRIVERportEN;
     SPI1CON1bits.CKE = 1;
     SPI1CON1bits.CKP = 0;
     SPI1CON1bits.MSTEN = 1;
     SPI1CON1bits.MODE16 = 1;
     SPI1STATbits.SPIROV = 0;
     SPI1STATbits.SPIEN = 1;
-    PORTD=0x0000;
-    TRISDbits.TRISD12=0;
-    SLAVE1portEN;
-    SLAVE2portEN;
-    MOTOR_DRIVERportEN;
-    PORTG = PORTG | (1<<SLAVE1);
-    PORTG = PORTG | (1<<SLAVE2);
-    PORTG = PORTG | (1<<MOTOR_DRIVER);
+    LATG=LATG | (1<<COMPASS);
+    LATG=LATG | (1<<STEPPER_DRIVER);
 }//init
 
 /**

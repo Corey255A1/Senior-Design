@@ -87,6 +87,8 @@ void __attribute__((__interrupt__, auto_psv)) _SPI1Interrupt()
  */
 void configSPICommunication(void)
 {
+    ANSELBbits.ANSB0=0;//Set B0 to Digital.. this is crucial
+    _TRISB0=1;// Set it to an input just in case
     //-------------------------------------------------------------------------
     //  1. Clear the SPI Buffer register
     //-------------------------------------------------------------------------

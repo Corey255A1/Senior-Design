@@ -23,6 +23,7 @@ extern "C" {
 
 #define SCALE 308L
 #define uSCALE 13L
+#define FIXEDPOINT_13BIT 8192
 
 void msDelay(unsigned int);
 void _10usDelay(unsigned char _10us);

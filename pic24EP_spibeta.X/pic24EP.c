@@ -18,16 +18,12 @@
 #include "../Global_PIC/spiMessages.h"
 
 int main( void ){
-    TRISB=0;
+    TRISB=0x0FEF;
     PORTB=0;
     initStepper();
-    int i=0;
-    int c;
     stepperSpeed(30000);
     while(1){
-        takeSteps(1000,REV);
-        while(PTCONbits.PTEN);
-        takeSteps(1000,FWD);
+        takeSteps(100,FWD);
         while(PTCONbits.PTEN);
     };
 

@@ -5,20 +5,20 @@
 #include "lcd.h"
 int writeSPI_master(int slave,int msg){
     PORTG = PORTG & ~(1<<slave);
-     char feedback;
-     _Bool retry=1;
-     int retry_cnt=0;
-     while(retry && retry_cnt<20){
-        retry=0;
-        feedback = writeSPI1(msg);
-        if(feedback == DATA_ERROR){
-            retry=1;
-            retry_cnt++;
-            msDelay(5);
-            continue;
-        }
-     }
-     PORTG = PORTG | (1<<slave);
+     int feedback;
+//     _Bool retry=1;
+//     int retry_cnt=0;
+//     while(retry && retry_cnt<20){
+//        retry=0;
+      feedback = writeSPI1(msg);
+//        if(feedback == DATA_ERROR){
+//            retry=1;
+//            retry_cnt++;
+//            msDelay(5);
+//            continue;
+//        }
+//     }
+    PORTG = PORTG | (1<<slave);
      return feedback;
 }
 
@@ -31,7 +31,7 @@ void writeSlave(int slave, int mem, int value){
 }
 
 int readSlave(int slave, int toRead){
-        char msg=0;
+        int msg=0;
         writeSPI_master(slave,READ_DATA);
          msDelay(20);
         writeSPI_master(slave,toRead);
