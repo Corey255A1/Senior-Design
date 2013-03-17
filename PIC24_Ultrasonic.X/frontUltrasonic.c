@@ -10,6 +10,14 @@
 #include <stdbool.h>
 #include <math.h>
 
+int global_temp = 21; // degrees C
+
+unsigned leftPulse = 0;
+unsigned rightPulse = 0;
+
+unsigned baseLength = 10; //cm, NEEDS UPDATED
+
+/*
 int global_temp = 15;   // test
 int i = 0;
 
@@ -33,7 +41,7 @@ bool rightFound = false;
 
 unsigned angle = 0;
 unsigned echoWidth = 0;
-
+*/
 
 
 void initFrontUltras( void ){
@@ -103,12 +111,18 @@ void initFrontUltras( void ){
 void __attribute__((__interrupt__, auto_psv)) _OC1Interrupt(void)
 {
     _OC1IF = 0;
+
+    // clear Timer?
+    TMR3 = 0;
 }
 
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
     _IC1IF = 0;
-    a = convertToDistance(IC1BUF);
+    
+    leftPulse = IC1BUF;
+
+    
     /*
     leftFound = false;
     _IC1IF = 0;
@@ -136,8 +150,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 {
     _IC2IF = 0;
-    //b = convertToDistance(IC2BUF);
-    b = IC2BUF;
+    
+    rightPulse = IC2BUF;
+
+    
     /*
     static enum {PingEchoLow, PingEchoHigh}PingState = PingEchoHigh;
     
@@ -202,14 +218,14 @@ unsigned findObject(void){
     // one edge is global_u1_time, other is global_u2_time
 
     // perform law of cosines, let u1 = a, u2 = b, and base = c
-    a = convertToDistance(global_front1_time);
-    b = convertToDistance(global_front2_time);
-    long c = baseLength;
+    unsigned leftLength = convertToDistance(leftPulse);
+    unsigned rightLength = convertToDistance(rightPulse);
+    unsigned c = baseLength;
 
-    unsigned preAngleA = (b * b + c * c - a * a) / (2 * b * c);
+    unsigned preAngleA = (rightLength * rightLength + c * c - leftLength * leftLength) / (2 * rightLength * c);
     unsigned angleA = acos(preAngleA);
 
-    unsigned preAngleB = (a * a + c * c - b * b) / (2 * a * c);
+    unsigned preAngleB = (leftLength * leftLength + c * c - rightLength * rightLength) / (2 * leftLength * c);
     unsigned angleB = acos(preAngleB);
 
     unsigned angleDiff = angleA - angleB;
@@ -231,14 +247,7 @@ int main()
     initFrontUltras();
     while (1)
     {
-        // if we have found both signals, find the object
-        //if (leftFound && rightFound)
-            //angle = findObject();
-            //for (i = 0; i < 10000; ++i)
-            //{
-              //  Nop();
-            //}
-            //i = 0;
+        
     }
 
     return 0;
