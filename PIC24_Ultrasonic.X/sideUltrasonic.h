@@ -36,3 +36,11 @@
 // sides also have IC4 interrupt
 // sides also have getDistance method
 // sides also have findObject method
+
+void initSideUltras(void);
+void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void);
+void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void);
+void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void);
+void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void);
+unsigned convertToDistance(unsigned time);
+unsigned findObject(void);

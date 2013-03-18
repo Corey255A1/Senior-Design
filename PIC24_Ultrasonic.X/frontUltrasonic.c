@@ -17,6 +17,11 @@ unsigned rightPulse = 0;
 
 unsigned baseLength = 10; //cm, NEEDS UPDATED
 
+unsigned angle = 0;
+
+bool leftFound = false;
+bool rightFound = false;
+
 /*
 int global_temp = 15;   // test
 int i = 0;
@@ -112,7 +117,7 @@ void __attribute__((__interrupt__, auto_psv)) _OC1Interrupt(void)
 {
     _OC1IF = 0;
 
-    // clear Timer?
+    // clear Timers for IC1 and IC2
     IC1TMR = 0;
     IC2TMR = 0;
 }
@@ -123,6 +128,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     
     leftPulse = IC1BUF;
 
+    leftFound = true;
     
     /*
     leftFound = false;
@@ -154,7 +160,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     
     rightPulse = IC2BUF;
 
-    
+    rightFound = true;
     /*
     static enum {PingEchoLow, PingEchoHigh}PingState = PingEchoHigh;
     
@@ -248,7 +254,9 @@ int main()
     initFrontUltras();
     while (1)
     {
-        
+        if (leftFound && rightFound) {
+            angle = findObject();
+        }
     }
 
     return 0;
