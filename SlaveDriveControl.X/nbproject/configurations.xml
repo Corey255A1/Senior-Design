@@ -9,6 +9,7 @@
       <itemPath>SlaveDriveControl.h</itemPath>
       <itemPath>../Global_PIC/spiMessages.h</itemPath>
       <itemPath>../pic24EP_spibeta.X/spi.h</itemPath>
+      <itemPath>ConfigPeriphs.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -19,6 +20,7 @@
                    projectFiles="true">
       <itemPath>SlaveDriveControl.c</itemPath>
       <itemPath>../pic24EP_spibeta.X/spi.c</itemPath>
+      <itemPath>ConfigPeriphs.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

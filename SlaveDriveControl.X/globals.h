@@ -23,6 +23,44 @@
 #define DIS 0
 #define pi 3.141592653589
 
+//-----------------------------------------------------------------------------
+//  Variable Defines for Slave Drive Control
+//-----------------------------------------------------------------------------
+#define DIGITAL             0
+#define DRIVER_PERIOD_US    10
+
+//-----------------------------------------------------------------------------
+//  Defines for drive system.
+//-----------------------------------------------------------------------------
+#define CLK_PERIOD          0.135
+#define DRIVE_EN            _RB11
+#define SPEEDM1             OC1R
+#define SPEEDM2             OC2R
+#define M1FWD               LATAbits.LATA0
+#define M1REV               LATAbits.LATA1
+#define M2FWD               LATBbits.LATB4
+#define M2REV               LATAbits.LATA4
+#define MMSG                0
+#define DRIVESTATUS         0
+#define INMSG               SLAVEData.inData[MMSG]
+#define OUTMSG              SLAVEData.outData[DRIVESTATUS]
+
+#define M1FDBCKA_RPIPORT    47
+#define M1FDBCKA_RBPORT     _RB15
+#define M1FDBCKA_TRISREG    TRISBbits.TRISB15
+
+#define M1FDBCKB_RPIPORT    46
+#define M1FDBCKB_RBPORT     _RB14
+#define M1FDBCKB_TRISREG    TRISBbits.TRISB14
+
+#define M2FDBCKA_RPIPORT    45
+#define M2FDBCKA_RBPORT     _RB13
+#define M2FDBCKA_TRISREG    TRISBbits.TRISB13
+
+#define M2FDBCKB_RPIPORT    44
+#define M2FDBCKB_RBPORT     _RB12
+#define M2FDBCKB_TRISREG    TRISBbits.TRISB12
+
 extern short global_u1_edge;
 extern long global_u1_time;
 

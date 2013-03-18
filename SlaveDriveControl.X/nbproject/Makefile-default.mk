@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/SlaveDriveControl.o ${OBJECTDIR}/_ext/2008226479/spi.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/SlaveDriveControl.o.d ${OBJECTDIR}/_ext/2008226479/spi.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/SlaveDriveControl.o ${OBJECTDIR}/_ext/2008226479/spi.o ${OBJECTDIR}/ConfigPeriphs.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/SlaveDriveControl.o.d ${OBJECTDIR}/_ext/2008226479/spi.o.d ${OBJECTDIR}/ConfigPeriphs.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/SlaveDriveControl.o ${OBJECTDIR}/_ext/2008226479/spi.o
+OBJECTFILES=${OBJECTDIR}/SlaveDriveControl.o ${OBJECTDIR}/_ext/2008226479/spi.o ${OBJECTDIR}/ConfigPeriphs.o
 
 
 CFLAGS=
@@ -81,6 +81,12 @@ ${OBJECTDIR}/_ext/2008226479/spi.o: ../pic24EP_spibeta.X/spi.c  nbproject/Makefi
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP_spibeta.X/spi.c  -o ${OBJECTDIR}/_ext/2008226479/spi.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/2008226479/spi.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/2008226479/spi.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/ConfigPeriphs.o: ConfigPeriphs.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/ConfigPeriphs.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ConfigPeriphs.c  -o ${OBJECTDIR}/ConfigPeriphs.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/ConfigPeriphs.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/ConfigPeriphs.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/SlaveDriveControl.o: SlaveDriveControl.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -93,6 +99,12 @@ ${OBJECTDIR}/_ext/2008226479/spi.o: ../pic24EP_spibeta.X/spi.c  nbproject/Makefi
 	@${RM} ${OBJECTDIR}/_ext/2008226479/spi.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../pic24EP_spibeta.X/spi.c  -o ${OBJECTDIR}/_ext/2008226479/spi.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/2008226479/spi.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/_ext/2008226479/spi.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/ConfigPeriphs.o: ConfigPeriphs.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/ConfigPeriphs.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ConfigPeriphs.c  -o ${OBJECTDIR}/ConfigPeriphs.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/ConfigPeriphs.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/ConfigPeriphs.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
