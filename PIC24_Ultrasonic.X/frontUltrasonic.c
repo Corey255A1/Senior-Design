@@ -113,7 +113,8 @@ void __attribute__((__interrupt__, auto_psv)) _OC1Interrupt(void)
     _OC1IF = 0;
 
     // clear Timer?
-    TMR3 = 0;
+    IC1TMR = 0;
+    IC2TMR = 0;
 }
 
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
