@@ -50,9 +50,6 @@ unsigned echoWidth = 0;
 
 
 void initFrontUltras( void ){
-    _TRISB7 = OUTPUT;
-    _TRISB8 = OUTPUT;
-
     U1_RPOreg = OC1port; // set ultra1 RPO register to OC1 output
 
     U2_RBreg = INPUT; // Set ultra1 Tris RB register to input mode

@@ -21,9 +21,6 @@ unsigned rightRearPulse = 0;
 unsigned sideLength = 10;   // needs changed, but will be same for both
 
 void initSideUltras( void ){
-    _TRISB7 = OUTPUT;
-    _TRISB8 = OUTPUT;
-
     U4_RPOreg = OC1port; // set ultra1 RPO register to OC1 output
     U5_RPOreg = OC1port;
     
