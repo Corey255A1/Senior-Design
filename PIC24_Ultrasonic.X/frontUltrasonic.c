@@ -70,7 +70,7 @@ void initFrontUltras( void ){
     OC1CON2bits.SYNCSEL = 0x1F; // set period control to OC1RS
 
     OC1RS = 30000; // set period of OC1
-    OC1R = 10000; // set duration of OC1
+    OC1R = 2000; // set duration of OC1
 
     // setup output compare to interrupt
     IPC0bits.OC1IP = 1;
@@ -114,9 +114,15 @@ void __attribute__((__interrupt__, auto_psv)) _OC1Interrupt(void)
 {
     _OC1IF = 0;
 
+    if (_RB15 == LOW)
+    {
+        IC1TMR = 0;
+        IC2TMR = 0;
+    }
+
     // clear Timers for IC1 and IC2
-    IC1TMR = 0;
-    IC2TMR = 0;
+    //IC1TMR = 0;
+    //IC2TMR = 0;
 }
 
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
