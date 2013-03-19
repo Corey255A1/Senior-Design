@@ -26,5 +26,5 @@ void initFrontUltras(void);
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void);
 void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void);
 
-unsigned convertToDistance(unsigned time);
-unsigned findObject(void);
+unsigned convertToDistance(double time);
+double findObject(void);

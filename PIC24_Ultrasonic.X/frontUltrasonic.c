@@ -204,7 +204,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     */
 }
 
-unsigned convertToDistance(unsigned time){
+unsigned convertToDistance(double time){
     // take in time and convert to distance
     unsigned distance = 0.0;
 
@@ -218,21 +218,21 @@ unsigned convertToDistance(unsigned time){
 }
 
 //// return angle to turn
-unsigned findObject(void){
+double findObject(void){
     // one edge is global_u1_time, other is global_u2_time
 
     // perform law of cosines, let u1 = a, u2 = b, and base = c
-    unsigned leftLength = convertToDistance(leftPulse);
-    unsigned rightLength = convertToDistance(rightPulse);
+    unsigned leftLength = convertToDistance(250e-9*leftPulse);
+    unsigned rightLength = convertToDistance(250e-9*rightPulse);
     unsigned c = baseLength;
 
-    unsigned preAngleA = (rightLength * rightLength + c * c - leftLength * leftLength) / (2 * rightLength * c);
-    unsigned angleA = acos(preAngleA);
+    double preAngleA = (rightLength * rightLength + c * c - leftLength * leftLength) / (2 * rightLength * c);
+    double angleA = acos(preAngleA);
 
-    unsigned preAngleB = (leftLength * leftLength + c * c - rightLength * rightLength) / (2 * leftLength * c);
-    unsigned angleB = acos(preAngleB);
+    double preAngleB = (leftLength * leftLength + c * c - rightLength * rightLength) / (2 * leftLength * c);
+    double angleB = acos(preAngleB);
 
-    unsigned angleDiff = angleA - angleB;
+    double angleDiff = angleA - angleB;
 
     // if the angles are less than 5 degrees apart consider it straight ahead
     if (fabs(angleDiff) <= 5 ){
@@ -252,7 +252,9 @@ int main()
     while (1)
     {
         if (leftFound && rightFound) {
-            angle = findObject();
+            //angle = findObject();
+            Nop();
+            Nop();
         }
     }
 
