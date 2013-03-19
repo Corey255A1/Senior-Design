@@ -13,6 +13,8 @@
 double temp = 21; // degrees C
 unsigned Cair = 0;
 
+double outputDuration = 1500;
+
 unsigned leftPulse = 0;
 unsigned rightPulse = 0;
 
@@ -71,7 +73,7 @@ void initFrontUltras( void ){
     OC1CON2bits.SYNCSEL = 0x1F; // set period control to OC1RS
 
     OC1RS = 30000; // set period of OC1
-    OC1R = 2000; // set duration of OC1
+    OC1R = outputDuration; // set duration of OC1
 
     // setup output compare to interrupt
     IPC0bits.OC1IP = 1;
@@ -113,13 +115,10 @@ void initFrontUltras( void ){
 
 void __attribute__((__interrupt__, auto_psv)) _OC1Interrupt(void)
 {
-    _OC1IF = 0;
+    
 
-    if (_RB15 == LOW)
-    {
-        IC1TMR = 0;
-        IC2TMR = 0;
-    }
+    IC1TMR = 0;
+    IC2TMR = 0;
 
     // clear Timers for IC1 and IC2
     //IC1TMR = 0;
@@ -132,7 +131,12 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     
     leftPulse = IC1BUF;
 
-    leftFound = true;
+    unsigned lengthTemp = convertToDistance(leftPulse - outputDuration);
+
+    if (lengthTemp > 20)
+        leftFound = false;
+    else
+        leftFound = true;
     
     /*
     leftFound = false;
@@ -164,9 +168,12 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     
     rightPulse = IC2BUF;
 
-    unsigned lengthTemp = convertToDistance(250e-9*rightPulse);
+    unsigned lengthTemp = convertToDistance(rightPulse - outputDuration);
 
-    rightFound = true;
+    if (lengthTemp > 20)
+        rightFound = false;
+    else
+        rightFound = true;
     /*
     static enum {PingEchoLow, PingEchoHigh}PingState = PingEchoHigh;
     
@@ -229,15 +236,15 @@ double findObject(void){
     // one edge is global_u1_time, other is global_u2_time
 
     // perform law of cosines, let u1 = a, u2 = b, and base = c
-    unsigned leftLength = convertToDistance(250e-9*leftPulse);
-    unsigned rightLength = convertToDistance(250e-9*rightPulse);
+    unsigned leftLength = convertToDistance(leftPulse);
+    unsigned rightLength = convertToDistance(rightPulse);
     unsigned c = baseLength;
 
     double preAngleA = (rightLength * rightLength + c * c - leftLength * leftLength) / (2 * rightLength * c);
-    double angleA = acos(preAngleA);
+    double angleA = acos(preAngleA) * 180 / pi;
 
     double preAngleB = (leftLength * leftLength + c * c - rightLength * rightLength) / (2 * leftLength * c);
-    double angleB = acos(preAngleB);
+    double angleB = acos(preAngleB) * 180 / pi;
 
     double angleDiff = angleA - angleB;
 
@@ -260,7 +267,7 @@ int main()
     while (1)
     {
         if (leftFound && rightFound) {
-            //angle = findObject();
+            angle = findObject();
             Nop();
             Nop();
         }
