@@ -10,7 +10,8 @@
 #include <stdbool.h>
 #include <math.h>
 
-int global_temp = 21; // degrees C
+double temp = 21; // degrees C
+unsigned Cair = 0;
 
 unsigned leftPulse = 0;
 unsigned rightPulse = 0;
@@ -163,6 +164,8 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     
     rightPulse = IC2BUF;
 
+    unsigned lengthTemp = convertToDistance(250e-9*rightPulse);
+
     rightFound = true;
     /*
     static enum {PingEchoLow, PingEchoHigh}PingState = PingEchoHigh;
@@ -212,13 +215,11 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 
 unsigned convertToDistance(double time){
     // take in time and convert to distance
-    unsigned distance = 0.0;
+    unsigned distance = 0;
 
     // S = Cair * time (S = distance traveled)
-    unsigned Cair = 33150 + 60 * global_temp;
-
     // S/2 = distance to object
-    distance = (Cair * time) / 2;
+    distance = (unsigned)(Cair>>1)*time;
 
     return distance;
 }
@@ -255,6 +256,7 @@ double findObject(void){
 int main()
 {
     initFrontUltras();
+    Cair = 33150 + 60 * temp;
     while (1)
     {
         if (leftFound && rightFound) {
