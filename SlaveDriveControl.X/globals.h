@@ -36,10 +36,10 @@
 #define DRIVE_EN            _RB11
 #define SPEEDM1             OC1R
 #define SPEEDM2             OC2R
-#define M1FWD               LATAbits.LATA0
-#define M1REV               LATAbits.LATA1
-#define M2FWD               LATBbits.LATB4
-#define M2REV               LATAbits.LATA4
+#define M1FWD               LATAbits.LATA1
+#define M1REV               LATAbits.LATA0
+#define M2FWD               LATAbits.LATA4
+#define M2REV               LATBbits.LATB4
 #define MMSG                0
 #define DRIVESTATUS         0
 #define INMSG               SLAVEData.inData[MMSG]

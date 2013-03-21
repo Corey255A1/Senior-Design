@@ -45,7 +45,7 @@ void configOutputCompare(void)
     OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
     OC1RS               = CLK_PER;  // Set period of OC1
     OC1R                = 0;        // Set duty duration of OC1
-    RPOR1bits.RP37R     = 0b010001; // Maps the OC1 output to the RP37R pin
+    RPOR1bits.RP37R     = 0b010000; // Maps the OC1 output to the RP37R pin
                                     // (pin 14) on the pick. The 0b010001 is
                                     // defined in the "Output Mapping" section
                                     // of the data sheet.
@@ -60,7 +60,7 @@ void configOutputCompare(void)
     OC2CON2bits.SYNCSEL = 0x1F;     // Period Control to OC2RS
     OC2RS               = CLK_PER;  // Set period of OC2
     OC2R                = 0;        // Set duty duration of OC2
-    RPOR2bits.RP38R     = 0b010000; // Maps the OC2 output to the RP38R pin
+    RPOR2bits.RP38R     = 0b010001; // Maps the OC2 output to the RP38R pin
                                     // (pin 15) on the pick. The 0b010000 is
                                     // defined in the "Output Mapping" section
                                     // of the data sheet.
@@ -86,6 +86,7 @@ void configDevicePins(void)
     ANSELAbits.ANSA0 = DIGITAL; // Change RA0 pin to digital
     ANSELAbits.ANSA1 = DIGITAL; // Change RA1 pin to digital
     ANSELAbits.ANSA4 = DIGITAL; // Change RA4 pin to digital
+    ANSELBbits.ANSB0 = DIGITAL; // Change RB0 pin to digital (for SPI)
 
     TRISAbits.TRISA0 = OUTPUT;  // Change RA0 pin to output
     TRISAbits.TRISA1 = OUTPUT;  // Change RA1 pin to output

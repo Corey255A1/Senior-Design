@@ -118,19 +118,15 @@ int main(void) {
 
     DRIVE_EN        = EN;
     SPEEDM1         = 0;
-    SPEEDM2         = 70;
+    SPEEDM2         = 0;
     msgQueued       = EN;
     M1FWD           = 1;
-    Nop();
-    Nop();
     M1REV           = 0;
     M2FWD           = 0;
     M2REV           = 0;
-
+  
     while(1)
     {
-
-        /*
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
@@ -178,9 +174,8 @@ int main(void) {
                 //  - Disable the reverse signal for Motor 1. (Safe Check)
                 //  - Enable the forward signal for Motor 1.
                 //-------------------------------------------------------------
-                M1REV = 0;
-                M1REV = 0;
-                M1FWD = 1;
+                M1REV = DISABLE;
+                M1FWD = EN;
 
             //-----------------------------------------------------------------
             //  ... Else Motor 1 is in reverse...
@@ -190,9 +185,8 @@ int main(void) {
                 //  - Disable the forward signal for Motor 1. (Safe Check)
                 //  - Enable the reverse signal for Motor 1.
                 //-------------------------------------------------------------
-                M1FWD = 0;
-                M1FWD = 0;
-                M1REV = 1;
+                M1FWD = DISABLE;
+                M1REV = EN;
             }
 
             //-----------------------------------------------------------------
@@ -227,8 +221,6 @@ int main(void) {
             //++spiReadVal;
             //msgQueued = CLEAR;
         }
-
-        */
     }
     return 0;
 }
