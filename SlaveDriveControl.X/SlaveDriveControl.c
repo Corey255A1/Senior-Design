@@ -218,8 +218,6 @@ int main(void) {
             //-------------------------------------------------------------
             SPEEDM1 = (speedM1*OC1clkT)/10;
             SPEEDM2 = (speedM2*OC1clkT)/10;
-            //++spiReadVal;
-            //msgQueued = CLEAR;
         }
     }
     return 0;
