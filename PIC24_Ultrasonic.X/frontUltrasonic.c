@@ -75,10 +75,6 @@ void initFrontUltras( void ){
     OC1RS = 30000; // set period of OC1
     OC1R = outputDuration; // set duration of OC1
 
-    // setup output compare to interrupt
-    IPC0bits.OC1IP = 1;
-    IFS0bits.OC1IF = 0;
-
     // setup input capture module 1
     IC1CON1bits.ICM = 0x000; // turn off
     IC1TMR = 0; // clear IC1TMR
@@ -89,6 +85,7 @@ void initFrontUltras( void ){
     IFS0bits.IC1IF = 0; // clear IC1 interrupt status flag
 
     IC1CON1bits.ICTSEL = 0b000; // set IC1 to TMR3
+    IC1CON2bits.SYNCSEL = 0b00001; // set IC1 to synchronize with OC1
     //IC1CON1bits.ICI = 0;    // interrupt every capture
 
     // setup the input capture module 2
@@ -101,6 +98,7 @@ void initFrontUltras( void ){
     IFS0bits.IC2IF = 0;
 
     IC2CON1bits.ICTSEL = 0b000; // IC2 to TMR3
+    IC2CON2bits.SYNCSEL= 0b00001; // set IC2 to synchronize with OC1
     //IC2CON1bits.ICI = 0;    // interrupt every capture
 
     // turn all on
@@ -113,17 +111,6 @@ void initFrontUltras( void ){
     T3CONbits.TON = 1;  // TMR3
 } // end init
 
-void __attribute__((__interrupt__, auto_psv)) _OC1Interrupt(void)
-{
-    
-
-    IC1TMR = 0;
-    IC2TMR = 0;
-
-    // clear Timers for IC1 and IC2
-    //IC1TMR = 0;
-    //IC2TMR = 0;
-}
 
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
