@@ -53,6 +53,8 @@ unsigned echoWidth = 0;
 
 
 void initFrontUltras( void ){
+    _TRISB7 = OUTPUT;
+
     U1_RPOreg = OC1port; // set ultra1 RPO register to OC1 output
 
     U2_RBreg = INPUT; // Set ultra1 Tris RB register to input mode
@@ -107,7 +109,6 @@ void initFrontUltras( void ){
     IC2CON1bits.ICM = 0b011; // IC2 for rising edge
     IEC0bits.IC2IE = 1; // IC2 interrupts
     
-    IEC0bits.OC1IE = 1; // OC1 interrupts
     T3CONbits.TON = 1;  // TMR3
 } // end init
 
@@ -118,12 +119,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     
     leftPulse = IC1BUF;
 
-    unsigned lengthTemp = convertToDistance(leftPulse - outputDuration);
-
-    if (lengthTemp > 20)
-        leftFound = false;
-    else
-        leftFound = true;
+    leftFound = true;
     
     /*
     leftFound = false;
@@ -155,12 +151,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     
     rightPulse = IC2BUF;
 
-    unsigned lengthTemp = convertToDistance(rightPulse - outputDuration);
-
-    if (lengthTemp > 20)
-        rightFound = false;
-    else
-        rightFound = true;
+    rightFound = true;
     /*
     static enum {PingEchoLow, PingEchoHigh}PingState = PingEchoHigh;
     
@@ -235,6 +226,19 @@ double findObject(void){
 
     double angleDiff = angleA - angleB;
 
+    // find distance to the object
+    double baseDistance = leftLength * (sin(angleA * pi / 180));
+
+    // if we are too close, then we need to backup/turn
+    if (baseDistance < 10000)
+    {
+        _RB7 = HIGH;
+    }
+    else
+    {
+        _RB7 = LOW;
+    }
+
     // if the angles are less than 5 degrees apart consider it straight ahead
     if (fabs(angleDiff) <= 5 ){
         return 45;    // simulate turning 45 degrees
@@ -255,8 +259,8 @@ int main()
     {
         if (leftFound && rightFound) {
             angle = findObject();
-            Nop();
-            Nop();
+            leftFound = false;
+            rightFound = false;
         }
     }
 
