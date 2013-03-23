@@ -115,7 +115,7 @@ int main(void) {
 
     configDevicePins();
     configOutputCompare();
-    configSPICommunication();
+    //configSPICommunication();
     configInputCaptures();
     char forwardDirM1;
     char speedM1;
@@ -123,13 +123,13 @@ int main(void) {
     char speedM2;
 
     DRIVE_EN        = EN;
-    SPEEDM1         = 100;
-    SPEEDM2         = 0;
+    SPEEDM1         = 50;
+    SPEEDM2         = 50;
     msgQueued       = EN;
     M1FWD           = 1;
     M1REV           = 0;
     M2FWD           = 0;
-    M2REV           = 0;
+    M2REV           = 1;
   
     while(1)
     {
