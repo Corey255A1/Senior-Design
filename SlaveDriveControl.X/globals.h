@@ -33,7 +33,8 @@
 //  Defines for drive system.
 //-----------------------------------------------------------------------------
 #define CLK_PERIOD          0.135
-#define DRIVE_EN            _RB11
+#define SAMPNUM             10
+#define DRIVE_EN            LATBbits.LATB11
 #define SPEEDM1             OC1R
 #define SPEEDM2             OC2R
 #define M1FWD               LATAbits.LATA1

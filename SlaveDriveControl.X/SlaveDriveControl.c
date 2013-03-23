@@ -105,6 +105,12 @@
  *
  * @return int (But this should never happen)
  */
+
+long mFeedWidths[100];
+int mWidthCount = 0;
+long mFeedRunSum = 0;
+long mFeedRunAvg = 0;
+
 int main(void) {
 
     configDevicePins();
@@ -117,7 +123,7 @@ int main(void) {
     char speedM2;
 
     DRIVE_EN        = EN;
-    SPEEDM1         = 0;
+    SPEEDM1         = 100;
     SPEEDM2         = 0;
     msgQueued       = EN;
     M1FWD           = 1;
@@ -268,9 +274,70 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     {
         M1FdBckBEnd_t   = IC2BUF;   // Capture the end time from IC2 buffer
         M1FdBckBEdge    = RISE;     // Next interrupt occurs on rising edge
-        M1FdBckB_t      = M1FdBckAEnd_t - M1FdBckAStart_t;  // Calculate PW
-
+        ++M1FdBckB_Samp;            // increase the sample count
         
+        //---------------------------------------------------------------------
+        //  I noticed that the value returned from the feedback sensors didn't
+        //  really come to a steady average till about the 10th sample, or
+        //  pulse width measurement. Therefore, when monitoring the feedback
+        //  I'm only  going to worry about the tentht captured pulse, and
+        //  measure that to get a more acurate reading.
+        //---------------------------------------------------------------------
+        if (M1FdBckB_Samp == SAMPNUM)
+        {
+            M1FdBckB_Samp = 1; // reset the samp counter
+            M1FdBckB_t  = M1FdBckBEnd_t - M1FdBckBStart_t;  // Calculate PW
+
+            //-----------------------------------------------------------------
+            //  Go through the process of trying to detect the speed value
+            //  based on the pulse width returned from the feedback using
+            //  threshold detection
+            //-----------------------------------------------------------------
+            if (M1FdBckB_t == 0)
+            {
+                // Speed 0
+            }
+            else if ((M1FdBckB_t > 0)&& (M1FdBckB_t < MSpeed1_2_Thresh))
+            {
+                // speed 1
+            }
+            else if ((M1FdBckB_t > MSpeed1_2_Thresh) && (M1FdBckB_t < MSpeed2_3_Thresh) )
+            {
+                // Speed 2
+            }
+            else if ((M1FdBckB_t > MSpeed2_3_Thresh) && (M1FdBckB_t < MSpeed3_4_Thresh) )
+            {
+                // Speed 3
+            }
+            else if ((M1FdBckB_t > MSpeed3_4_Thresh) && (M1FdBckB_t < MSpeed4_5_Thresh) )
+            {
+                // Speed 4
+            }
+            else if ((M1FdBckB_t > MSpeed4_5_Thresh) && (M1FdBckB_t < MSpeed5_6_Thresh) )
+            {
+                // Speed 5
+            }
+            else if ((M1FdBckB_t > MSpeed5_6_Thresh) && (M1FdBckB_t < MSpeed6_7_Thresh) )
+            {
+                // Speed 6
+            }
+            else if ((M1FdBckB_t > MSpeed6_7_Thresh) && (M1FdBckB_t < MSpeed7_8_Thresh) )
+            {
+                // Speed 7
+            }
+            else if ((M1FdBckB_t > MSpeed7_8_Thresh) && (M1FdBckB_t < MSpeed8_9_Thresh) )
+            {
+                // speed 8
+            }
+            else if ((M1FdBckB_t > MSpeed8_9_Thresh) && (M1FdBckB_t < MSpeed9_10_Thresh) )
+            {
+                // Speed 9
+            }
+            else
+            {
+                // Speed 10
+            }
+        }
     }
 }
 
@@ -307,5 +374,6 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
         M2FdBckBEnd_t   = IC4BUF;
         M2FdBckBEdge    = RISE;
         M2FdBckB_t      = M2FdBckBEnd_t - M2FdBckBStart_t;
+
     }
 }
