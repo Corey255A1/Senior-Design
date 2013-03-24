@@ -19,12 +19,17 @@
 #define U3_RBIport _RB14
 #define U3_RBreg TRISBbits.TRISB14
 
-// Save for back ultrasonic
-// #define U2_RPOreg RPOR2bits.RP38R // This is the reg that outputs
+// Back Ultrasonic
+#define U4_RPOreg RPOR4bits.RP43R // This is the reg that outputs
+
+#define U4_RPIport 45
+#define U4_RBIport _RB13
+#define U4_RBreg TRISBbits.TRISB13
 
 void initFrontUltras(void);
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void);
 void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void);
+void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void);
 
 unsigned convertToDistance(double time);
 double findObject(void);

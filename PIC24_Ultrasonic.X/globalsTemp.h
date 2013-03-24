@@ -19,6 +19,7 @@
 #define INPUT 1
 #define OUTPUT 0
 #define OC1port 0b010000
+#define OC2port 0b010001
 #define HIGH 1
 #define LOW 0
 #define VINx100 330
