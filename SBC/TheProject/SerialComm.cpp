@@ -114,7 +114,8 @@ int SerialComm::ConfigCommPort()
     }
     
     //-------------------------------------------------------------------------
-    //  Configure the input flag for the termios structure as follows:
+    //  Configure the input flag for the termios structure to exclude the
+    //  following:
     //
     //          IGNBRK  - Ignore break condition on input.
     //          BRKINT  - Break is ignored
@@ -130,24 +131,14 @@ int SerialComm::ConfigCommPort()
                         INLCR | PARMRK | INPCK | ISTRIP | IXON);
     
     //-------------------------------------------------------------------------
-    //  Configure the output flag for the termios strucure as follows:
-    //
-    //          OCRNL   - Map carriage return to newline on output
-    //          ONLCR   - Map newline to carriage return-newline on output
-    //          ONLRET  - Don't output carriage return
-    //          ONOCR   - Don't output carriage return at column 0
-    //          ONOEOT  - 
-    //          OFILL   - Send fill caracters for a delay, rather than using a
-    //                    timed delay.
-    //          OLCUC   - Map lowercase characters to uppercase on output.
-    //          OPOST   - Enable implementation-defined output processing.
-    // config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |
-    //                     ONOCR | ONOEOT| OFILL | OLCUC | OPOST);
+    //  Configure the output flag for the termios structure.
+    //-------------------------------------------------------------------------
     config.c_oflag = 0;
     
     
     //-------------------------------------------------------------------------
-    //  Configure line processing flag for the termios structure as follows:
+    //  Configure line processing flag for the termios structure to disclude
+    //  the following:
     //
     //          ECHO    - Echo input characters
     //          ECHONL  - Echo newline character
@@ -171,8 +162,8 @@ int SerialComm::ConfigCommPort()
     //-------------------------------------------------------------------------
     //  Define the terminal special characters for the termios structure:
     //
-    //          VMIN    - Minimum number of characters for noncanonical read (1)
-    //          VTIME   - Timeout in deciseconds for noncanonical read (0)
+    //          VMIN    - Minimum number of characters for noncanonical read (0)
+    //          VTIME   - Timeout in deciseconds for noncanonical read (1)
     //-------------------------------------------------------------------------
     config.c_cc[VMIN]  = 0;
     config.c_cc[VTIME] = 1;
@@ -220,25 +211,26 @@ void SerialComm::WritePort(unsigned char* writeBuff)
  */
 int SerialComm::ReadPort(unsigned char* readBuff)
 {
+    //-------------------------------------------------------------------------
+    //  bytesRead       - Integer variable to keep track of bytes we read
+    //  buffptr         - Pointer variable
+    //  to progress through the buffer.
+    //-------------------------------------------------------------------------
     int bytesRead;
-    int loopCount = 0;
     unsigned char* buffptr = readBuff;
+    
+    //-------------------------------------------------------------------------
+    //  As long as there are messages to read, we will continued reading.
+    //-------------------------------------------------------------------------
     while ((bytesRead = read(commPort, buffptr, 1)) > 0)
     {
-        
+        //---------------------------------------------------------------------
         buffptr += bytesRead;
-        unsigned char test = buffptr[-1];
         if (buffptr[-1] == '!')
         {
             buffptr[-1] = 0;
             break;
         }
-        ++loopCount;
-        if (loopCount >= 20)
-        {
-            break;
-        }
-        
     }
     
     return bytesRead;
