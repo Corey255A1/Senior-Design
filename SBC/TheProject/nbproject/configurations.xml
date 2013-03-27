@@ -6,10 +6,11 @@
                    projectFiles="true">
       <itemPath>ColorTracking.h</itemPath>
       <itemPath>LogFile.h</itemPath>
-      <itemPath>Mapping.h</itemPath>
       <itemPath>MessageBuilder.h</itemPath>
       <itemPath>SerialComm.h</itemPath>
-      <itemPath>SoundProccessing.h</itemPath>
+      <itemPath>SoundFFT.h</itemPath>
+      <itemPath>SoundRecorder.h</itemPath>
+      <itemPath>TheMap.h</itemPath>
       <itemPath>globals.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -21,10 +22,11 @@
                    projectFiles="true">
       <itemPath>ColorTracking.cpp</itemPath>
       <itemPath>LogFile.cpp</itemPath>
-      <itemPath>Mapping.cpp</itemPath>
       <itemPath>MessageBuilder.cpp</itemPath>
       <itemPath>SerialComm.cpp</itemPath>
-      <itemPath>SoundProccessing.cpp</itemPath>
+      <itemPath>SoundFFT.cpp</itemPath>
+      <itemPath>SoundRecorder.cpp</itemPath>
+      <itemPath>TheMap.cpp</itemPath>
       <itemPath>globals.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>

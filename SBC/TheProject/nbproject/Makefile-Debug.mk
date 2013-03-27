@@ -37,10 +37,11 @@ OBJECTFILES= \
 	${OBJECTDIR}/globals.o \
 	${OBJECTDIR}/SerialComm.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/Mapping.o \
+	${OBJECTDIR}/TheMap.o \
 	${OBJECTDIR}/MessageBuilder.o \
-	${OBJECTDIR}/SoundProccessing.o \
 	${OBJECTDIR}/LogFile.o \
+	${OBJECTDIR}/SoundRecorder.o \
+	${OBJECTDIR}/SoundFFT.o \
 	${OBJECTDIR}/ColorTracking.o
 
 
@@ -83,25 +84,30 @@ ${OBJECTDIR}/main.o: main.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -I/usr/include/opencv2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
-${OBJECTDIR}/Mapping.o: Mapping.cpp 
+${OBJECTDIR}/TheMap.o: TheMap.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I/usr/include/opencv2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Mapping.o Mapping.cpp
+	$(COMPILE.cc) -g -I/usr/include/opencv2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TheMap.o TheMap.cpp
 
 ${OBJECTDIR}/MessageBuilder.o: MessageBuilder.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -I/usr/include/opencv2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/MessageBuilder.o MessageBuilder.cpp
 
-${OBJECTDIR}/SoundProccessing.o: SoundProccessing.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -I/usr/include/opencv2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SoundProccessing.o SoundProccessing.cpp
-
 ${OBJECTDIR}/LogFile.o: LogFile.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -I/usr/include/opencv2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/LogFile.o LogFile.cpp
+
+${OBJECTDIR}/SoundRecorder.o: SoundRecorder.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -I/usr/include/opencv2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SoundRecorder.o SoundRecorder.cpp
+
+${OBJECTDIR}/SoundFFT.o: SoundFFT.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -I/usr/include/opencv2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SoundFFT.o SoundFFT.cpp
 
 ${OBJECTDIR}/ColorTracking.o: ColorTracking.cpp 
 	${MKDIR} -p ${OBJECTDIR}
