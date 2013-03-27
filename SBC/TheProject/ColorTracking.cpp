@@ -91,7 +91,7 @@ void ColorTracking::addObjectToVideo (IplImage *image, CvPoint pos)
  *  @param Object to draw line to
  *  @param Middle of frame
  */
-void drawWidthDiff (IplImage *image, CvPoint object, CvPoint middle)
+void ColorTracking::drawWidthDiff (IplImage *image, CvPoint object, CvPoint middle)
 {
     cvDrawLine(image, object, middle, CV_RGB(0, 255, 0), 2);
 }
@@ -142,14 +142,14 @@ void ColorTracking::DrawPoint(IplImage *frame, IplImage *thresh)
  */
 int ColorTracking::RunColorTracking()
 {
-	// Initialize capturing live feed from the camera
-	CvCapture* capture = 0;
-	capture = cvCaptureFromCAM( CV_CAP_ANY );	
+    // Initialize capturing live feed from the camera
+    CvCapture* capture = 0;
+    capture = cvCaptureFromCAM( CV_CAP_ANY );	
     
     //cvSetCaptureProperty(capture, CV_CAP_PROP_CONTRAST, 0);
 
-	// Couldn't get a device? Throw an error and quit
-	if(!capture)
+    // Couldn't get a device? Throw an error and quit
+    if(!capture)
     {
         fprintf( stderr, "ERROR: Frame is NULL \n");
         getchar();
@@ -160,19 +160,19 @@ int ColorTracking::RunColorTracking()
     cvNamedWindow("video");
     cvNamedWindow("thresh");
 
-	// An infinite loop
-	while(true)
+    //An infinite loop
+    while(true)
     {
-		// Will hold a frame captured from the camera
-		IplImage* frame = 0;
-		frame = cvQueryFrame(capture);
+        // Will hold a frame captured from the camera
+        IplImage* frame = 0;
+        frame = cvQueryFrame(capture);
 
-		// If we couldn't grab a frame... quit
+        // If we couldn't grab a frame... quit
         if(!frame)
             break;
 
         // Create two images and grab red and blue thresholds
-		IplImage* imgRedThresh = GetRedThresholdedImage(frame);
+        IplImage* imgRedThresh = GetRedThresholdedImage(frame);
         IplImage* imgBlueThresh = GetBlueThresholdedImage(frame);
         
         // turn the thresholded image into a binary image (white and black only)
@@ -240,17 +240,17 @@ int ColorTracking::RunColorTracking()
         
         // Choose the images we wish to show on the windows
         // This is for debugging only
-		cvShowImage("thresh", imgRedSmooth);
-		cvShowImage("video", frame);
+        cvShowImage("thresh", imgRedSmooth);
+        cvShowImage("video", frame);
 
-		// Wait for a keypress
-		int c = cvWaitKey(10);
+        // Wait for a keypress
+        int c = cvWaitKey(10);
         // if q or Q is pressed, quit
-		if(c == 81 || c == 113)
-		{
-			// If pressed, break out of the loop
+        if(c == 81 || c == 113)
+        {
+            // If pressed, break out of the loop
             break;
-		}
+        }
         // if Space is pressed, tell us the number of contours
         else if (c == 32)
         {
@@ -258,9 +258,9 @@ int ColorTracking::RunColorTracking()
             std::cout << "Blue Contours found: " << blueCount << std::endl;
         }
 
-		// Release all images and release the memory storage for contours
+        // Release all images and release the memory storage for contours
         // this prevents memory leaks
-		cvReleaseImage(&imgRedThresh);
+        cvReleaseImage(&imgRedThresh);
         cvReleaseImage(&imgRedBinary);
         cvReleaseImage(&imgRedSmooth);
         cvReleaseMemStorage(&redStorage);
@@ -270,8 +270,8 @@ int ColorTracking::RunColorTracking()
         cvReleaseMemStorage(&blueStorage);
     }
     
-	// We're done using the camera. Other applications can now use it
-	cvReleaseCapture(&capture);
+    // We're done using the camera. Other applications can now use it
+    cvReleaseCapture(&capture);
         
     return 0;
 }
