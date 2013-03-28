@@ -11,14 +11,16 @@
 #include <math.h>
 
 double temp = 21; // degrees C
-unsigned Cair = 0;
+double Cair = 0;
 
-unsigned leftPulse = 0;
-unsigned rightPulse = 0;
+double leftPulse = 0;
+double rightPulse = 0;
 
-unsigned baseLength = 10; //cm, NEEDS UPDATED
+double baseLength = 12; //cm, NEEDS UPDATED
 
-unsigned angle = 0;
+double angle = 0;
+
+double timerPeriod = 2e-6;
 
 bool leftFound = false;
 bool rightFound = false;
@@ -30,33 +32,6 @@ int u4_time_i;
 int u4_time_f;
 
 bool backClose = false;
-
-/*
-int global_temp = 15;   // test
-int i = 0;
-
-short global_front1_edge = RISE;
-long global_front1_time = 0;
-short global_front2_edge = RISE;
-long global_front2_time = 0;
-
-// going to be static in end, this is just a placeholder
-unsigned baseLength = 10;
-unsigned a = 0;
-unsigned b = 0;
-
-int front1_time_i;
-int front1_time_f;
-int front2_time_i;
-int front2_time_f;
-
-bool leftFound = false;
-bool rightFound = false;
-
-unsigned angle = 0;
-unsigned echoWidth = 0;
-*/
-
 
 void initFrontUltras( void ){
     _TRISB7 = OUTPUT;
@@ -86,7 +61,10 @@ void initFrontUltras( void ){
     OC1CON2bits.SYNCSEL = 0x1F; // set period control to OC1RS
 
     OC1RS = 30000; // set period of OC1 - This gives us a period of ~68ms
-    OC1R = 1500; // set duration of OC1 - This gives us a pulse width of ~3ms
+    OC1R = 15000; // set duration of OC1 -
+
+    IPC0bits.OC1IP = 1;
+    IFS0bits.OC1IF = 0;
 
     // Output for Back
     OC2CON1 = 0;
@@ -142,10 +120,20 @@ void initFrontUltras( void ){
     IEC0bits.IC2IE = 1; // IC2 interrupts
     IC3CON1bits.ICM = 0b001; // IC3 for every edge
     IEC2bits.IC3IE = 1; // IC3 interrupts
+
+    IEC0bits.OC1IE = 1;
     
     T3CONbits.TON = 1;  // TMR3
 } // end init
 
+
+void __attribute__((__interrupt__, auto_psv)) _OC1Interrupt(void)
+{
+    _OC1IF = 0;
+
+    leftFound = false;
+    rightFound = false;
+}
 
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
@@ -154,8 +142,6 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     if (!leftFound)
     {
         leftPulse = IC1BUF;
-
-        leftPulse = PR3 * leftPulse;
 
         leftFound = true;
     }
@@ -168,8 +154,6 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     if (!rightFound)
     {
         rightPulse = IC2BUF;
-
-        rightPulse = PR3 * rightPulse;
 
         rightFound = true;
     }
@@ -186,25 +170,25 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
         u4_time_f = IC1BUF;
         u4_edge = RISE;
         u4_time = u4_time_i - u4_time_f;
-    }
-
-    if (u4_time < 300)
-    {
-        backClose = true;
-    }
-    else
-    {
-        backClose = false;
+        // once we have the time, convert to distance
+        if (convertToDistance(u4_time * timerPeriod) < 5)
+        {
+            backClose = true;
+        }
+        else
+        {
+            backClose = false;
+        }
     }
 }
 
-unsigned convertToDistance(double time){
+double convertToDistance(double time){
     // take in time and convert to distance
-    unsigned distance = 0;
+    double distance = 0;
 
     // S = Cair * time (S = distance traveled)
     // S/2 = distance to object
-    distance = (unsigned)(Cair>>1)*time;
+    distance = (Cair*time) / 2;
 
     return distance;
 }
@@ -214,9 +198,9 @@ double findObject(void){
     // one edge is global_u1_time, other is global_u2_time
 
     // perform law of cosines, let u1 = a, u2 = b, and base = c
-    unsigned leftLength = convertToDistance(leftPulse);
-    unsigned rightLength = convertToDistance(rightPulse);
-    unsigned c = baseLength;
+    double leftLength = convertToDistance(leftPulse * timerPeriod);
+    double rightLength = convertToDistance(rightPulse * timerPeriod);
+    double c = baseLength;
 
     double preAngleA = (rightLength * rightLength + c * c - leftLength * leftLength) / (2 * rightLength * c);
     double angleA = acos(preAngleA) * 180 / pi;
@@ -230,7 +214,7 @@ double findObject(void){
     double baseDistance = leftLength * (sin(angleA * pi / 180));
 
     // if we are too close, then we need to backup/turn
-    if (baseDistance < 10000)
+    if (baseDistance > 40)
     {
         _RB7 = HIGH;
     }
@@ -254,13 +238,11 @@ double findObject(void){
 int main()
 {
     initFrontUltras();
-    Cair = 33150 + 60 * temp;
+    Cair = 33150 + (60 * temp);
     while (1)
     {
         if (leftFound && rightFound) {
             angle = findObject();
-            leftFound = false;
-            rightFound = false;
         }
 
         if (backClose) {

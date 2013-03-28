@@ -6,7 +6,6 @@
                    projectFiles="true">
       <itemPath>frontUltrasonic.h</itemPath>
       <itemPath>globalsTemp.h</itemPath>
-      <itemPath>sideUltrasonic.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -16,7 +15,6 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>frontUltrasonic.c</itemPath>
-      <itemPath>sideUltrasonic.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

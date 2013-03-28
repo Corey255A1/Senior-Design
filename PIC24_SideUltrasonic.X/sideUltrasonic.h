@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   sideUltrasonic.h
  * Author: Dan
  *

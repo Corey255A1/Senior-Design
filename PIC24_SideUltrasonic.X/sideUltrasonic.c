@@ -59,7 +59,7 @@ int u8_time_f;
 void initSideUltras( void ){
     U5_RPOreg = OC1port; // set ultra1 RPO register to OC1 output
     U6_RPOreg = OC1port;
-    
+
     U7_RPOreg = OC1port;
     U8_RPOreg = OC1port;
 
@@ -144,7 +144,7 @@ void initSideUltras( void ){
     IEC2bits.IC3IE = 1; // IC3 interrupts
     IC4CON1bits.ICM = 0b001; // IC4 for every edge
     IEC2bits.IC4IE = 1; // IC4 interrupts
-    
+
     T3CONbits.TON = 1;  // TMR3 ON
 } // end init
 
@@ -261,4 +261,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
         leftLeftPulse = u8_time;
         foundLeftLeft = true;
     }
+}
+
+int main()
+{
+    return 0;
 }
