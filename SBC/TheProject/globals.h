@@ -5,6 +5,11 @@
  * Created on March 26, 2013, 4:36 AM
  */
 
+#include <string>
+#include <string.h>
+#include <sstream>
+using namespace std;
+
 #define FAIL                    0
 #define FALSE                   0
 #define TRUE                    1
@@ -14,10 +19,13 @@
 #define FAIL_GET_ATTRIB         -3
 #define BUFF_SIZE               100
 
+
+
 #ifndef GLOBALS_H
 #define	GLOBALS_H
 
 
+string IntToString(int number);
 
 #endif	/* GLOBALS_H */
 
