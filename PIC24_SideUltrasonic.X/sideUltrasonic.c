@@ -265,5 +265,24 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
 
 int main()
 {
+    initSideUltras();
+    Cair = 33150 + (60 * temp);
+    while(1)
+    {
+        if (foundLeftLeft && foundLeftRight)
+        {
+            findObject(leftLeftPulse, leftRightPulse);
+            foundLeftLeft = false;
+            foundLeftRight = false;
+        }
+
+        if (foundRightLeft && foundRightRight)
+        {
+            findObject(rightLeftPulse, rightRightPulse);
+            foundRightLeft = false;
+            foundRightRight = false;
+        }
+    }
+
     return 0;
 }
