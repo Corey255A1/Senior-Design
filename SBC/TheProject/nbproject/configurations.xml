@@ -67,6 +67,8 @@
             <linkerLibLibItem>opencv_highgui</linkerLibLibItem>
             <linkerLibLibItem>opencv_imgproc</linkerLibLibItem>
             <linkerLibLibItem>opencv_imgproc</linkerLibLibItem>
+            <linkerLibLibItem>fftw3</linkerLibLibItem>
+            <linkerLibLibItem>portaudio</linkerLibLibItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>

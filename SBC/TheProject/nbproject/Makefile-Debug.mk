@@ -59,7 +59,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-Wl,-rpath /usr/include/opencv2 -lopencv_core -lopencv_core -lopencv_highgui -lopencv_highgui -lopencv_imgproc -lopencv_imgproc
+LDLIBSOPTIONS=-Wl,-rpath /usr/include/opencv2 -lopencv_core -lopencv_core -lopencv_highgui -lopencv_highgui -lopencv_imgproc -lopencv_imgproc -lfftw3 -lportaudio
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}

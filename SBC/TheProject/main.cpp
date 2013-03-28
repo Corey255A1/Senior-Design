@@ -63,8 +63,8 @@ int main(int argc, char** argv)
     //-------------------------------------------------------------------------
     //  Function specific variables - Native Types
     //-------------------------------------------------------------------------
-    unsigned char commOutMsg[BUFF_SIZE+1] = "EMMA WATSON!";
-    unsigned char commInMsg[BUFF_SIZE+1] = "";
+    unsigned char commOutMsg[BUFF_SIZE+1] = {0};
+    unsigned char commInMsg[BUFF_SIZE+1] = {0};
     int rc;
     long t = 0;
     int runPhase = 0;
@@ -180,13 +180,28 @@ int main(int argc, char** argv)
     
     
     
-    int byteCount;
+    int tempCount = 0;
+    float pi = 3.14;
+    unsigned char piFixed = pi * 32;
     
+    commOutMsg[0] = 'G';
+    commOutMsg[1] = 'S';
+    //commOutMsg[2] = piFixed;
+    commOutMsg[2] = '!';
+    
+    //uCharCat(commOutMsg, commOutMsg. sizeof(commOutMsg));
+    //int temp = strlen(reinterpret_cast <const char*>(commOutMsg));
+    
+    //commOutMsg[2] = piFixed;
     //-------------------------------------------------------------------------
     //  Main Working loop. Exit still has yet to be determined.
     //-------------------------------------------------------------------------
     while (1)
     {
+            serialPort.WritePort(commOutMsg);
+            
+            serialPort.ReadPort(commInMsg);
+        
         //---------------------------------------------------------------------
         //  Gather camera information.
         //---------------------------------------------------------------------
@@ -194,8 +209,8 @@ int main(int argc, char** argv)
         //---------------------------------------------------------------------
         //  Write or Query PIC information.
         //---------------------------------------------------------------------
-        serialPort.WritePort(commOutMsg);
-        byteCount = serialPort.ReadPort(commInMsg);
+        
+        ++tempCount;
     }
     serialPort.closeConnection();
     

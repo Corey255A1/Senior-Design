@@ -14,3 +14,17 @@ string IntToString(int number)
     stream << number;
     return stream.str();
 }
+
+void uCharCat(unsigned char* destBuff, unsigned char* sourceBuff, int destBuffSize)
+{
+    int destLength = strlen(reinterpret_cast <const char*>(destBuff));
+    int sourceLength = strlen(reinterpret_cast <const char*>(sourceBuff));
+    int destSize = sizeof(destBuff);
+    if ((sourceLength + destLength) < destLength)
+    {
+        for (int i = 0; i < sourceLength; ++i)
+        {
+            destBuff[i + destLength] = sourceBuff[i];
+        }
+    }
+}

@@ -173,8 +173,8 @@ int SerialComm::ConfigCommPort()
     // Communication speed (simple version, using the predefined
     // constants)
     //-------------------------------------------------------------------------
-    cfsetispeed(&config, B19200);
-    cfsetospeed(&config, B19200);
+    cfsetispeed(&config, B38400);
+    cfsetospeed(&config, B38400);
     
     //-------------------------------------------------------------------------
     // Apply the configuration to the communication port.
@@ -218,12 +218,13 @@ int SerialComm::ReadPort(unsigned char* readBuff)
     //-------------------------------------------------------------------------
     int bytesRead;
     unsigned char* buffptr = readBuff;
-    
+    int loopCount = 0;
     //-------------------------------------------------------------------------
     //  As long as there are messages to read, we will continued reading.
     //-------------------------------------------------------------------------
     while ((bytesRead = read(commPort, buffptr, 1)) > 0)
     {
+        ++loopCount;
         //---------------------------------------------------------------------
         buffptr += bytesRead;
         if (buffptr[-1] == '!')
@@ -231,6 +232,7 @@ int SerialComm::ReadPort(unsigned char* readBuff)
             buffptr[-1] = 0;
             break;
         }
+        
     }
     
     return bytesRead;

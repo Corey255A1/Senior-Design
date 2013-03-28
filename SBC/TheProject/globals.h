@@ -26,6 +26,7 @@ using namespace std;
 
 
 string IntToString(int number);
+void uCharCat(unsigned char* destBuff, unsigned char* sourceBuff, int destBuffSize);
 
 #endif	/* GLOBALS_H */
 
