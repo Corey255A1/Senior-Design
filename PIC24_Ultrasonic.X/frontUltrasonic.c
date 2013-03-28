@@ -16,7 +16,7 @@ double Cair = 0;
 double leftPulse = 0;
 double rightPulse = 0;
 
-double baseLength = 12; //cm, NEEDS UPDATED
+double baseLength = 7.3; //cm, NEEDS UPDATED
 
 double angle = 0;
 

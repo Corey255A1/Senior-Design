@@ -24,7 +24,7 @@ double leftRightPulse = 0;
 double rightLeftPulse = 0;
 double rightRightPulse = 0;
 
-double sideLength = 10;   // needs changed, but will be same for both
+double sideLength = 11.1;   // needs changed, but will be same for both
 
 bool foundLeftLeft = false;
 bool foundLeftRight = false;
