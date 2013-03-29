@@ -25,8 +25,8 @@ using namespace std;
 #define	GLOBALS_H
 
 
-string IntToString(int number);
-void uCharCat(unsigned char* destBuff, unsigned char* sourceBuff, int destBuffSize);
+string IntToString(int nNumber);
+void UnCharCat(unsigned char* puszDestBuff, unsigned char* puszSourceBuff, int nDestBuffSize);
 
 #endif	/* GLOBALS_H */
 

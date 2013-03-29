@@ -17,7 +17,7 @@
  */
 SerialComm::SerialComm()
 {
-    logMsg = "";
+    sLogMsg = "";
 }
 
 /**
@@ -26,7 +26,7 @@ SerialComm::SerialComm()
  */
 SerialComm::SerialComm(const SerialComm& orig)
 {
-    logMsg = "";
+    sLogMsg = "";
 }
 
 /**
@@ -42,7 +42,7 @@ SerialComm::~SerialComm()
  */
 int SerialComm::connect()
 {
-    int rc;
+    int nRC;
     //const char *portToOpen = "/dev/ttyS0";
     
     //-------------------------------------------------------------------------
@@ -52,8 +52,8 @@ int SerialComm::connect()
     //          O_NOCTTY - Port never becomes controlling terminal of process
     //          O_NDELAY - Use non-blocking I/O 
     //-------------------------------------------------------------------------
-    logMsg = "Attempting to open serial communication.\n";
-    WriteToLogFile(logMsg);
+    sLogMsg = "Attempting to open serial communication.\n";
+    WriteToLogFile(sLogMsg);
     commPort = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
     
     //-------------------------------------------------------------------------
@@ -61,16 +61,16 @@ int SerialComm::connect()
     //-------------------------------------------------------------------------
     if (commPort == -1)
     {
-        logMsg = "Error opening serial communication: ";
-        logMsg.append(strerror(errno));
-        logMsg.append("\n");
-        WriteToLogFile(logMsg);
+        sLogMsg = "Error opening serial communication: ";
+        sLogMsg.append(strerror(errno));
+        sLogMsg.append("\n");
+        WriteToLogFile(sLogMsg);
         return FAIL_OPEN_SERIAL;
     }
     else
     {
-        logMsg = "Serial communication opened successfully.\n";
-        WriteToLogFile(logMsg);
+        sLogMsg = "Serial communication opened successfully.\n";
+        WriteToLogFile(sLogMsg);
         fcntl(commPort, F_SETFL, 0);
     }
     
@@ -78,11 +78,11 @@ int SerialComm::connect()
     //  Make the call to configure the communication port for compatibility 
     //  with the master PIC.
     //-------------------------------------------------------------------------
-    rc = ConfigCommPort();
+    nRC = ConfigCommPort();
     
-    if (rc != SUCCESS)
+    if (nRC != SUCCESS)
     {
-        return rc;
+        return nRC;
     }
 }
 
@@ -98,8 +98,8 @@ int SerialComm::ConfigCommPort()
     //-------------------------------------------------------------------------
     if (!isatty(commPort))
     {
-        logMsg = "Error configuring comm channel: Port opened does not refer to a terminal connection\n";
-        WriteToLogFile(logMsg);
+        sLogMsg = "Error configuring comm channel: Port opened does not refer to a terminal connection\n";
+        WriteToLogFile(sLogMsg);
         return FAIL_NO_TERM_REF;
     }
     
@@ -108,8 +108,8 @@ int SerialComm::ConfigCommPort()
     //-------------------------------------------------------------------------
     if (tcgetattr(commPort, &config) < 0)
     {
-        logMsg = "Error configuring comm channel: Failed to get terminal attributes.\n";
-        WriteToLogFile(logMsg);
+        sLogMsg = "Error configuring comm channel: Failed to get terminal attributes.\n";
+        WriteToLogFile(sLogMsg);
         return FAIL_GET_ATTRIB;
     }
     
@@ -199,9 +199,9 @@ void SerialComm::closeConnection(){
  * Write the port with the data passed in by writeData.
  * @param writeData
  */
-void SerialComm::WritePort(unsigned char* writeBuff)
+void SerialComm::WritePort(unsigned char* puszWriteBuff)
 {
-    int rc = write(commPort, writeBuff, strlen(reinterpret_cast <const char*>(writeBuff)));
+    int rc = write(commPort, puszWriteBuff, strlen(reinterpret_cast <const char*>(puszWriteBuff)));
 }
 
 /**
@@ -209,31 +209,31 @@ void SerialComm::WritePort(unsigned char* writeBuff)
  * @param readBuff Buffer to store incoming messages.
  * @return the number of bytes read from the port.
  */
-int SerialComm::ReadPort(unsigned char* readBuff)
+int SerialComm::ReadPort(unsigned char* puszReadBuff)
 {
     //-------------------------------------------------------------------------
     //  bytesRead       - Integer variable to keep track of bytes we read
     //  buffptr         - Pointer variable
     //  to progress through the buffer.
     //-------------------------------------------------------------------------
-    int bytesRead;
-    unsigned char* buffptr = readBuff;
+    int nBytesRead;
+    unsigned char* puszBuffptr = puszReadBuff;
     int loopCount = 0;
     //-------------------------------------------------------------------------
     //  As long as there are messages to read, we will continued reading.
     //-------------------------------------------------------------------------
-    while ((bytesRead = read(commPort, buffptr, 1)) > 0)
+    while ((nBytesRead = read(commPort, puszBuffptr, 1)) > 0)
     {
         ++loopCount;
         //---------------------------------------------------------------------
-        buffptr += bytesRead;
-        if (buffptr[-1] == '!')
+        puszBuffptr += nBytesRead;
+        if (puszBuffptr[-1] == '!')
         {
-            buffptr[-1] = 0;
+            puszBuffptr[-1] = 0;
             break;
         }
         
     }
     
-    return bytesRead;
+    return nBytesRead;
 }

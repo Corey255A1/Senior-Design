@@ -26,14 +26,14 @@ public:
     SerialComm();
     SerialComm(const SerialComm& orig);
     virtual ~SerialComm();
-    void WritePort(unsigned char* writeBuff);
-    int ReadPort(unsigned char* readBuff);
+    void WritePort(unsigned char* puszWriteBuff);
+    int ReadPort(unsigned char* puszReadBuff);
     
 private:
     int ConfigCommPort();
     int commPort;
     struct termios config;
-    string logMsg;
+    string sLogMsg;
 };
 
 #endif	/* SERIALCOMM_H */

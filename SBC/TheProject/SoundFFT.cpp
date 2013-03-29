@@ -10,15 +10,38 @@
 #include <fftw3.h>
 #include "SoundRecorder.h"
 
-SoundFFT::SoundFFT() {
+/**
+ * Empty constructor for the SoundFFT class.
+ */
+SoundFFT::SoundFFT() 
+{
+    
 }
 
-SoundFFT::SoundFFT(const SoundFFT& orig) {
+/**
+ * Non-empty constructor for the SoundFFT class.
+ * @param orig
+ */
+SoundFFT::SoundFFT(const SoundFFT& orig)
+{
+    
 }
 
-SoundFFT::~SoundFFT() {
+/**
+ * Destructor for the SoundFFT class.
+ */
+SoundFFT::~SoundFFT()
+{
+    
 }
-double SoundFFT::getFreq(float sound[NUM_SECONDS * SAMPLE_RATE]){
+
+/**
+ * Analyzes an array of sound samples to determine the dominate frequency.
+ * @param sound - Buffer containing sound samples.
+ * @return - Dominate frequency within the recording.
+ */
+double SoundFFT::getFreq(float sound[NUM_SECONDS * SAMPLE_RATE])
+{
     int N=NUM_SECONDS * SAMPLE_RATE;
     printf("\n%d\n",N);
     double binsize = ((double)SAMPLE_RATE/(double)N);

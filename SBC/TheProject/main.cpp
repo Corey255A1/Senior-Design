@@ -63,20 +63,20 @@ int main(int argc, char** argv)
     //-------------------------------------------------------------------------
     //  Function specific variables - Native Types
     //-------------------------------------------------------------------------
-    unsigned char commOutMsg[BUFF_SIZE+1] = {0};
-    unsigned char commInMsg[BUFF_SIZE+1] = {0};
-    int rc;
+    unsigned char uszCommOutMsg[BUFF_SIZE+1] = {0};
+    unsigned char uszCommInMsg[BUFF_SIZE+1] = {0};
+    int nRC;
     long t = 0;
-    int runPhase = 0;
     
     //-------------------------------------------------------------------------
     //  Function specific variables - Objects
     //-------------------------------------------------------------------------
     pthread_t thread;
     SerialComm serialPort;
-    string logFilePath = "/home/robowaiter/Desktop/logfile2.txt";
-    string logMsg;
+    string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
+    string sLogMsg;
     enum STATE state = INITIALIZE;
+    SoundRecorder soundRecorder;
     
     switch (state)
     {
@@ -84,40 +84,40 @@ int main(int argc, char** argv)
             //-------------------------------------------------------------------------
             //  Open file hand for log output.
             //-------------------------------------------------------------------------
-            OpenLogFile(logFilePath);
+//            OpenLogFile(sLogFilePath);
 
             //-------------------------------------------------------------------------
             //  Attempt to open serial port for Master Pic communication.
             //-------------------------------------------------------------------------
-            rc = serialPort.connect();
+//            nRC = serialPort.connect();
 
             //-------------------------------------------------------------------------
             //  Check to make sure the serial port opened successfully.
             //-------------------------------------------------------------------------
-            if (rc != SUCCESS)
-            {
-                logMsg = "Communication Error: Failed to open serial communication:" + IntToString(rc) + ". Exiting...\n";
-                WriteToLogFile(logMsg);
-                exit(-1);
-            }
+//            if (nRC != SUCCESS)
+//            {
+//                sLogMsg = "Communication Error: Failed to open serial communication:" + IntToString(rc) + ". Exiting...\n";
+//                WriteToLogFile(sLogMsg);
+//                exit(-1);
+//            }
 
             //-------------------------------------------------------------------------
             //  Create and let the color tracking thread start running.
             //-------------------------------------------------------------------------
-            logMsg = "Creating thread...\n";
-            WriteToLogFile(logMsg);
-            //rc = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
+//            sLogMsg = "Creating thread...\n";
+//            WriteToLogFile(sLogMsg);
+            //nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
 
             //-------------------------------------------------------------------------
             //  Check to make sure thread executed successfully.
             //-------------------------------------------------------------------------
-//            if (rc)
+//            if (nRC)
 //            {
-//                logMsg = "Thread Error: Bad return code on thread creation: " + IntToString(rc) + ". Exiting...\n";
+//                sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(rc) + ". Exiting...\n";
 //                exit(-1);
 //            }
             
-            state = WAIT_FOR_TONE;
+//            state = WAIT_FOR_TONE;
             break;
             
         case WAIT_FOR_TONE:
@@ -184,12 +184,12 @@ int main(int argc, char** argv)
     float pi = 3.14;
     unsigned char piFixed = pi * 32;
     
-    commOutMsg[0] = 'G';
-    commOutMsg[1] = 'S';
+    uszCommOutMsg[0] = 'G';
+    uszCommOutMsg[1] = 'S';
     //commOutMsg[2] = piFixed;
-    commOutMsg[2] = '!';
-    
-    //uCharCat(commOutMsg, commOutMsg. sizeof(commOutMsg));
+    uszCommOutMsg[2] = '!';
+    int tempSize = sizeof(uszCommOutMsg);
+    UnCharCat(uszCommOutMsg, uszCommOutMsg, tempSize);
     //int temp = strlen(reinterpret_cast <const char*>(commOutMsg));
     
     //commOutMsg[2] = piFixed;
@@ -198,9 +198,9 @@ int main(int argc, char** argv)
     //-------------------------------------------------------------------------
     while (1)
     {
-            serialPort.WritePort(commOutMsg);
+            serialPort.WritePort(uszCommOutMsg);
             
-            serialPort.ReadPort(commInMsg);
+            serialPort.ReadPort(uszCommInMsg);
         
         //---------------------------------------------------------------------
         //  Gather camera information.

@@ -10,8 +10,11 @@
 #include "SoundRecorder.h"
 #include <portaudio.h>
 
-
-SoundRecorder::SoundRecorder() {
+/**
+ * Empty constructor for the SoundRecorder class.
+ */
+SoundRecorder::SoundRecorder()
+{
     totalFrames = NUM_SECONDS * SAMPLE_RATE; /* Record for a few seconds. */
     numSamples = totalFrames * NUM_CHANNELS;
     numBytes = numSamples * sizeof(float);
@@ -27,13 +30,29 @@ SoundRecorder::SoundRecorder() {
 
 }
 
-SoundRecorder::SoundRecorder(const SoundRecorder& orig) {
+/**
+ * Non-Empty constructor for the SoundRecorder class.
+ * @param orig
+ */
+SoundRecorder::SoundRecorder(const SoundRecorder& orig)
+{
+    
 }
 
-SoundRecorder::~SoundRecorder() {
+/**
+ * Destructor for the sound recorder class.
+ */
+SoundRecorder::~SoundRecorder()
+{
     Pa_Terminate();
 }
-void SoundRecorder::record(float rSamples[NUM_SECONDS * SAMPLE_RATE]){
+
+/**
+ * Function used to record sound for a given period of time.
+ * @param rSamples - Buffer to store all of the sound samples.
+ */
+void SoundRecorder::record(float rSamples[NUM_SECONDS * SAMPLE_RATE])
+{
     printf("RECORDING\n");
     Pa_OpenStream(
               &stream,
