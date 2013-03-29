@@ -15,6 +15,7 @@
 #include "TheMap.h"
 #include "SoundRecorder.h"
 #include "SoundFFT.h"
+#include "MessageBuilder.h"
 
 using namespace std;
 
@@ -67,6 +68,10 @@ int main(int argc, char** argv)
     unsigned char uszCommInMsg[BUFF_SIZE+1] = {0};
     int nRC;
     long t = 0;
+    bool bGetLowShelf = FALSE;
+    bool bGetUpperShelf = FALSE;
+    float frgSoundSamps[NUM_SECONDS * SAMPLE_RATE];
+    double dblFreqSamp;
     
     //-------------------------------------------------------------------------
     //  Function specific variables - Objects
@@ -77,6 +82,8 @@ int main(int argc, char** argv)
     string sLogMsg;
     //enum STATE state = INITIALIZE;
     SoundRecorder soundRecorder;
+    SoundFFT soundFFT;
+    TheMap theMap;
     enum STATE state = WAIT_FOR_TONE;
     
     switch (state)
@@ -122,15 +129,50 @@ int main(int argc, char** argv)
             break;
             
         case WAIT_FOR_TONE:
+            
             //-----------------------------------------------------------------
             //  Sound Processing
             //-----------------------------------------------------------------
-            float frgSoundSamps[NUM_SECONDS * SAMPLE_RATE];
+            dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
             soundRecorder.record(frgSoundSamps);
+            
+            //-----------------------------------------------------------------
+            //  If the higher frequency is heard, then RoboWaiter needs to get
+            //  the plate on the lower shelf, and the state needs to advance
+            //  to SCAN_FOR_POS...
+            //-----------------------------------------------------------------
+            if (dblFreqSamp == LOW_SHELF_CLEAN_FREQ)
+            {
+                bGetUpperShelf  = FALSE;
+                bGetLowShelf    = TRUE;
+                state = SCAN_FOR_POS;
+            }
+            
+            //-----------------------------------------------------------------
+            //  ... Else if the lower frequency is heard, then RoboWaiter needs 
+            //  to get the plate on the lower shelf, and the state needs to 
+            //  advance to SCAN_FOR_POS...
+            //-----------------------------------------------------------------
+            else if (dblFreqSamp == UPPER_SHELF_FREQ)
+            {
+                bGetLowShelf    = FALSE;
+                bGetUpperShelf  = TRUE;
+                state = SCAN_FOR_POS;
+            }
+            
+            //-----------------------------------------------------------------
+            //  ... Else remain at the current state.
+            //-----------------------------------------------------------------
+            else
+            {
+                state = state;
+            }
             
             break;
             
         case SCAN_FOR_POS:
+            
+            
             break;
             
         case FIND_FRIDGE_TRIGGER:
@@ -187,10 +229,12 @@ int main(int argc, char** argv)
     float pi = 3.14;
     unsigned char piFixed = pi * 32;
     
-    uszCommOutMsg[0] = 'G';
-    uszCommOutMsg[1] = 'S';
+    BuildMotorGet(uszCommOutMsg);
+    BuildSensGet(uszCommOutMsg, ucTempSensSel);
+    //uszCommOutMsg[0] = 'G';
+    //uszCommOutMsg[1] = 'S';
     //commOutMsg[2] = piFixed;
-    uszCommOutMsg[2] = '!';
+    //uszCommOutMsg[2] = '!';
     int tempSize = sizeof(uszCommOutMsg);
     UnCharCat(uszCommOutMsg, uszCommOutMsg, tempSize);
     //int temp = strlen(reinterpret_cast <const char*>(commOutMsg));

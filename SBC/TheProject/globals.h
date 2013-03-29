@@ -27,6 +27,8 @@ using namespace std;
 #define FAIL_NO_TERM_REF        -2
 #define FAIL_GET_ATTRIB         -3
 #define BUFF_SIZE               100
+#define LOW_SHELF_CLEAN_FREQ    3.8
+#define UPPER_SHELF_FREQ        2.5
 
 
 //-----------------------------------------------------------------------------

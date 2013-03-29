@@ -1,5 +1,5 @@
 build/Debug/GNU-Linux-x86/main.o: main.cpp SerialComm.h ColorTracking.h \
- globals.h LogFile.h TheMap.h SoundRecorder.h SoundFFT.h
+ globals.h LogFile.h TheMap.h SoundRecorder.h SoundFFT.h MessageBuilder.h
 
 SerialComm.h:
 
@@ -14,3 +14,5 @@ TheMap.h:
 SoundRecorder.h:
 
 SoundFFT.h:
+
+MessageBuilder.h:
