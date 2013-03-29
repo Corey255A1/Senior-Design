@@ -115,7 +115,7 @@ int main(void) {
 
     configDevicePins();
     configOutputCompare();
-    //configSPICommunication();
+    configSPICommunication();
     configInputCaptures();
     char forwardDirM1;
     char speedM1;
@@ -123,20 +123,21 @@ int main(void) {
     char speedM2;
 
     DRIVE_EN        = EN;
-    SPEEDM1         = 50;
-    SPEEDM2         = 50;
+    SPEEDM1         = 75;
+    SPEEDM2         = 75;
     msgQueued       = EN;
-    M1FWD           = 1;
-    M1REV           = 0;
-    M2FWD           = 0;
-    M2REV           = 1;
+    M1FWD           = 0;
+    M1REV           = 1;
+    M2FWD           = 1;
+    M2REV           = 0;
   
     while(1)
     {
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
-        if (curConfig != INMSG)
+        //if (curConfig != INMSG)
+        if (SPEEDM1 == 20)
         {
             curConfig = INMSG;
                     
