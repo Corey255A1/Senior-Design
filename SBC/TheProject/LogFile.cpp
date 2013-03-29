@@ -1,3 +1,10 @@
+/* 
+ * File:   LogFile.cpp
+ * @author Design Team 12
+ *
+ * Created on March 26, 2013, 5:48 AM 
+ */
+
 #include "LogFile.h"
 #include "globals.h"
 #include <stdio.h>   /* Standard input/output definitions */

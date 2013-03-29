@@ -1,6 +1,6 @@
 /* 
  * File:   MessageBuilder.h
- * Author: robowaiter
+ * @author Design Team 12
  *
  * Created on March 26, 2013, 1:23 PM
  */

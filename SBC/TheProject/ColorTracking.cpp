@@ -1,6 +1,6 @@
 /* 
  * File:   ColorTracking.cpp
- * Author: Dan
+ * @author Design Team 12
  *
  * 
  * Track colors with circles. Send signal out to say color was detected.

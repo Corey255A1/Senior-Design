@@ -1,6 +1,6 @@
 /* 
  * File:   main.cpp
- * Author: robo-waiter
+ * @author Design Team 12
  *
  * Created on December 31, 2006, 7:07 PM
  */
@@ -75,25 +75,26 @@ int main(int argc, char** argv)
     SerialComm serialPort;
     string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
     string sLogMsg;
-    enum STATE state = INITIALIZE;
+    //enum STATE state = INITIALIZE;
     SoundRecorder soundRecorder;
+    enum STATE state = WAIT_FOR_TONE;
     
     switch (state)
     {
         case INITIALIZE:
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
             //  Open file hand for log output.
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
 //            OpenLogFile(sLogFilePath);
 
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
             //  Attempt to open serial port for Master Pic communication.
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
 //            nRC = serialPort.connect();
 
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
             //  Check to make sure the serial port opened successfully.
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
 //            if (nRC != SUCCESS)
 //            {
 //                sLogMsg = "Communication Error: Failed to open serial communication:" + IntToString(rc) + ". Exiting...\n";
@@ -101,16 +102,16 @@ int main(int argc, char** argv)
 //                exit(-1);
 //            }
 
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
             //  Create and let the color tracking thread start running.
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
 //            sLogMsg = "Creating thread...\n";
 //            WriteToLogFile(sLogMsg);
             //nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
 
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
             //  Check to make sure thread executed successfully.
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
 //            if (nRC)
 //            {
 //                sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(rc) + ". Exiting...\n";
@@ -121,9 +122,11 @@ int main(int argc, char** argv)
             break;
             
         case WAIT_FOR_TONE:
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
             //  Sound Processing
-            //-------------------------------------------------------------------------
+            //-----------------------------------------------------------------
+            float frgSoundSamps[NUM_SECONDS * SAMPLE_RATE];
+            soundRecorder.record(frgSoundSamps);
             
             break;
             

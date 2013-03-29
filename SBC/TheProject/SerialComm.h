@@ -1,13 +1,21 @@
 /* 
  * File:   SerialComm.h
- * Author: robo-waiter
+ * @author Design Team 12
  *
  * Created on December 31, 2006, 7:33 PM
+ * 
+ * Header for the SerialComm class. This class is used to handle opening,
+ * writing to, reading from, and closing a serial port. Within the scope of
+ * the project, this enables serial communication between the SBC and the
+ * master PIC.
  */
 
 #ifndef SERIALCOMM_H
-#define	SERIALCOMM_H
 
+//-----------------------------------------------------------------------------
+//  Include directories.
+//-----------------------------------------------------------------------------
+#define	SERIALCOMM_H
 #include <stdio.h>   /* Standard input/output definitions */
 #include <unistd.h>  /* UNIX standard function definitions */
 #include <fcntl.h>   /* File control definitions */
@@ -18,6 +26,9 @@
 
 using namespace std;
 
+//-----------------------------------------------------------------------------
+//  Class variable and function declarations.
+//-----------------------------------------------------------------------------
 class SerialComm {
     
 public:

@@ -1,13 +1,20 @@
 /* 
  * File:   SoundRecorder.h
- * Author: corey
+ * @author Design Team 12
  *
  * Created on March 17, 2013, 11:08 PM
+ * 
+ * Header for the SoundRecorder class. In the scope of the design, this class
+ * can be used in order to handle recording external audio from the 
+ * surrounding environment.
  */
 
 #ifndef SOUNDRECORDER_H
-#define	SOUNDRECORDER_H
 
+//-----------------------------------------------------------------------------
+//  Variable definitions.
+//-----------------------------------------------------------------------------
+#define	SOUNDRECORDER_H
 #define SAMPLE_RATE  (44100)
 #define FRAMES_PER_BUFFER (1024)
 #define NUM_SECONDS     (2)
@@ -17,8 +24,15 @@
 #define SAMPLE_SILENCE  (0.0f)
 #define PRINTF_S_FORMAT "%.8f"
 
+//-----------------------------------------------------------------------------
+//  Include directories
+//-----------------------------------------------------------------------------
 #include <portaudio.h>
 
+
+//-----------------------------------------------------------------------------
+//  Class variable and function declarations.
+//-----------------------------------------------------------------------------
 class SoundRecorder {
 public:
     SoundRecorder();

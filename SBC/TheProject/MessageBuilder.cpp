@@ -1,3 +1,10 @@
+/* 
+ * File:   MessageBuilder.cpp
+ * @author Design Team 12
+ *
+ * Created on March 26, 2013, 1:23 PM
+ */
+
 #include "MessageBuilder.h"
 #include "string.h"
 

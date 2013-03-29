@@ -1,15 +1,24 @@
 /* 
  * File:   globals.h
- * Author: robowaiter
+ * @author Design Team 12
  *
  * Created on March 26, 2013, 4:36 AM
+ * 
+ * General global declaration and definitions for any variables and helper
+ * functions that are deemed necessary.
  */
 
+//-----------------------------------------------------------------------------
+//  Include directories
+//-----------------------------------------------------------------------------
 #include <string>
 #include <string.h>
 #include <sstream>
 using namespace std;
 
+//-----------------------------------------------------------------------------
+//  General definitions.
+//-----------------------------------------------------------------------------
 #define FAIL                    0
 #define FALSE                   0
 #define TRUE                    1
@@ -20,7 +29,9 @@ using namespace std;
 #define BUFF_SIZE               100
 
 
-
+//-----------------------------------------------------------------------------
+//  Helper function declarations.
+//-----------------------------------------------------------------------------
 #ifndef GLOBALS_H
 #define	GLOBALS_H
 

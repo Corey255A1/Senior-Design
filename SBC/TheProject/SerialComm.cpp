@@ -1,6 +1,6 @@
 /* 
  * File:   SerialComm.cpp
- * Author: robo-waiter
+ * @author Design Team 12
  * 
  * Created on December 31, 2006, 7:33 PM
  */

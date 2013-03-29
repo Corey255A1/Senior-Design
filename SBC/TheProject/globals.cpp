@@ -1,6 +1,10 @@
-/**
- * Global Variables.
- * */
+/*
+ * File:   globals.cpp
+ * @author Design Team 12
+ * 
+ * Created on March 26, 2013, 4:36 AM
+ */
+
 #include "globals.h"
 
 /**

@@ -1,18 +1,24 @@
 /* 
  * File:   ColorTracking.h
- * Author: robo-waiter
+ * @author Design Team 12
  *
  * Created on January 6, 2007, 2:21 PM
  */
 
 #ifndef COLORTRACKING_H
-#define	COLORTRACKING_H
 
+//-----------------------------------------------------------------------------
+//  Include directories.
+//-----------------------------------------------------------------------------
+
+#define	COLORTRACKING_H
 #include <stdlib.h>
 #include <stdio.h>
 #include "opencv2/opencv.hpp"
 
-
+//-----------------------------------------------------------------------------
+//  Class variable and function declearations.
+//-----------------------------------------------------------------------------
 class ColorTracking
 {
     

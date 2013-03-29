@@ -1,6 +1,6 @@
 /* 
  * File:   TheMap.cpp
- * Author: Corey Wunderlich
+ * @author Design Team 12
  * 
  * Created on March 17, 2013, 2:53 PM
  */

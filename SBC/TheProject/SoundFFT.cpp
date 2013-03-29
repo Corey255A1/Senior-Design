@@ -1,6 +1,6 @@
 /* 
  * File:   SoundFFT.cpp
- * Author: corey
+ * @author Design Team 12
  * 
  * Created on March 17, 2013, 11:50 PM
  */
@@ -9,6 +9,7 @@
 #include "SoundFFT.h"
 #include <fftw3.h>
 #include "SoundRecorder.h"
+#include "LogFile.h"
 
 /**
  * Empty constructor for the SoundFFT class.
@@ -42,15 +43,27 @@ SoundFFT::~SoundFFT()
  */
 double SoundFFT::getFreq(float sound[NUM_SECONDS * SAMPLE_RATE])
 {
+    //-------------------------------------------------------------------------
+    //  Initialization Variables
+    //-------------------------------------------------------------------------
     int N=NUM_SECONDS * SAMPLE_RATE;
-    printf("\n%d\n",N);
     double binsize = ((double)SAMPLE_RATE/(double)N);
     double *inSound = (double *) malloc(sizeof(*inSound)*N);
     int i,maxbin=0;
+    
+    WriteToLogFile("Analyzing frequency sound sample frequency components.\n");
+    
+    //-------------------------------------------------------------------------
+    //  Convert the input samples to doubles for compatibility
+    //-------------------------------------------------------------------------
     for(i=0;i<N;i++){
         inSound[i] = (double) sound[i];
 //        printf("\n%f\n",sound[i]);
     }
+    
+    //-------------------------------------------------------------------------
+    //  
+    //-------------------------------------------------------------------------
     fftw_complex *outFFT = (fftw_complex*) fftw_malloc(sizeof(*outFFT)*((N/2)+1));
     fftw_plan p = fftw_plan_dft_r2c_1d(N,inSound,outFFT,FFTW_ESTIMATE);
     fftw_execute(p);

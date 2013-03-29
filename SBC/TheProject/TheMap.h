@@ -1,11 +1,21 @@
 /* 
  * File:   TheMap.h
- * Author: corey
+ * @author Design Team 12
  *
  * Created on March 17, 2013, 2:53 PM
+ * 
+ * Header for the TheMap class. The class has the ability to maintain and
+ * update (in close to real time) the map of the surroundings for RoboWaiter.
  */
 
+//-----------------------------------------------------------------------------
+//  Include directories.
+//-----------------------------------------------------------------------------
 #include <strings.h>
+
+//-----------------------------------------------------------------------------
+//  Variable definitions.
+//-----------------------------------------------------------------------------
 #ifndef THEMAP_H
 #define	THEMAP_H
 #define MAPSIZE (245)
@@ -20,6 +30,9 @@
 #define FLRSENSY 182
 #define WALLBUFFER (5)
 
+//-----------------------------------------------------------------------------
+//  Class variable and function declearations.
+//-----------------------------------------------------------------------------
 typedef struct{
     int x;
     int y;            

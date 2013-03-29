@@ -1,6 +1,6 @@
 /* 
  * File:   SoundRecorder.cpp
- * Author: corey
+ * @author Design Team 12
  * 
  * Created on March 17, 2013, 11:08 PM
  */
@@ -9,17 +9,37 @@
 #include <stdlib.h>
 #include "SoundRecorder.h"
 #include <portaudio.h>
+#include "LogFile.h"
 
 /**
  * Empty constructor for the SoundRecorder class.
  */
 SoundRecorder::SoundRecorder()
 {
+    //-------------------------------------------------------------------------
+    //  Initialization variables.
+    //-------------------------------------------------------------------------
     totalFrames = NUM_SECONDS * SAMPLE_RATE; /* Record for a few seconds. */
     numSamples = totalFrames * NUM_CHANNELS;
     numBytes = numSamples * sizeof(float);
     Pa_Initialize();
-    inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
+    
+    //-------------------------------------------------------------------------
+    //  Setup the input parameters structure for the audio stream.
+    //
+    //          device          - Device index specifying the device to be used
+    //                            for the streaming.
+    //          channelCount    - Number of channels of sound to be accessed
+    //                            by the stream.
+    //          sampleFormat    - Sample format (i.e, data type) to be used
+    //                            by the stream.
+    //          suggestedLatency- Desired latency.
+    //
+    //          hostApiSpecificStreamInfo - Data structure containing any
+    //                                      additional setup information.
+    //          
+    //-------------------------------------------------------------------------
+    inputParameters.device = Pa_GetDefaultInputDevice();
     if (inputParameters.device == paNoDevice) {
       fprintf(stderr,"Error: No default input device.\n");
     }
@@ -53,16 +73,33 @@ SoundRecorder::~SoundRecorder()
  */
 void SoundRecorder::record(float rSamples[NUM_SECONDS * SAMPLE_RATE])
 {
-    printf("RECORDING\n");
-    Pa_OpenStream(
-              &stream,
-              &inputParameters,
-              NULL,                  /* &outputParameters, */
-              SAMPLE_RATE,
-              FRAMES_PER_BUFFER,
-              paClipOff,      /* we won't output out of range samples so don't bother clipping them */
-              NULL, /* no callback, use blocking API */
-              NULL ); /* no callback, so no callback userData */
+    WriteToLogFile("Recording\n");
+    
+    //-------------------------------------------------------------------------
+    //  Here we open an audio stream with the following characteristics:
+    //-------------------------------------------------------------------------
+    Pa_OpenStream
+    (
+            &stream,          // Address of the paStream pointer that will
+                              // will receive a pointer to the newly opened
+                              // stream.
+            &inputParameters, // Data structure to customize the input
+                              // parameters for the data stream.
+            NULL,             // Data structure to customize the output
+                              // parameters for the data stream.
+            SAMPLE_RATE,      // Sample rate for input/output stream
+            FRAMES_PER_BUFFER,// Prefered block granularity for stream
+            paClipOff,        // Specific streaming characterstics
+            NULL,             // Pointer to callback function to process and
+                              // and filling input and output buffers.
+            NULL              // Pointer to be passed to the callback function.
+    );
+    
+    //-------------------------------------------------------------------------
+    //  - Start the streaming process
+    //  - Read the stream
+    //  - Close the stream
+    //-------------------------------------------------------------------------
     Pa_StartStream( stream );
     Pa_ReadStream( stream, rSamples, totalFrames );
     Pa_CloseStream( stream );
