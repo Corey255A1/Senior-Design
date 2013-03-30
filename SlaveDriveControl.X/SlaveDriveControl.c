@@ -126,8 +126,8 @@ int main(void) {
     SPEEDM1         = 75;
     SPEEDM2         = 75;
     msgQueued       = EN;
-    M1FWD           = 0;
-    M1REV           = 1;
+    M1FWD           = 1;
+    M1REV           = 0;
     M2FWD           = 1;
     M2REV           = 0;
   
@@ -139,7 +139,7 @@ int main(void) {
         //if (curConfig != INMSG)
         if (SPEEDM1 == 20)
         {
-            curConfig = INMSG;
+            curMasterConfig = INMSG;
                     
             //-----------------------------------------------------------------
             //  Here we can parse the speed and direction from the
@@ -150,10 +150,10 @@ int main(void) {
             //  Bits (11-8) are the bits for direction on Motor 2
             //  Bits (15-12) are the bits for speed on Motor 2
             //-----------------------------------------------------------------
-            forwardDirM1    = 0x000F & curConfig;
-            speedM1         = (0x00F0 & curConfig) >> 4;
-            forwardDirM2    = (0x0F000 & curConfig) >> 8;
-            speedM2         = (0xF0000 & curConfig) >> 12;
+            forwardDirM1    = 0x000F & curMasterConfig;
+            speedM1         = (0x00F0 & curMasterConfig) >> 4;
+            forwardDirM2    = (0x0F000 & curMasterConfig) >> 8;
+            speedM2         = (0xF0000 & curMasterConfig) >> 12;
 
 
             //-----------------------------------------------------------------
@@ -242,11 +242,22 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
     _IC1IF = 0;
     //-------------------------------------------------------------------------
-    //  Check to see if the M1-B input capture came first.
+    //  Check to see if the M1-A input capture came first.
     //-------------------------------------------------------------------------
-    if (M1FdBckBSet)
+    if (M1FdBckASet)
     {
 
+    }
+    if ((M1FdBckAEdge == RISE) && (M1FDBCKA_RBPORT == HIGH))
+    {
+        M1FdBckAStart_t = IC1BUF;   // Capture the start time from IC1 buffer
+        M1FdBckAEdge    = FALL;     // Next interrupt occurs on falling edge
+    }
+    else
+    {
+        M1FdBckAEnd_t   = IC1BUF;   // Capture the end time from IC1 buffer
+        M1FdBckAEdge    = RISE;     // Next interrupt occurs on rising edge
+        ++M1FdBckA_Samp;            // increase the sample count
     }
     // Get Direction of motor
 }
@@ -293,50 +304,66 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
             //  Go through the process of trying to detect the speed value
             //  based on the pulse width returned from the feedback using
             //  threshold detection
+            //
+            //      - Clear the bits (8-5) at the beginning to prep them for
+            //        being modified once the speed has been found.
             //-----------------------------------------------------------------
+            curDriveState &= 0xFF0F;    // Just clear the bits (8-5)
             if (M1FdBckB_t == 0)
             {
                 // Speed 0
+                curDriveState &= 0xFF0F;    // Just clear the bits (8-5)
             }
             else if ((M1FdBckB_t > 0)&& (M1FdBckB_t < MSpeed1_2_Thresh))
             {
                 // speed 1
+                curDriveState |= 0x0010;    // OR with 1
+
             }
             else if ((M1FdBckB_t > MSpeed1_2_Thresh) && (M1FdBckB_t < MSpeed2_3_Thresh) )
             {
-                // Speed 2
+                // speed 2
+                curDriveState |= 0x0020;    // OR with 2
             }
             else if ((M1FdBckB_t > MSpeed2_3_Thresh) && (M1FdBckB_t < MSpeed3_4_Thresh) )
             {
                 // Speed 3
+                curDriveState |= 0x0030;    // OR with 3
             }
             else if ((M1FdBckB_t > MSpeed3_4_Thresh) && (M1FdBckB_t < MSpeed4_5_Thresh) )
             {
                 // Speed 4
+                curDriveState |= 0x0040;    // OR with 4
             }
             else if ((M1FdBckB_t > MSpeed4_5_Thresh) && (M1FdBckB_t < MSpeed5_6_Thresh) )
             {
                 // Speed 5
+                curDriveState |= 0x0050;    // OR with 5
             }
             else if ((M1FdBckB_t > MSpeed5_6_Thresh) && (M1FdBckB_t < MSpeed6_7_Thresh) )
             {
                 // Speed 6
+                curDriveState |= 0x0060;    // OR with 6
             }
             else if ((M1FdBckB_t > MSpeed6_7_Thresh) && (M1FdBckB_t < MSpeed7_8_Thresh) )
             {
                 // Speed 7
+                curDriveState |= 0x0070;    // OR with 7
             }
             else if ((M1FdBckB_t > MSpeed7_8_Thresh) && (M1FdBckB_t < MSpeed8_9_Thresh) )
             {
                 // speed 8
+                curDriveState |= 0x0080;    // OR with 8
             }
             else if ((M1FdBckB_t > MSpeed8_9_Thresh) && (M1FdBckB_t < MSpeed9_10_Thresh) )
             {
                 // Speed 9
+                curDriveState |= 0x0090;    // OR with 9
             }
             else
             {
                 // Speed 10
+                curDriveState |= 0x00A0;    // OR with A
             }
         }
     }
@@ -350,6 +377,24 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
 {
     _IC3IF = 0;
+    //-------------------------------------------------------------------------
+    //  Check to see if the M1-A input capture came first.
+    //-------------------------------------------------------------------------
+    if (M2FdBckASet)
+    {
+
+    }
+    if ((M2FdBckAEdge == RISE) && (M2FDBCKA_RBPORT == HIGH))
+    {
+        M2FdBckAStart_t = IC3BUF;   // Capture the start time from IC3 buffer
+        M2FdBckAEdge    = FALL;     // Next interrupt occurs on falling edge
+    }
+    else
+    {
+        M2FdBckAEnd_t   = IC3BUF;   // Capture the end time from IC3 buffer
+        M2FdBckAEdge    = RISE;     // Next interrupt occurs on rising edge
+        ++M2FdBckA_Samp;            // increase the sample count
+    }
     // Get Direction of motor
 }
 
@@ -374,6 +419,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
     {
         M2FdBckBEnd_t   = IC4BUF;
         M2FdBckBEdge    = RISE;
+        ++M2FdBckB_Samp;            // increase the sample count
         M2FdBckB_t      = M2FdBckBEnd_t - M2FdBckBStart_t;
 
     }

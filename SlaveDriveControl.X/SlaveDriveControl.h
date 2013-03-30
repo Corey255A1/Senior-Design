@@ -12,7 +12,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void);
 //-----------------------------------------------------------------------------
 //  Global Declarations.
 //-----------------------------------------------------------------------------
-int curConfig       = 0;        // Message we read from Master
+int curMasterConfig = 0;        // Message we read from Master
 int curFdBckState   = 0;        // State from which we are reading from the
                                 // motor Hall feedback sensors.
 char msgQueued      = CLEAR;    // Let's us know if a message needs handled.
@@ -36,10 +36,10 @@ long M1FdBckB_t     = 0;
 long M2FdBckA_t     = 0;
 long M2FdBckB_t     = 0;
 
-int M1FdBckA_Samp   = 1;
-int M1FdBckB_Samp   = 1;
-int M2FdBckA_Samp   = 1;
-int M2FdBckB_Samp   = 1;
+int M1FdBckA_Samp   = 0;
+int M1FdBckB_Samp   = 0;
+int M2FdBckA_Samp   = 0;
+int M2FdBckB_Samp   = 0;
 
 long M1FdBckAStart_t = 0;
 long M1FdBckAEnd_t   = 0;
