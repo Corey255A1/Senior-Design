@@ -412,15 +412,95 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
     //-------------------------------------------------------------------------
     if ((M2FdBckBEdge == RISE) && (M2FDBCKB_RBPORT == HIGH))
     {
-        M2FdBckBStart_t = IC4BUF;
-        M2FdBckBEdge    = FALL;
+        M2FdBckBStart_t = IC4BUF;   // Capture the start time from IC4 buffer
+        M2FdBckBEdge    = FALL;     // Next interrupt occurs on falling edge
     }
+    //-------------------------------------------------------------------------
+    //  ... else we are looking at the end (falling edge) of the pulse.
+    //-------------------------------------------------------------------------
     else
     {
-        M2FdBckBEnd_t   = IC4BUF;
-        M2FdBckBEdge    = RISE;
+        M2FdBckBEnd_t   = IC4BUF;   // Capture the end time from IC4 buffer
+        M2FdBckBEdge    = RISE;     // Next interrupt occurs on rising edge
         ++M2FdBckB_Samp;            // increase the sample count
-        M2FdBckB_t      = M2FdBckBEnd_t - M2FdBckBStart_t;
 
+        //---------------------------------------------------------------------
+        //  I noticed that the value returned from the feedback sensors didn't
+        //  really come to a steady average till about the 10th sample, or
+        //  pulse width measurement. Therefore, when monitoring the feedback
+        //  I'm only  going to worry about the tentht captured pulse, and
+        //  measure that to get a more acurate reading.
+        //---------------------------------------------------------------------
+        if (M2FdBckB_Samp == SAMPNUM)
+        {
+            M2FdBckB_Samp = 1; // reset the samp counter
+            M2FdBckB_t  = M2FdBckBEnd_t - M2FdBckBStart_t;  // Calculate PW
+
+            //-----------------------------------------------------------------
+            //  Go through the process of trying to detect the speed value
+            //  based on the pulse width returned from the feedback using
+            //  threshold detection
+            //
+            //      - Clear the bits (8-5) at the beginning to prep them for
+            //        being modified once the speed has been found.
+            //-----------------------------------------------------------------
+            curDriveState &= 0x0FFF;    // Just clear the bits (8-5)
+            if (M2FdBckB_t == 0)
+            {
+                // Speed 0
+                curDriveState &= 0x0FFF;    // Just clear the bits (8-5)
+            }
+            else if ((M2FdBckB_t > 0)&& (M2FdBckB_t < MSpeed1_2_Thresh))
+            {
+                // speed 1
+                curDriveState |= 0x1000;    // OR with 1
+
+            }
+            else if ((M2FdBckB_t > MSpeed1_2_Thresh) && (M2FdBckB_t < MSpeed2_3_Thresh) )
+            {
+                // speed 2
+                curDriveState |= 0x2000;    // OR with 2
+            }
+            else if ((M2FdBckB_t > MSpeed2_3_Thresh) && (M2FdBckB_t < MSpeed3_4_Thresh) )
+            {
+                // Speed 3
+                curDriveState |= 0x3000;    // OR with 3
+            }
+            else if ((M2FdBckB_t > MSpeed3_4_Thresh) && (M2FdBckB_t < MSpeed4_5_Thresh) )
+            {
+                // Speed 4
+                curDriveState |= 0x4000;    // OR with 4
+            }
+            else if ((M2FdBckB_t > MSpeed4_5_Thresh) && (M2FdBckB_t < MSpeed5_6_Thresh) )
+            {
+                // Speed 5
+                curDriveState |= 0x5000;    // OR with 5
+            }
+            else if ((M2FdBckB_t > MSpeed5_6_Thresh) && (M2FdBckB_t < MSpeed6_7_Thresh) )
+            {
+                // Speed 6
+                curDriveState |= 0x6000;    // OR with 6
+            }
+            else if ((M2FdBckB_t > MSpeed6_7_Thresh) && (M2FdBckB_t < MSpeed7_8_Thresh) )
+            {
+                // Speed 7
+                curDriveState |= 0x7000;    // OR with 7
+            }
+            else if ((M2FdBckB_t > MSpeed7_8_Thresh) && (M2FdBckB_t < MSpeed8_9_Thresh) )
+            {
+                // speed 8
+                curDriveState |= 0x8000;    // OR with 8
+            }
+            else if ((M2FdBckB_t > MSpeed8_9_Thresh) && (M2FdBckB_t < MSpeed9_10_Thresh) )
+            {
+                // Speed 9
+                curDriveState |= 0x9000;    // OR with 9
+            }
+            else
+            {
+                // Speed 10
+                curDriveState |= 0xA000;    // OR with A
+            }
+        }
     }
 }
