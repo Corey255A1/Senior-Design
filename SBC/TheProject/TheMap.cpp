@@ -17,7 +17,8 @@ int NORTH=0;
 /**
  * Constructor creates the map
  */
-TheMap::TheMap() {
+TheMap::TheMap() 
+{
     addObject(WALL,0,0,MAPSIZE,MAPSIZE);
     addObject(OBJECT,0,30,50,100);
     addObject(OBJECT,205,40,245,90);
@@ -25,51 +26,69 @@ TheMap::TheMap() {
     addObject(FLOORSENS,155,182,156,183);
 }
 
-TheMap::TheMap(const TheMap& orig) {
+TheMap::TheMap(const TheMap& orig) 
+{
+    
 }
 
-TheMap::~TheMap() {
+TheMap::~TheMap() 
+{
+    
 }
-void TheMap::getCoords(COORDINATES crds){
+
+void TheMap::getCoords(COORDINATES crds)
+{
     crds.x=loc.x;
     crds.y=loc.y;
 }
-double TheMap::getX(){
+
+double TheMap::getX()
+{
     return locD.x;
 }
-double TheMap::getY(){
+
+double TheMap::getY()
+{
     return locD.y;
 }
+
 /**
  * Set location of the robot
  * @param crds
  */
-void TheMap::setLocation(COORDINATES crds){
+void TheMap::setLocation(COORDINATES crds)
+{
     locD.x=crds.x;
     locD.y=crds.y;
     loc.x=crds.x;
     loc.y=crds.y;
     updateLoc(locD);          
 }
+
 /**
  * Sets up the north offset
  * @param heading
  */
-void TheMap::orientNorth(double heading){
+void TheMap::orientNorth(double heading)
+{
     NORTH=heading;
 }
+
 /**
  * Simply passes back a pointer to the map just incase
  * @param mp
  */
-void TheMap::getMap(char mp[MAPSIZE][MAPSIZE]){
+void TheMap::getMap(char mp[MAPSIZE][MAPSIZE])
+{
     mp=map;
 }
+
 /** Takes in the heading directly from the compass of the slave pic
  * It then automatically accounts for the north offset and 
  * normalizes the map so that the robot and the map are on the same page
  */
-char TheMap::move(double heading){
+char TheMap::move(double heading)
+{
     double x;
     double y;
     x = cos(heading+NORTH);
@@ -100,7 +119,8 @@ char TheMap::move(double heading){
  * @param x2
  * @param y2
  */
-void TheMap::addObject(char type,int x1,int y1,int x2, int y2){
+void TheMap::addObject(char type,int x1,int y1,int x2, int y2)
+{
     int i,j;
     for(i=x1;i<x2;i++){
         map[i][y1]=type;
@@ -121,7 +141,8 @@ void TheMap::addObject(char type,int x1,int y1,int x2, int y2){
  * moves the robot and leaves a TRACE character in it's place
  * @param crds
  */
-void TheMap::updateLoc(COORDINATES_DBL crds){
+void TheMap::updateLoc(COORDINATES_DBL crds)
+{
     locD.x=crds.x;
     locD.y=crds.y;
 
@@ -136,7 +157,8 @@ void TheMap::updateLoc(COORDINATES_DBL crds){
  * so therefore by it's nature it will display all the current
  * stats the map has recorded
  */
-void TheMap::display(){
+void TheMap::display()
+{
     int x,y;
     printf("Double(x,y)=%f,%f Int(x,y)=%d,%d\n",locD.x,locD.y,loc.x,loc.y);
     printf("  ");
@@ -152,7 +174,10 @@ void TheMap::display(){
         printf("\n");
     }
 }
-double TheMap::determineHeading(COORDINATES crds){
+
+
+double TheMap::determineHeading(COORDINATES crds)
+{
     int dX = loc.x - crds.x;
     int dY = loc.y - crds.y;
     double rad = atan((double)dY/(double)dX);
