@@ -28,8 +28,8 @@ public:
     void addObjectToVideo (IplImage *image, CvPoint pos, CvScalar color, int thickness);
     int drawWidthDiff (IplImage *image, CvPoint object, CvPoint middle);
     void DrawPoint(IplImage *frame, IplImage *thresh);
-	int getRedCount(void);
-	int getBlueCount(void);
+    int getRedCount(void);
+    int getBlueCount(void);
     ColorTracking();
     ~ColorTracking();
     int RunColorTracking();

@@ -86,7 +86,7 @@ IplImage* ColorTracking::GetBlueThresholdedImage(IplImage* img)
  * @param image
  * @param pos
  */
-void ColorTracking::addObjectToVideo (IplImage *image, CvPoint pos)
+void ColorTracking::addObjectToVideo (IplImage *image, CvPoint pos, CvScalar color, int thickness)
 {
     cvDrawCircle(image, pos, thickness, color, -1);
 }
@@ -137,7 +137,7 @@ void ColorTracking::DrawPoint(IplImage *frame, IplImage *thresh)
     if(lastX>0 && lastY>0 && posX>0 && posY>0)
     {
         // Just add a circle to the frame when it finds the color
-        addObjectToVideo(frame, cvPoint(posX, posY));
+        //addObjectToVideo(frame, cvPoint(posX, posY));
 
         // find x distance from middle to object
         drawWidthDiff(frame, cvPoint(posX, posY), cvPoint(frame->width / 2, frame->height /2));
@@ -150,7 +150,7 @@ void ColorTracking::DrawPoint(IplImage *frame, IplImage *thresh)
  *  Return count of valid red objects
  *  @return Number of red objects
  */
-int getRedCount(void)
+int ColorTracking::getRedCount(void)
 {
     return validRedPoints;
 }
@@ -159,7 +159,7 @@ int getRedCount(void)
  *  Return count of valid blue objects
  *  @return Number of blue objects
  */
-int getBlueCount(void)
+int ColorTracking::getBlueCount(void)
 {
     return validBluePoints;
 }
