@@ -10,6 +10,12 @@
 #include "opencv2/opencv.hpp"
 #include "ColorTracking.h"
 
+int redDistance = 0;
+int blueDistance = 0;
+
+int validRedPoints = 0;
+int validBluePoints = 0;
+
 /**
  * Constructor for the ColorTracking class.
  */
@@ -82,7 +88,7 @@ IplImage* ColorTracking::GetBlueThresholdedImage(IplImage* img)
  */
 void ColorTracking::addObjectToVideo (IplImage *image, CvPoint pos)
 {
-    cvDrawCircle(image, pos, 15, CV_RGB(0, 255, 255), -1);
+    cvDrawCircle(image, pos, thickness, color, -1);
 }
 
 /**
@@ -91,9 +97,13 @@ void ColorTracking::addObjectToVideo (IplImage *image, CvPoint pos)
  *  @param Object to draw line to
  *  @param Middle of frame
  */
-void ColorTracking::drawWidthDiff (IplImage *image, CvPoint object, CvPoint middle)
+int ColorTracking::drawWidthDiff (IplImage *image, CvPoint object, CvPoint middle)
 {
+	int xDistance = object.x - middle.x;
+	
     cvDrawLine(image, object, middle, CV_RGB(0, 255, 0), 2);
+	
+	return xDistance;
 }
 
 /**
@@ -137,19 +147,37 @@ void ColorTracking::DrawPoint(IplImage *frame, IplImage *thresh)
 }
 
 /**
+ *  Return count of valid red objects
+ *  @return Number of red objects
+ */
+int getRedCount(void)
+{
+    return validRedPoints;
+}
+
+/**
+ *  Return count of valid blue objects
+ *  @return Number of blue objects
+ */
+int getBlueCount(void)
+{
+    return validBluePoints;
+}
+
+/**
  * The "Main" of the class. This is the master function that will
  * continuously loop and scan/process images read in from the camera.
  */
 int ColorTracking::RunColorTracking()
 {
-    // Initialize capturing live feed from the camera
-    CvCapture* capture = 0;
-    capture = cvCaptureFromCAM( CV_CAP_ANY );	
+	// Initialize capturing live feed from the camera
+	CvCapture* capture = 0;
+	capture = cvCaptureFromCAM( CV_CAP_ANY );	
     
     //cvSetCaptureProperty(capture, CV_CAP_PROP_CONTRAST, 0);
 
-    // Couldn't get a device? Throw an error and quit
-    if(!capture)
+	// Couldn't get a device? Throw an error and quit
+	if(!capture)
     {
         fprintf( stderr, "ERROR: Frame is NULL \n");
         getchar();
@@ -160,19 +188,19 @@ int ColorTracking::RunColorTracking()
     cvNamedWindow("video");
     cvNamedWindow("thresh");
 
-    //An infinite loop
-    while(true)
+	// An infinite loop
+	while(true)
     {
-        // Will hold a frame captured from the camera
-        IplImage* frame = 0;
-        frame = cvQueryFrame(capture);
+		// Will hold a frame captured from the camera
+		IplImage* frame = 0;
+		frame = cvQueryFrame(capture);
 
-        // If we couldn't grab a frame... quit
+		// If we couldn't grab a frame... quit
         if(!frame)
             break;
 
         // Create two images and grab red and blue thresholds
-        IplImage* imgRedThresh = GetRedThresholdedImage(frame);
+		IplImage* imgRedThresh = GetRedThresholdedImage(frame);
         IplImage* imgBlueThresh = GetBlueThresholdedImage(frame);
         
         // turn the thresholded image into a binary image (white and black only)
@@ -194,7 +222,34 @@ int ColorTracking::RunColorTracking()
         // Find contours of smooth image, then display contours on regular image
         // Find contours returns the number of contours found
         int redCount = cvFindContours(imgRedSmooth, redStorage, &redContours);
-        cvDrawContours(frame, redContours, CV_RGB(0, 255, 0), CV_RGB(0, 255, 0), 100, 5);
+        
+        int redPointXAvg = 0;
+        int redPointYAvg = 0;
+        
+        // iterate through all red contours and draw a box around them
+        // and draw a dot in the middle of the found object
+        for (int i = 0; i < redCount; i++)
+        {
+            CvRect rect = cvBoundingRect(redContours, 0);
+            int x = rect.x, y = rect.y, h = rect.height, w = rect.width;
+            if (w < 10000 && h < 10000){    // need to dial in this for our LEDs
+                cvRectangle(frame, cvPoint(x, y), cvPoint(x + w, y + h), CV_RGB(0, 255, 0), 1, CV_AA, 0);
+                addObjectToVideo(frame, cvPoint(x + w/2, y + h/2), CV_RGB(255, 0, 0), 2);
+                redPointXAvg += x + w/2;
+                redPointYAvg += y + h/2;
+                validRedPoints += 1;
+            }
+            redContours = redContours->h_next;
+        }
+        
+        if (validRedPoints > 0)
+        {
+            redPointXAvg = redPointXAvg / validRedPoints;
+            redPointYAvg = redPointYAvg / validRedPoints;
+            addObjectToVideo(frame, cvPoint(redPointXAvg, redPointYAvg), CV_RGB(255, 0, 255), 2);
+            blueDistance = drawWidthDiff(frame, cvPoint(redPointXAvg, redPointYAvg), cvPoint(frame->width/2, frame->height/2));
+        }
+        
         
         IplImage* imgBlueBinary = cvCreateImage(cvGetSize(frame), 8, 1);
         cvThreshold(imgBlueThresh, imgBlueBinary, 10, 255, CV_THRESH_BINARY);
@@ -209,58 +264,79 @@ int ColorTracking::RunColorTracking()
         cvThreshold(imgBlueSmooth, imgBlueSmooth, 10, 255, CV_THRESH_BINARY);
         
         int blueCount = cvFindContours(imgBlueSmooth, blueStorage, &blueContours);
-        cvDrawContours(frame, blueContours, CV_RGB(0, 255, 0), CV_RGB(0, 255, 0), 100, 5);
-//        CvMoments *Allmoments = (CvMoments*)malloc(sizeof(CvMoments));
-//        
-//        for (int i = 0; i < NC; ++i) {
-//            Allmoments[i] = moments(contours[i], false);
-//            
-//            double moment10 = cvGetSpatialMoment(moments, 1, 0);
-//            double moment01 = cvGetSpatialMoment(moments, 0, 1);
-//            double area = cvGetCentralMoment(moments, 0, 0);
-//            
-//            int posX = 0;
-//            int posY = 0;
-//            
-//            posX = moment10/area;
-//            posY = moment01/area;
-//            
-//            if (posX>0 && posY>0)
-//            {
-//                addObjectToVideo(frame, cvPoint(posX, posY));
-//            }
-//            
-//            delete moments;
-//        }
-//
-//        delete moments;
         
-        // Add the two thresholded images into one
+        int bluePointXAvg = 0;
+        int bluePointYAvg = 0;
+        int validBluePoints = 0;
+        
+        // iterate through all blue contours and draw a box around them
+        // and draw a dot in the middle of the found object
+        for (int i = 0; i < blueCount; i++)
+        {
+            CvRect rect = cvBoundingRect(blueContours, 0);
+            int x = rect.x, y = rect.y, h = rect.height, w = rect.width;
+            if (w < 10000 && h < 10000){    // need to dial in this for our LEDs
+                cvRectangle(frame, cvPoint(x, y), cvPoint(x + w, y + h), CV_RGB(0, 255, 0), 1, CV_AA, 0);
+                addObjectToVideo(frame, cvPoint(x + w/2, y + h/2), CV_RGB(0, 0, 255), 2);
+                bluePointXAvg += x + w/2;
+                bluePointYAvg += y + h/2;
+                validBluePoints += 1;
+            }
+            blueContours = blueContours->h_next;
+        }
+        
+        // if we have found valid points, calculate the average between them
+        // and draw a circle at that point. Then draw a line from the middle
+        // to that point to use as a send back value
+        if (validBluePoints > 0)
+        {
+            bluePointXAvg = bluePointXAvg / validBluePoints;
+            bluePointYAvg = bluePointYAvg / validBluePoints;
+            addObjectToVideo(frame, cvPoint(bluePointXAvg, bluePointYAvg), CV_RGB(255, 0, 255), 2);
+            blueDistance = drawWidthDiff(frame, cvPoint(bluePointXAvg, bluePointYAvg), cvPoint(frame->width/2, frame->height/2));
+        }
+        
+        // middle dot - do this at the end so it shows up in front for debugging
+        addObjectToVideo(frame, cvPoint(frame->width/2, frame->height/2), CV_RGB(0, 0, 0), 3);
+        
+        // Add the two thresholded images into one - for viewing
         cvAdd(imgRedSmooth, imgBlueSmooth, imgRedSmooth); 
         
         // Choose the images we wish to show on the windows
         // This is for debugging only
-        cvShowImage("thresh", imgRedSmooth);
-        cvShowImage("video", frame);
+		cvShowImage("thresh", imgRedSmooth);
+		cvShowImage("video", frame);
 
-        // Wait for a keypress
-        int c = cvWaitKey(10);
+		// Wait for a keypress
+		int c = cvWaitKey(10);
         // if q or Q is pressed, quit
-        if(c == 81 || c == 113)
-        {
-            // If pressed, break out of the loop
+		if(c == 81 || c == 113)
+		{
+			// If pressed, break out of the loop
             break;
-        }
+		}
         // if Space is pressed, tell us the number of contours
         else if (c == 32)
         {
-            std::cout << "Red Contours found: " << redCount << std::endl;
-            std::cout << "Blue Contours found: " << blueCount << std::endl;
+            std::cout << "Red Contours found: " << getRedCount() << std::endl;
+            std::cout << "Blue Contours found: " << getBlueCount() << std::endl;
+        }
+        // if P or p is pressed, save a screen shot
+        else if (c == 80 || c == 112)
+        {
+            cvSaveImage("test.jpg", frame);
+            std::cout << "Screen shot taken." <<  std::endl;
+        }
+        // if D or d is pressed, tell us distance to blue
+        else if (c == 68 || c == 100)
+        {
+            std::cout << "Distance to red: " << redDistance << std::endl;
+            std::cout << "Distance to blue: " << blueDistance << std::endl;
         }
 
-        // Release all images and release the memory storage for contours
+		// Release all images and release the memory storage for contours
         // this prevents memory leaks
-        cvReleaseImage(&imgRedThresh);
+		cvReleaseImage(&imgRedThresh);
         cvReleaseImage(&imgRedBinary);
         cvReleaseImage(&imgRedSmooth);
         cvReleaseMemStorage(&redStorage);
@@ -268,10 +344,15 @@ int ColorTracking::RunColorTracking()
         cvReleaseImage(&imgBlueBinary);
         cvReleaseImage(&imgBlueSmooth);
         cvReleaseMemStorage(&blueStorage);
+        
+        redDistance = 0;
+        blueDistance = 0;
+        validRedPoints = 0;
+        validBluePoints = 0;
     }
     
-    // We're done using the camera. Other applications can now use it
-    cvReleaseCapture(&capture);
+	// We're done using the camera. Other applications can now use it
+	cvReleaseCapture(&capture);
         
     return 0;
 }
