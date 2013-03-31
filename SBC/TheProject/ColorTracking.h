@@ -32,8 +32,7 @@ public:
     int getBlueCount(void);
     ColorTracking();
     ~ColorTracking();
-    int RunColorTracking();
+    int RunColorTracking(bool debug);
 };
 
 #endif	/* COLORTRACKING_H */
-
