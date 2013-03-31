@@ -267,7 +267,6 @@ int ColorTracking::RunColorTracking()
         
         int bluePointXAvg = 0;
         int bluePointYAvg = 0;
-        int validBluePoints = 0;
         
         // iterate through all blue contours and draw a box around them
         // and draw a dot in the middle of the found object
