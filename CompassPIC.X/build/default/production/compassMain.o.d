@@ -5,4 +5,6 @@ configs.h  \
  globals.h  \
 i2c.h  \
 spi.h  \
+temperature.h  \
+A2D.h  \
 ../Global_PIC/spiMessages.h 

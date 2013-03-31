@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/master.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/lcd.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/communication.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/master.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/lcd.o.d ${OBJECTDIR}/spi.o.d ${OBJECTDIR}/communication.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/master.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/lcd.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/communication.o ${OBJECTDIR}/serialcomm.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/master.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/lcd.o.d ${OBJECTDIR}/spi.o.d ${OBJECTDIR}/communication.o.d ${OBJECTDIR}/serialcomm.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/master.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/lcd.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/communication.o
+OBJECTFILES=${OBJECTDIR}/master.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/lcd.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/communication.o ${OBJECTDIR}/serialcomm.o
 
 
 CFLAGS=
@@ -99,6 +99,12 @@ ${OBJECTDIR}/communication.o: communication.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  communication.c  -o ${OBJECTDIR}/communication.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/communication.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/communication.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/serialcomm.o: serialcomm.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/serialcomm.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  serialcomm.c  -o ${OBJECTDIR}/serialcomm.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/serialcomm.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/serialcomm.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/master.o: master.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -129,6 +135,12 @@ ${OBJECTDIR}/communication.o: communication.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/communication.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  communication.c  -o ${OBJECTDIR}/communication.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/communication.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/communication.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/serialcomm.o: serialcomm.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/serialcomm.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  serialcomm.c  -o ${OBJECTDIR}/serialcomm.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/serialcomm.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/serialcomm.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

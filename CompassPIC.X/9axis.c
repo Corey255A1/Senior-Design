@@ -65,13 +65,13 @@ void init9axis(){
     i2c_ResetBus();
 
     //Setup Timer4 to be used as a trigger for information collection
-    TMR4 =0;
-    T4CON=0;
-    T4CONbits.TCKPS = 0b11; // 1:8 for now
-    _T4IP = 0x01; // Set Timer4 Interrupt Priority Level
-    IFS1bits.T4IF = 0; // Clear Timer4 Interrupt Flag
-    IEC1bits.T4IE = 1; // Enable Timer4 interrupt
-    T4CONbits.TON = 1; // turn on T4
+//    TMR4 =0;
+//    T4CON=0;
+//    T4CONbits.TCKPS = 0b11; // 1:8 for now
+//    _T4IP = 0x01; // Set Timer4 Interrupt Priority Level
+//    IFS1bits.T4IF = 0; // Clear Timer4 Interrupt Flag
+//    IEC1bits.T4IE = 1; // Enable Timer4 interrupt
+//    T4CONbits.TON = 1; // turn on T4
 }
 
 /**

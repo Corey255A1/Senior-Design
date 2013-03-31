@@ -18,6 +18,7 @@
 #include "globals.h"
 #include "configs.h"
 #include "../Global_PIC/spiMessages.h"
+#include "A2D.h"
 
 //Define the ports for information passing over SPI
 #define STEPPER_SPEED SLAVEData.inData[SPI_STEPPER_SPEED]
@@ -33,26 +34,48 @@ int main( void ) {
     TRISB=0x0FEF;//For some reason RB4 needs to be an output
     _TRISB5=0;
     initStepper();//intialize stepper
+    initADC();
+
     configSPICommunication();//turn on spi communication
     int currentSpeed=0;//set initial current speed
+   // double angle;
+    stepperSpeed(30000);
+    STEPPER_SPEED=1;
     while(1){
-        if(STEPPER_SPEED!=currentSpeed){ // if speed has changed, change it
-            stepperSpeed(STEPPER_SPEED);
-            currentSpeed=STEPPER_SPEED;
+        STEPPER_MOVING = 0xAD;
+        if(STEPPER_SPEED>0){
+            takeSteps(10000,FWD);
+            while(PTCONbits.PTEN);
+            STEPPER_SPEED=0;
         }
-        //if there are still steps in prog do not start new
-        if(STEPPER_STEPS && !global_stepsInProgress && !STEPPER_ENABLED){
-            takeSteps(STEPPER_STEPS,STEPPER_DIR);
-            STEPPER_STEPS=0;
-            STEPPER_MOVING=1;
-        }
-        if(STEPPER_ENABLED){
-            //set the out spi to the steps in progress
-            STEPPER_STEPSINPROG=global_stepsInProgress;
-        }else{
-            STEPPER_MOVING=0;
-            STEPPER_STEPSINPROG=0;
-        }
+//        angle = getAngle();
+//        posRad(angle);
+//       stepperSpeed(25000);
+//        takeSteps(2000,FWD);
+//        while(PTCONbits.PTEN);
+//        posXY(13,8);
+//
+//        posXY(18,5);
+//        posXY(18,15);
+         // takeSteps(1000,FWD);
+         // while(PTCONbits.PTEN);
+//        if(STEPPER_SPEED!=currentSpeed){ // if speed has changed, change it
+//            stepperSpeed(STEPPER_SPEED);
+//            currentSpeed=STEPPER_SPEED;
+//        }
+//        //if there are still steps in prog do not start new
+//        if(STEPPER_STEPS && !global_stepsInProgress && !STEPPER_ENABLED){
+//            takeSteps(STEPPER_STEPS,STEPPER_DIR);
+//            STEPPER_STEPS=0;
+//            STEPPER_MOVING=1;
+//        }
+//        if(STEPPER_ENABLED){
+//            //set the out spi to the steps in progress
+//            STEPPER_STEPSINPROG=global_stepsInProgress;
+//        }else{
+//            STEPPER_MOVING=0;
+//            STEPPER_STEPSINPROG=0;
+//        }
     }//endwhile
     return (EXIT_SUCCESS);
 }

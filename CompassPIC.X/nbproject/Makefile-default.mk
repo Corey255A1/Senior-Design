@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/9axis.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/i2c.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/compassMain.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/9axis.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/i2c.o.d ${OBJECTDIR}/spi.o.d ${OBJECTDIR}/compassMain.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/9axis.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/i2c.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/compassMain.o ${OBJECTDIR}/temperature.o ${OBJECTDIR}/A2D.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/9axis.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/i2c.o.d ${OBJECTDIR}/spi.o.d ${OBJECTDIR}/compassMain.o.d ${OBJECTDIR}/temperature.o.d ${OBJECTDIR}/A2D.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/9axis.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/i2c.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/compassMain.o
+OBJECTFILES=${OBJECTDIR}/9axis.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/i2c.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/compassMain.o ${OBJECTDIR}/temperature.o ${OBJECTDIR}/A2D.o
 
 
 CFLAGS=
@@ -99,6 +99,18 @@ ${OBJECTDIR}/compassMain.o: compassMain.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  compassMain.c  -o ${OBJECTDIR}/compassMain.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/compassMain.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/compassMain.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/temperature.o: temperature.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/temperature.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  temperature.c  -o ${OBJECTDIR}/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/temperature.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/temperature.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/A2D.o: A2D.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/A2D.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  A2D.c  -o ${OBJECTDIR}/A2D.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/A2D.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/A2D.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/9axis.o: 9axis.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -129,6 +141,18 @@ ${OBJECTDIR}/compassMain.o: compassMain.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/compassMain.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  compassMain.c  -o ${OBJECTDIR}/compassMain.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/compassMain.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/compassMain.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/temperature.o: temperature.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/temperature.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  temperature.c  -o ${OBJECTDIR}/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/temperature.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/temperature.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/A2D.o: A2D.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/A2D.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  A2D.c  -o ${OBJECTDIR}/A2D.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/A2D.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/A2D.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

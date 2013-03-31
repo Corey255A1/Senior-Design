@@ -4,4 +4,5 @@ spi.h  \
 stepper.h  \
  globals.h  \
 configs.h  \
-../Global_PIC/spiMessages.h 
+../Global_PIC/spiMessages.h  \
+A2D.h 
