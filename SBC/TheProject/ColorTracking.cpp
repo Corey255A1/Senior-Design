@@ -168,7 +168,7 @@ int ColorTracking::getBlueCount(void)
  * The "Main" of the class. This is the master function that will
  * continuously loop and scan/process images read in from the camera.
  */
-int ColorTracking::RunColorTracking()
+int ColorTracking::RunColorTracking(bool debug)
 {
 	// Initialize capturing live feed from the camera
 	CvCapture* capture = 0;
@@ -184,9 +184,12 @@ int ColorTracking::RunColorTracking()
         return -1;
     }
 
-    // The two windows we'll be using
-    cvNamedWindow("video");
-    cvNamedWindow("thresh");
+    // The two windows we'll be using - for debugging
+    if (debug)
+    {
+        cvNamedWindow("video");
+        cvNamedWindow("thresh");
+    }
 
 	// An infinite loop
 	while(true)
@@ -303,8 +306,11 @@ int ColorTracking::RunColorTracking()
         
         // Choose the images we wish to show on the windows
         // This is for debugging only
-		cvShowImage("thresh", imgRedSmooth);
-		cvShowImage("video", frame);
+        if (debug)
+        {
+            cvShowImage("thresh", imgRedSmooth);
+            cvShowImage("video", frame);
+        }
 
 		// Wait for a keypress
 		int c = cvWaitKey(10);
