@@ -12,8 +12,9 @@
 extern "C" {
 #endif
 
-
+    //-------------------------------------------------------------------------
     // Functions
+    //-------------------------------------------------------------------------
     void ResetMessage(unsigned char* puszmMgBuff);
     void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned char ucMS1, unsigned char ucMD2, unsigned char ucMS2);
     void BuildMotorGet(unsigned char* puszMsgBuff);
@@ -21,9 +22,27 @@ extern "C" {
     void BuildArmGet(unsigned char* puszMsgBuff);
     void BuildSensGet(unsigned char* puszMsgBuff, unsigned char ucSensorSelect);
     
-    extern const unsigned char ucMsgEndSym;
+    //-------------------------------------------------------------------------
+    //  Message Terminator
+    //-------------------------------------------------------------------------
+    extern const unsigned char ucTermSym;
     
+    //-------------------------------------------------------------------------
+    // Componenet Select
+    //-------------------------------------------------------------------------
+    extern const unsigned char ucMotor;
+    extern const unsigned char ucArm;
+    extern const unsigned char ucSensor;
+    
+    //-------------------------------------------------------------------------
+    // Serial Port Request Options.
+    //-------------------------------------------------------------------------
+    extern const unsigned char ucSet;
+    extern const unsigned char ucGet;
+    
+    //-------------------------------------------------------------------------
     // Sensor Select Constants.
+    //-------------------------------------------------------------------------
     extern const unsigned char ucTempSensSel;
     extern const unsigned char ucWhiteLEDSel;
     extern const unsigned char ucInfLEDSel;
@@ -31,7 +50,9 @@ extern "C" {
     extern const unsigned char ucUltSel;
     extern const unsigned char ucAllDevSel;
     
+    //-------------------------------------------------------------------------
     // Speed Select Constant.
+    //-------------------------------------------------------------------------
     extern const unsigned char ucSpeed0;
     extern const unsigned char ucSpeed1;
     extern const unsigned char ucSpeed2;
@@ -44,7 +65,9 @@ extern "C" {
     extern const unsigned char ucSpeed9;
     extern const unsigned char ucSpeed10;
     
+    //-------------------------------------------------------------------------
     // Direction Select.
+    //-------------------------------------------------------------------------
     extern const unsigned char ucForward;
     extern const unsigned char ucReverse;
 

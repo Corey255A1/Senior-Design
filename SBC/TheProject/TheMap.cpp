@@ -15,7 +15,7 @@ COORDINATES fridgeLoc;
 int NORTH=0;
 
 /**
- * Constructor creates the map
+ * Constructor for the TheMap class.
  */
 TheMap::TheMap() 
 {
@@ -26,27 +26,46 @@ TheMap::TheMap()
     addObject(FLOORSENS,155,182,156,183);
 }
 
+/**
+ * Second constructor for the TheMap class.
+ * @param orig
+ */
 TheMap::TheMap(const TheMap& orig) 
 {
     
 }
 
+/**
+ * Destructor for the TheMap class.
+ */
 TheMap::~TheMap() 
 {
     
 }
 
+/**
+ * Gets the current coordinates of the robot within the map.
+ * @param crds - Coordinate structure to hold the current coordinates.
+ */
 void TheMap::getCoords(COORDINATES crds)
 {
     crds.x=loc.x;
     crds.y=loc.y;
 }
 
+/**
+ * Get the individual X position of the robot.
+ * @return The X-Position of the robot.
+ */
 double TheMap::getX()
 {
     return locD.x;
 }
 
+/**
+ * Get the individual y position of the robot.
+ * @return The Y-Position of the robot.
+ */
 double TheMap::getY()
 {
     return locD.y;
@@ -54,7 +73,7 @@ double TheMap::getY()
 
 /**
  * Set location of the robot
- * @param crds
+ * @param crds - Current coordinates of the robot.
  */
 void TheMap::setLocation(COORDINATES crds)
 {
