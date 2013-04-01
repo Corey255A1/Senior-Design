@@ -21,6 +21,8 @@ using namespace std;
 
 #define NUM_THREADS     5
 
+char cDebug = FALSE;
+
 enum STATE {
     INITIALIZE,
     WAIT_FOR_TONE,
@@ -50,7 +52,7 @@ void* ColorTrackingThread(void *threadid)
     printf("Starting Color Tracking Thread with thread id: #%ld\n", tID);
     
     ColorTracking colorTracker;
-    colorTracker.RunColorTracking();
+    colorTracker.RunColorTracking(cDebug);
     
     pthread_exit(NULL);
     
