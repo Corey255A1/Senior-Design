@@ -27,43 +27,49 @@ int main( void ) {
     initADC();
     while(1){
         if(RXMessage.Received){
-            switch(RXMessage.Msg[0]){
+            switch(RXMessage.Msg[GSHEADER]){
                 case SET:
-                    switch(RXMessage.Msg[1]){
+                    switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:
                             writeSlave(MOTOR_DRIVER,
                                    SPI_MOTOR,
-                                   (RXMessage.Msg[3] SPI_MOTOR_LEFT_SPEED) |
-                                   (RXMessage.Msg[2] SPI_MOTOR_LEFT_DIR) |
-                                   (RXMessage.Msg[5] SPI_MOTOR_RIGHT_SPEED) |
-                                   (RXMessage.Msg[4] SPI_MOTOR_RIGHT_DIR));
+                                   (RXMessage.Msg[DEVICEHEADER+1] SPI_MOTOR_LEFT_SPEED) |
+                                   (RXMessage.Msg[DEVICEHEADER+2] SPI_MOTOR_LEFT_DIR) |
+                                   (RXMessage.Msg[DEVICEHEADER+3] SPI_MOTOR_RIGHT_SPEED) |
+                                   (RXMessage.Msg[DEVICEHEADER+4] SPI_MOTOR_RIGHT_DIR));
                             break;
                         case ARM:
-                            writeSlave(STEPPER_DRIVER1,SPI_STEPPER_X,RXMessage.Msg[2]);
-                            writeSlave(STEPPER_DRIVER1,SPI_STEPPER_Y,RXMessage.Msg[3]);
-                            writeSlave(STEPPER_DRIVER2,SPI_STEPPER_X,RXMessage.Msg[2]);
-                            writeSlave(STEPPER_DRIVER2,SPI_STEPPER_Y,RXMessage.Msg[3]);
-                            writeSlave(STEPPER_DRIVER3,SPI_STEPPER_X,RXMessage.Msg[2]);
-                            writeSlave(STEPPER_DRIVER3,SPI_STEPPER_Y,RXMessage.Msg[3]);
+                            writeSlave(STEPPER_DRIVER1,SPI_STEPPER_X,RXMessage.Msg[DEVICEHEADER+1]);
+                            writeSlave(STEPPER_DRIVER1,SPI_STEPPER_Y,RXMessage.Msg[DEVICEHEADER+2]);
+                            writeSlave(STEPPER_DRIVER2,SPI_STEPPER_X,RXMessage.Msg[DEVICEHEADER+1]);
+                            writeSlave(STEPPER_DRIVER2,SPI_STEPPER_Y,RXMessage.Msg[DEVICEHEADER+2]);
+                            //writeSlave(STEPPER_DRIVER3,SPI_STEPPER_X,RXMessage.Msg[DEVICEHEADER+1]);
+                            //writeSlave(STEPPER_DRIVER3,SPI_STEPPER_Y,RXMessage.Msg[DEVICEHEADER+2]);
                             break;
                     }//switch
                     break;
                 case GET:
-                    switch(RXMessage.Msg[1]){
+                    switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:{
-                            char txMSG[5];
+                            char txMSG[7];
                             int tempSPI;
                             txMSG[0] = '!';
-                            txMSG[1] = 3;
+                            txMSG[1] = 5;
                             txMSG[2] = 'M';
-                            tempSPI = readSlave(MOTOR_DRIVER,SPI_MOTOR);//to-do
+                            tempSPI = readSlave(MOTOR_DRIVER,SPI_MOTOR1_STATUS);//to-do
                             txMSG[3] = (tempSPI&0xFF00)>>8;
                             txMSG[4] = (tempSPI&0x00FF);
-                            txSerial1(txMSG,5);
+                            tempSPI = readSlave(MOTOR_DRIVER,SPI_MOTOR2_STATUS);//to-do
+                            txMSG[5] = (tempSPI&0xFF00)>>8;
+                            txMSG[6] = (tempSPI&0x00FF);
+                            txSerial1(txMSG,7);
                             break;}
-                        case ARM:break;
+                        case ARM:{
+                         //TO-DO Figure out what to return from the ARM
+                         //If this is infact needed
+                        }break;
                         case SENSORS:
-                            switch(RXMessage.Msg[2]){
+                            switch(RXMessage.Msg[SENSEHEADER]){
                                 case TEMP:{
                                     char txMSG[5];
                                     int tempSPI;
@@ -81,7 +87,7 @@ int main( void ) {
                                     txMSG[0] = '!';
                                     txMSG[1] = 3;
                                     txMSG[2] = 'S';
-                                    tempSPI = readADC(AN1);
+                                    tempSPI = readADC(WLED_AD);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
                                     txSerial1(txMSG,5);
@@ -92,7 +98,7 @@ int main( void ) {
                                     txMSG[0] = '!';
                                     txMSG[1] = 3;
                                     txMSG[2] = 'S';
-                                    tempSPI = readADC(AN2);
+                                    tempSPI = readADC(ILED_AD);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
                                     txSerial1(txMSG,5);
@@ -119,12 +125,11 @@ int main( void ) {
                                     txMSG[4] = (tempSPI&0x00FF);
                                     txSerial1(txMSG,5);
                                     break;}
-                            }
+                            }//switch - sensors
                             break;
-
-                    }//switch
+                    }//switch - device
                     break;
-            }//switch
+            }//switch - get/set
             RXMessage.Received = 0;
         }//if
         msDelay(10);

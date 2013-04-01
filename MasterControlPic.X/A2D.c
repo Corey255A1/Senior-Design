@@ -1,9 +1,14 @@
-
-
 #include <p24FJ128GB106.h>
 #include "globals.h"
 
-
+/**
+ * Initialize the AD converter
+ * Set it up to be manually triggered by setting the SAMP bit
+ * It then samples and autoconverts the samp into a 10-bit value
+ * Setting the channel is different than on PIC24EP where it can
+ * select any input for the CH0 input. It only has 1 channel
+ * where as PIC24EP has 4 distinct channels.
+ */
 void initADC( void ){
     AD1CON1 = 0;
     AD1CON2 = 0;
@@ -18,6 +23,12 @@ void initADC( void ){
     AD1CON1bits.ADON = 1; //Turn on AD
 }
 
+/**
+ * Pass in a character value to set the A/D input to sample and read into the
+ * buffer. Return ADC1BUF0 because it will contain our newest sample
+ * @param ch - channel to sample
+ * @return the value receive
+ */
 int readADC(char ch){
     AD1CHS0bits.CH0SA = ch;//Set CH0 to AN0
     AD1CON1bits.SAMP = 1; // Set the Sample Bit High to start read
