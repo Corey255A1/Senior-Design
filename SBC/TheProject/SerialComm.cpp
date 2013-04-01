@@ -18,6 +18,7 @@
 SerialComm::SerialComm()
 {
     sLogMsg = "";
+    packetType = JUNK;
 }
 
 /**
@@ -217,21 +218,57 @@ int SerialComm::ReadPort(unsigned char* puszReadBuff)
     //  to progress through the buffer.
     //-------------------------------------------------------------------------
     int nBytesRead;
+    //unsigned char tempBuff[BUFF_SIZE + 1];
     unsigned char* puszBuffptr = puszReadBuff;
-    int loopCount = 0;
+    char cByteCount = 0;
+    char cDataSize = 0;
+    char exitLoop = FALSE;
+    unsigned char ucCurChar;
+    
     //-------------------------------------------------------------------------
     //  As long as there are messages to read, we will continued reading.
     //-------------------------------------------------------------------------
-    while ((nBytesRead = read(commPort, puszBuffptr, 1)) > 0)
+    //while ((nBytesRead = read(commPort, puszBuffptr, 1)) > 0)
+    while ((nBytesRead = read(commPort, &ucCurChar, 1)) > 0)
     {
-        ++loopCount;
-        //---------------------------------------------------------------------
-        puszBuffptr += nBytesRead;
-        if (puszBuffptr[-1] == '!')
+        if (ucCurChar == '!')
         {
-            puszBuffptr[-1] = 0;
+            packetType = START;
+        }
+        
+        switch (packetType)
+        {
+            case START: 
+                packetType = DATA_SIZE;
+                break;
+            case DATA_SIZE:
+                cDataSize = ucCurChar;
+                packetType = DATA_MINE;
+                break;
+            case DATA_MINE:
+                ++cByteCount;
+                puszBuffptr[cByteCount - 1] = ucCurChar;
+                if (cByteCount == cDataSize)
+                {
+                    exitLoop = TRUE;
+                    packetType = JUNK;
+                }
+                //++puszBuffptr;
+                break;
+            case JUNK:
+                break;
+        }
+        //---------------------------------------------------------------------
+        if (exitLoop)
+        {
             break;
         }
+//        puszBuffptr += nBytesRead;
+//        if (puszBuffptr[-1] == '!')
+//        {
+//            puszBuffptr[-1] = 0;
+//            break;
+//        }
         
     }
     

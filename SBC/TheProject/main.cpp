@@ -82,11 +82,11 @@ int main(int argc, char** argv)
     SerialComm serialPort;
     string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
     string sLogMsg;
-    //enum STATE state = INITIALIZE;
+    enum STATE state = INITIALIZE;
     SoundRecorder soundRecorder;
     SoundFFT soundFFT;
     TheMap theMap;
-    enum STATE state = WAIT_FOR_TONE;
+    //enum STATE state = WAIT_FOR_TONE;
     
     switch (state)
     {
@@ -99,17 +99,17 @@ int main(int argc, char** argv)
             //-----------------------------------------------------------------
             //  Attempt to open serial port for Master Pic communication.
             //-----------------------------------------------------------------
-//            nRC = serialPort.connect();
+            nRC = serialPort.connect();
 
             //-----------------------------------------------------------------
             //  Check to make sure the serial port opened successfully.
             //-----------------------------------------------------------------
-//            if (nRC != SUCCESS)
-//            {
-//                sLogMsg = "Communication Error: Failed to open serial communication:" + IntToString(rc) + ". Exiting...\n";
-//                WriteToLogFile(sLogMsg);
-//                exit(-1);
-//            }
+            if (nRC != SUCCESS)
+            {
+                sLogMsg = "Communication Error: Failed to open serial communication:" + IntToString(nRC) + ". Exiting...\n";
+                WriteToLogFile(sLogMsg);
+                exit(-1);
+            }
 
             //-----------------------------------------------------------------
             //  Create and let the color tracking thread start running.
@@ -231,11 +231,13 @@ int main(int argc, char** argv)
     float pi = 3.14;
     unsigned char piFixed = pi * 32;
     
-    BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4);
-    BuildSensGet(uszCommOutMsg, ucTempSensSel);
+    //BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4);
     BuildMotorGet(uszCommOutMsg);
-    BuildArmSet(uszCommOutMsg, 4, 6);
-    BuildArmGet(uszCommOutMsg);
+    //unsigned char testChar[5] = "!2GM";
+//    BuildSensGet(uszCommOutMsg, ucTempSensSel);
+//    BuildMotorGet(uszCommOutMsg);
+//    BuildArmSet(uszCommOutMsg, 4, 6);
+//    BuildArmGet(uszCommOutMsg);
     //uszCommOutMsg[0] = 'G';
     //uszCommOutMsg[1] = 'S';
     //commOutMsg[2] = piFixed;

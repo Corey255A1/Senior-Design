@@ -26,6 +26,7 @@
 
 using namespace std;
 
+enum PACKET_TYPE {START, DATA_SIZE, DATA_MINE, JUNK};
 //-----------------------------------------------------------------------------
 //  Class variable and function declarations.
 //-----------------------------------------------------------------------------
@@ -45,6 +46,8 @@ private:
     int commPort;
     struct termios config;
     string sLogMsg;
+    enum PACKET_TYPE packetType;
+    
 };
 
 #endif	/* SERIALCOMM_H */
