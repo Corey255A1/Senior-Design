@@ -4,4 +4,6 @@ configs.h  \
 serialcomm.h  \
 globals.h  \
  communication.h  \
-spi.h 
+spi.h  \
+A2D.h  \
+../../Senior-Design/Global_PIC/spiMessages.h 

@@ -8,7 +8,7 @@
 #include "spi.h"
 #include "communication.h"
 #include "globals.h"
-#include "../../Documents/GitHub/Senior-Design/Global_PIC/spiMessages.h"
+#include "../../Senior-Design/Global_PIC/spiMessages.h"
 
 /**
  * This function writes a message to the selected slave

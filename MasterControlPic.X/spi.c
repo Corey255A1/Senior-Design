@@ -4,7 +4,7 @@
  *
  */
 
-#include "../../Documents/GitHub/Senior-Design/Global_PIC/spiMessages.h"
+#include "../../Senior-Design/Global_PIC/spiMessages.h"
 #include <p24FJ128GB106.h>
 #include "spi.h"
 

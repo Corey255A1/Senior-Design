@@ -9,7 +9,8 @@
       <itemPath>globals.h</itemPath>
       <itemPath>serialcomm.h</itemPath>
       <itemPath>spi.h</itemPath>
-      <itemPath>C:/Users/student/Documents/GitHub/Senior-Design/Global_PIC/spiMessages.h</itemPath>
+      <itemPath>A2D.h</itemPath>
+      <itemPath>temperature.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -23,6 +24,8 @@
       <itemPath>main.c</itemPath>
       <itemPath>serialcomm.c</itemPath>
       <itemPath>spi.c</itemPath>
+      <itemPath>A2D.c</itemPath>
+      <itemPath>temperature.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

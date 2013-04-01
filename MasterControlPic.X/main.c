@@ -13,7 +13,8 @@
 #include "stdlib.h"
 #include "communication.h"
 #include "spi.h"
-#include "../../Documents/GitHub/Senior-Design/Global_PIC/spiMessages.h"
+#include "A2D.h"
+#include "../../Senior-Design/Global_PIC/spiMessages.h"
 /*
  * This is the MCP main; Basically all it does is spin inside it's
  * while loop and wait for a serial message to parse and take
@@ -22,6 +23,7 @@
 int main( void ) {
     initSerial1();
     initSPI();
+    initADC();
     while(1){
         if(RXMessage.Received){
             switch(RXMessage.Msg[0]){
@@ -47,7 +49,7 @@ int main( void ) {
                     break;
                 case GET:
                     switch(RXMessage.Msg[1]){
-                        case DCMOTOR:
+                        case DCMOTOR:{
                             char txMSG[4];
                             int tempSPI;
                             txMSG[0] = 'M';
@@ -55,20 +57,28 @@ int main( void ) {
                             txMSG[1] = (tempSPI&0xFF00)>>8;
                             txMSG[2] = (tempSPI&0x00FF);
                             txMSG[3] = '!';
-                            break;
+                            break;}
                         case ARM:break;
                         case SENSORS:
                             switch(RXMessage.Msg[2]){
-                                case TEMP:
+                                case TEMP:{
                                     char txMSG[4];
                                     int tempSPI;
                                     txMSG[0] = 'S';
-                                    tempSPI = readSlave(SENSOR_BOARD,SPI_TEMP);//to-do
+                                    tempSPI = readTemperature('C');//to-do
                                     txMSG[1] = (tempSPI&0xFF00)>>8;
                                     txMSG[2] = (tempSPI&0x00FF);
                                     txMSG[3] = '!';
-                                    break;
-                                case WLED:break;
+                                    break;}
+                                case WLED:{
+                                    char txMSG[4];
+                                    int tempSPI;
+                                    txMSG[0] = 'S';
+                                    tempSPI = readTemperature(1);//to-do
+                                    txMSG[1] = (tempSPI&0xFF00)>>8;
+                                    txMSG[2] = (tempSPI&0x00FF);
+                                    txMSG[3] = '!';
+                                    break;}
                                 case IRLED:break;
                                 case COMPASS:break;
                                 case ULTRAS:break;

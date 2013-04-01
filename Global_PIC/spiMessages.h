@@ -26,6 +26,7 @@
 #define SPI_MOTOR_LEFT_DIR <<8
 #define SPI_MOTOR_LEFT_SPEED <<12
 
+
 #define MOTOR_FWD 1
 #define MOTOR_REV 0
 #define MOTOR_FULL_SPEED 10
