@@ -118,16 +118,16 @@ void configInputCaptures()
     //-------------------------------------------------------------------------
     //  Input Capture 1 (Motor 1 Feedback-A)
     //-------------------------------------------------------------------------
-    M1FDBCKA_TRISREG    = INPUT;            // Set pin to input
-    RPINR7bits.IC1R     = M1FDBCKA_RPIPORT; // Set IC input to RPI input
-    IC1TMR              = 0;                // Clear the IC1 Timer
-    IC1CON1             = 0;                // Clear the config 1 register
-    IC1CON2             = 0;                // Clear the config 2 register
-    IPC0bits.IC1IP      = 1;                // Set IC1 Interrupt Priority to 1
-    IFS0bits.IC1IF      = 0;                // Clear the IC1 interrupt flag
-    IC1CON1bits.ICTSEL  = 0b010;            // Set IC1 to TMR4
-    IC1CON1bits.ICI     = 0;                // Interrupt on every capture
-    IC1CON1bits.ICM     = 0x001;            // Capture on every edge trigger
+//    M1FDBCKA_TRISREG    = INPUT;            // Set pin to input
+//    RPINR7bits.IC1R     = M1FDBCKA_RPIPORT; // Set IC input to RPI input
+//    IC1TMR              = 0;                // Clear the IC1 Timer
+//    IC1CON1             = 0;                // Clear the config 1 register
+//    IC1CON2             = 0;                // Clear the config 2 register
+//    IPC0bits.IC1IP      = 1;                // Set IC1 Interrupt Priority to 1
+//    IFS0bits.IC1IF      = 0;                // Clear the IC1 interrupt flag
+//    IC1CON1bits.ICTSEL  = 0b010;            // Set IC1 to TMR4
+//    IC1CON1bits.ICI     = 0;                // Interrupt on every capture
+//    IC1CON1bits.ICM     = 0x001;            // Capture on every edge trigger
 
     //-------------------------------------------------------------------------
     //  Input Capture 2 (Motor 1 Feedback-B)
@@ -146,16 +146,16 @@ void configInputCaptures()
     //-------------------------------------------------------------------------
     //  Input Capture 3 (Motor 2 Feedback-A)
     //-------------------------------------------------------------------------
-    M2FDBCKA_TRISREG    = INPUT;            // Set pin to input
-    RPINR8bits.IC3R     = M2FDBCKA_RPIPORT; // Set IC input to RPI input
-    IC3TMR              = 0;                // Clear the IC3 Timer
-    IC3CON1             = 0;                // Clear the config 1 register
-    IC3CON2             = 0;                // Clear the config 2 register
-    IPC9bits.IC3IP      = 1;                // Set IC3 Interrupt Priority to 1
-    IFS2bits.IC3IF      = 0;                // Clear the IC3 interrupt flag
-    IC3CON1bits.ICTSEL  = 0b010;            // Set IC3 to TMR4
-    IC3CON1bits.ICI     = 0;                // Interrupt on every capture
-    IC3CON1bits.ICM     = 0x001;            // Capture on every edge trigger
+//    M2FDBCKA_TRISREG    = INPUT;            // Set pin to input
+//    RPINR8bits.IC3R     = M2FDBCKA_RPIPORT; // Set IC input to RPI input
+//    IC3TMR              = 0;                // Clear the IC3 Timer
+//    IC3CON1             = 0;                // Clear the config 1 register
+//    IC3CON2             = 0;                // Clear the config 2 register
+//    IPC9bits.IC3IP      = 1;                // Set IC3 Interrupt Priority to 1
+//    IFS2bits.IC3IF      = 0;                // Clear the IC3 interrupt flag
+//    IC3CON1bits.ICTSEL  = 0b010;            // Set IC3 to TMR4
+//    IC3CON1bits.ICI     = 0;                // Interrupt on every capture
+//    IC3CON1bits.ICM     = 0x001;            // Capture on every edge trigger
 
     //-------------------------------------------------------------------------
     //  Input Capture 4 (Motor 2 Feedback-B)
@@ -174,9 +174,9 @@ void configInputCaptures()
     //-------------------------------------------------------------------------
     //  Turn the stuff on
     //-------------------------------------------------------------------------
-    IEC0bits.IC1IE  = 1;    // Enable IC1 interrupts
+//    IEC0bits.IC1IE  = 1;    // Enable IC1 interrupts
     IEC0bits.IC2IE  = 1;    // Enable IC2 interrupts
-    IEC2bits.IC3IE  = 1;    // Enable IC3 interrupts
+//    IEC2bits.IC3IE  = 1;    // Enable IC3 interrupts
     IEC2bits.IC4IE  = 1;    // Enable IC4 interrupts
     T4CONbits.TON   = 1;    // Turn on Timer 4
 }

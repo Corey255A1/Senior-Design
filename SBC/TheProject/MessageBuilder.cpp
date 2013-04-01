@@ -99,10 +99,10 @@ void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned cha
     puszMsgBuff[1]      = ucSetMotorDataSize;
     puszMsgBuff[2]      = ucSet;
     puszMsgBuff[3]      = ucMotor;
-    puszMsgBuff[4]      = ucMD1;
-    puszMsgBuff[5]      = ucMS1;
-    puszMsgBuff[6]      = ucMD2;
-    puszMsgBuff[7]      = ucMS2;
+    puszMsgBuff[4]      = ucMS2;
+    puszMsgBuff[5]      = ucMD2;
+    puszMsgBuff[6]      = ucMS1;
+    puszMsgBuff[7]      = ucMD1;
     
 }
 

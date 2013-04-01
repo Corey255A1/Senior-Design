@@ -121,7 +121,7 @@ int main(void) {
     char speedM1;
     char forwardDirM2;
     char speedM2;
-    char distance;
+    //char distance;
 
     DRIVE_EN        = EN;
     SPEEDM1         = 75;
@@ -240,29 +240,29 @@ int main(void) {
  * The pulses for direction are 90 degrees out of phase from the speed pulses.
  * If the speed pulses arrive before the direction pulses, then the motor is
  */
-void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
-{
-    _IC1IF = 0;
-    //-------------------------------------------------------------------------
-    //  Check to see if the M1-A input capture came first.
-    //-------------------------------------------------------------------------
-    if (M1FdBckASet)
-    {
-
-    }
-    if ((M1FdBckAEdge == RISE) && (M1FDBCKA_RBPORT == HIGH))
-    {
-        M1FdBckAStart_t = IC1BUF;   // Capture the start time from IC1 buffer
-        M1FdBckAEdge    = FALL;     // Next interrupt occurs on falling edge
-    }
-    else
-    {
-        M1FdBckAEnd_t   = IC1BUF;   // Capture the end time from IC1 buffer
-        M1FdBckAEdge    = RISE;     // Next interrupt occurs on rising edge
-        ++M1FdBckA_SampCount;            // increase the sample count
-    }
-    // Get Direction of motor
-}
+//void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
+//{
+//    _IC1IF = 0;
+//    //-------------------------------------------------------------------------
+//    //  Check to see if the M1-A input capture came first.
+//    //-------------------------------------------------------------------------
+//    if (M1FdBckASet)
+//    {
+//
+//    }
+//    if ((M1FdBckAEdge == RISE) && (M1FDBCKA_RBPORT == HIGH))
+//    {
+//        M1FdBckAStart_t = IC1BUF;   // Capture the start time from IC1 buffer
+//        M1FdBckAEdge    = FALL;     // Next interrupt occurs on falling edge
+//    }
+//    else
+//    {
+//        M1FdBckAEnd_t   = IC1BUF;   // Capture the end time from IC1 buffer
+//        M1FdBckAEdge    = RISE;     // Next interrupt occurs on rising edge
+//        ++M1FdBckA_SampCount;            // increase the sample count
+//    }
+//    // Get Direction of motor
+//}
 
 /**
  * Trips when an input shows up on port 25 (RPI46)
@@ -381,29 +381,29 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
  *
  * For the capture of Motor 2 A feedback (motor direction)
  */
-void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
-{
-    _IC3IF = 0;
-    //-------------------------------------------------------------------------
-    //  Check to see if the M1-A input capture came first.
-    //-------------------------------------------------------------------------
-    if (M2FdBckASet)
-    {
-
-    }
-    if ((M2FdBckAEdge == RISE) && (M2FDBCKA_RBPORT == HIGH))
-    {
-        M2FdBckAStart_t = IC3BUF;   // Capture the start time from IC3 buffer
-        M2FdBckAEdge    = FALL;     // Next interrupt occurs on falling edge
-    }
-    else
-    {
-        M2FdBckAEnd_t   = IC3BUF;   // Capture the end time from IC3 buffer
-        M2FdBckAEdge    = RISE;     // Next interrupt occurs on rising edge
-        ++M2FdBckA_SampCount;            // increase the sample count
-    }
-    // Get Direction of motor
-}
+//void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
+//{
+//    _IC3IF = 0;
+//    //-------------------------------------------------------------------------
+//    //  Check to see if the M1-A input capture came first.
+//    //-------------------------------------------------------------------------
+//    if (M2FdBckASet)
+//    {
+//
+//    }
+//    if ((M2FdBckAEdge == RISE) && (M2FDBCKA_RBPORT == HIGH))
+//    {
+//        M2FdBckAStart_t = IC3BUF;   // Capture the start time from IC3 buffer
+//        M2FdBckAEdge    = FALL;     // Next interrupt occurs on falling edge
+//    }
+//    else
+//    {
+//        M2FdBckAEnd_t   = IC3BUF;   // Capture the end time from IC3 buffer
+//        M2FdBckAEdge    = RISE;     // Next interrupt occurs on rising edge
+//        ++M2FdBckA_SampCount;            // increase the sample count
+//    }
+//    // Get Direction of motor
+//}
 
 /**
  * Trips when an input shows up on port 24 (RPI45)
