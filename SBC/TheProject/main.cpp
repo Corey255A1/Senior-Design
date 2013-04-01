@@ -231,14 +231,17 @@ int main(int argc, char** argv)
     float pi = 3.14;
     unsigned char piFixed = pi * 32;
     
-    BuildMotorGet(uszCommOutMsg);
+    BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4);
     BuildSensGet(uszCommOutMsg, ucTempSensSel);
+    BuildMotorGet(uszCommOutMsg);
+    BuildArmSet(uszCommOutMsg, 4, 6);
+    BuildArmGet(uszCommOutMsg);
     //uszCommOutMsg[0] = 'G';
     //uszCommOutMsg[1] = 'S';
     //commOutMsg[2] = piFixed;
     //uszCommOutMsg[2] = '!';
-    int tempSize = sizeof(uszCommOutMsg);
-    UnCharCat(uszCommOutMsg, uszCommOutMsg, tempSize);
+    //int tempSize = sizeof(uszCommOutMsg);
+    //UnCharCat(uszCommOutMsg, uszCommOutMsg, tempSize);
     //int temp = strlen(reinterpret_cast <const char*>(commOutMsg));
     
     //commOutMsg[2] = piFixed;

@@ -25,7 +25,7 @@ extern "C" {
     //-------------------------------------------------------------------------
     //  Message Terminator
     //-------------------------------------------------------------------------
-    extern const unsigned char ucTermSym;
+    extern const unsigned char ucMsgStartSym;
     
     //-------------------------------------------------------------------------
     // Componenet Select
@@ -70,6 +70,24 @@ extern "C" {
     //-------------------------------------------------------------------------
     extern const unsigned char ucForward;
     extern const unsigned char ucReverse;
+    
+    //-------------------------------------------------------------------------
+    // Data Size Constants
+    //-------------------------------------------------------------------------
+    extern const unsigned char ucSetMotorDataSize;
+    extern const unsigned char ucGetMotorDataSize;
+    extern const unsigned char ucSetArmDataSize;
+    extern const unsigned char ucGetArmDataSize;
+    extern const unsigned char ucGetSensorDataSize;
+    
+    //-------------------------------------------------------------------------
+    // Packet Sizes
+    //-------------------------------------------------------------------------
+    extern const unsigned char ucSetMotorPacketSize;
+    extern const unsigned char ucGetMotorPacketSize;
+    extern const unsigned char ucSetArmPacketSize;
+    extern const unsigned char ucGetArmPacketSize;
+    extern const unsigned char ucGetSensorPacketSize;
 
 
 #ifdef	__cplusplus

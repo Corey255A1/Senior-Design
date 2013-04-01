@@ -288,7 +288,12 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     {
         M1FdBckBEnd_t   = IC2BUF;   // Capture the end time from IC2 buffer
         M1FdBckBEdge    = RISE;     // Next interrupt occurs on rising edge
-        ++M1FdBckB_SampCount;            // increase the sample count
+        ++M1FdBckB_SampCount;       // increase the sample count
+
+        if ((M1FdBckB_SampCount % 100) == 0)
+        {
+            OUTMSG_M1 = M1FdBckB_SampCount;
+        }
         
         //---------------------------------------------------------------------
         //  I noticed that the value returned from the feedback sensors didn't
@@ -424,8 +429,12 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
     {
         M2FdBckBEnd_t   = IC4BUF;   // Capture the end time from IC4 buffer
         M2FdBckBEdge    = RISE;     // Next interrupt occurs on rising edge
-        ++M2FdBckB_SampCount;            // increase the sample count
+        ++M2FdBckB_SampCount;       // increase the sample count
 
+        if ((M2FdBckB_SampCount % 100) == 0)
+        {
+            OUTMSG_M2 = M2FdBckB_SampCount;
+        }
         //---------------------------------------------------------------------
         //  I noticed that the value returned from the feedback sensors didn't
         //  really come to a steady average till about the 10th sample, or

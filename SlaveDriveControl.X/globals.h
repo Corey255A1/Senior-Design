@@ -42,9 +42,11 @@
 #define M2FWD               LATBbits.LATB4
 #define M2REV               LATAbits.LATA4
 #define MMSG                0
-#define DRIVESTATUS         0
+#define DRIVESTATUS_M1      0
+#define DRIVESTATUS_M2      1
 #define INMSG               SLAVEData.inData[MMSG]
-#define OUTMSG              SLAVEData.outData[DRIVESTATUS]
+#define OUTMSG_M1           SLAVEData.outData[DRIVESTATUS_M1]
+#define OUTMSG_M2           SlaveData.outData[DRIVESTATUS_M2]
 #define PULSES_PER_CENT     25
 
 #define M1FDBCKA_RPIPORT    47

@@ -55,7 +55,25 @@ const unsigned char ucReverse           = 'R';
 //-----------------------------------------------------------------------------
 // Message Terminator
 //-----------------------------------------------------------------------------
-const unsigned char ucTermSym           = '!';
+const unsigned char ucMsgStartSym       = '!';
+
+//-------------------------------------------------------------------------
+// Data Size Constants
+//-------------------------------------------------------------------------
+const unsigned char ucSetMotorDataSize  = 6;
+const unsigned char ucGetMotorDataSize  = 2;
+const unsigned char ucSetArmDataSize    = 4;
+const unsigned char ucGetArmDataSize    = 2;
+const unsigned char ucGetSensorDataSize = 3;
+
+//-------------------------------------------------------------------------
+// Packet Sizes
+//-------------------------------------------------------------------------
+const unsigned char ucSetMotorPacketSize        = 8;
+const unsigned char ucGetMotorPacketSize        = 4;
+const unsigned char ucSetArmPacketSize          = 6;
+const unsigned char ucGetArmPacketSize          = 4;
+const unsigned char ucGetSensorPacketSize       = 5;
 
 /**
  * Fills the whole buffer with only null (0) values.
@@ -77,13 +95,15 @@ void ResetMessage(unsigned char* msgBuff)
  */
 void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned char ucMS1, unsigned char ucMD2, unsigned char ucMS2)
 {
-    puszMsgBuff[0]      = ucSet;
-    puszMsgBuff[1]      = ucMotor;
-    puszMsgBuff[2]      = ucMD1;
-    puszMsgBuff[3]      = ucMS1;
-    puszMsgBuff[4]      = ucMD2;
-    puszMsgBuff[5]      = ucMS2;
-    puszMsgBuff[6]      = ucTermSym;
+    puszMsgBuff[0]      = ucMsgStartSym;
+    puszMsgBuff[1]      = ucSetMotorDataSize;
+    puszMsgBuff[2]      = ucSet;
+    puszMsgBuff[3]      = ucMotor;
+    puszMsgBuff[4]      = ucMD1;
+    puszMsgBuff[5]      = ucMS1;
+    puszMsgBuff[6]      = ucMD2;
+    puszMsgBuff[7]      = ucMS2;
+    
 }
 
 /**
@@ -92,9 +112,10 @@ void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned cha
  */
 void BuildMotorGet(unsigned char* puszMsgBuff)
 {
-    puszMsgBuff[0] = ucGet;
-    puszMsgBuff[1] = ucMotor;
-    puszMsgBuff[2] = ucTermSym;
+    puszMsgBuff[0] = ucMsgStartSym;
+    puszMsgBuff[1] = ucGetMotorDataSize;
+    puszMsgBuff[2] = ucGet;
+    puszMsgBuff[3] = ucMotor;
 }
 
 /**
@@ -105,11 +126,12 @@ void BuildMotorGet(unsigned char* puszMsgBuff)
  */
 void BuildArmSet(unsigned char* puszMsgBuff, unsigned char ucX, unsigned char ucY)
 {
-    puszMsgBuff[0] = ucSet;
-    puszMsgBuff[1] = ucArm;
-    puszMsgBuff[2] = ucX;
-    puszMsgBuff[3] = ucY;
-    puszMsgBuff[4] = ucTermSym;
+    puszMsgBuff[0] = ucMsgStartSym;
+    puszMsgBuff[1] = ucSetArmDataSize;
+    puszMsgBuff[2] = ucSet;
+    puszMsgBuff[3] = ucArm;
+    puszMsgBuff[4] = ucX;
+    puszMsgBuff[5] = ucY;
 }
 
 /**
@@ -118,9 +140,11 @@ void BuildArmSet(unsigned char* puszMsgBuff, unsigned char ucX, unsigned char uc
  */
 void BuildArmGet(unsigned char* puszMsgBuff)
 {
-    puszMsgBuff[0] = ucGet;
-    puszMsgBuff[1] = ucArm;
-    puszMsgBuff[2] = ucTermSym;
+    puszMsgBuff[0] = ucMsgStartSym;
+    puszMsgBuff[1] = ucGetArmDataSize;
+    puszMsgBuff[2] = ucGet;
+    puszMsgBuff[3] = ucArm;
+    
 }
 
 /**
@@ -130,9 +154,11 @@ void BuildArmGet(unsigned char* puszMsgBuff)
  */
 void BuildSensGet(unsigned char* puszMsgBuff, unsigned char ucSensorSelect)
 {
-    puszMsgBuff[0] = ucGet;
-    puszMsgBuff[1] = ucSensor;
-    puszMsgBuff[2] = ucSensorSelect;
-    puszMsgBuff[3] = ucTermSym;
+    puszMsgBuff[0] = ucMsgStartSym;
+    puszMsgBuff[1] = ucGetSensorDataSize;
+    puszMsgBuff[2] = ucGet;
+    puszMsgBuff[3] = ucSensor;
+    puszMsgBuff[4] = ucSensorSelect;
+    
 }
 

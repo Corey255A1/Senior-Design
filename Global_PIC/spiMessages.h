@@ -21,6 +21,8 @@
 #define SPI_STEPPER_Y 6
 
 #define SPI_MOTOR 0
+#define SPI_MOTOR1_STATUS 0
+#define SPI_MOTOR2_STATUS 1
 #define SPI_MOTOR_RIGHT_DIR <<0
 #define SPI_MOTOR_RIGHT_SPEED <<4
 #define SPI_MOTOR_LEFT_DIR <<8
