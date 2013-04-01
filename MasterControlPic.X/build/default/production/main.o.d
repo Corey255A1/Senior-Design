@@ -6,4 +6,5 @@ globals.h  \
  communication.h  \
 spi.h  \
 A2D.h  \
-../../Senior-Design/Global_PIC/spiMessages.h 
+temperature.h  \
+ ../../Senior-Design/Global_PIC/spiMessages.h 

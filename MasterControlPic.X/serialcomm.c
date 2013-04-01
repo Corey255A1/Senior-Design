@@ -15,7 +15,8 @@
 char lastchar;
 int ch=0;
 SERIALMESSAGE RXMessage;
-
+char MSGSTART=0;
+int EXPECTEDLENGTH;
 /**
  * Here the UART1 Receive Interrupt gets the message and stores upto 20
  * characters. It breaks and indicates message received when it receives an
@@ -27,12 +28,33 @@ void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(){
     U1TXREG = lastchar;// uncomment for echoing commands
     if(!RXMessage.Received){
         RXMessage.Msg[ch]=lastchar;
-        if(lastchar!='!'){
+        //IF we know it is the first byte of our message is a ! then we
+        //know a legit message is arriving
+        if((MSGSTART==0) && (lastchar=='!') && (ch==0)){
+            MSGSTART = 1;
+        }//endif
+
+        //We then receive a byte after the message has started
+        //This byte we know is the message length after the current byte
+        else if((MSGSTART==1) && (ch==0)){
+            EXPECTEDLENGTH = lastchar;
             ch++;
-        }else{
-            RXMessage.Length=ch;
-            RXMessage.Received = 1;
+        }//endelse
+
+        //We have received more bytes and we have not reached our length
+        //just increment amount of bytes received
+        else if((MSGSTART==1) && (ch>0) && (ch<EXPECTEDLENGTH)){
+            ch++;
+        }//endelse
+
+        //We have reached the number of expected bytes
+        //Therefore reset message start and byte count and
+        //indicate that we have received a message for processing
+        else if(((MSGSTART==1) && (ch>=EXPECTEDLENGTH))){
+            RXMessage.Length=ch-1;
+            MSGSTART = 0;
             ch=0;
+            RXMessage.Received = 1;
         };
     }//endif
     IFS0bits.U1RXIF = 0;

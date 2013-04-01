@@ -14,6 +14,7 @@
 #include "communication.h"
 #include "spi.h"
 #include "A2D.h"
+#include "temperature.h"
 #include "../../Senior-Design/Global_PIC/spiMessages.h"
 /*
  * This is the MCP main; Basically all it does is spin inside it's
@@ -50,39 +51,74 @@ int main( void ) {
                 case GET:
                     switch(RXMessage.Msg[1]){
                         case DCMOTOR:{
-                            char txMSG[4];
+                            char txMSG[5];
                             int tempSPI;
-                            txMSG[0] = 'M';
+                            txMSG[0] = '!';
+                            txMSG[1] = 3;
+                            txMSG[2] = 'M';
                             tempSPI = readSlave(MOTOR_DRIVER,SPI_MOTOR);//to-do
-                            txMSG[1] = (tempSPI&0xFF00)>>8;
-                            txMSG[2] = (tempSPI&0x00FF);
-                            txMSG[3] = '!';
+                            txMSG[3] = (tempSPI&0xFF00)>>8;
+                            txMSG[4] = (tempSPI&0x00FF);
+                            txSerial1(txMSG,5);
                             break;}
                         case ARM:break;
                         case SENSORS:
                             switch(RXMessage.Msg[2]){
                                 case TEMP:{
-                                    char txMSG[4];
+                                    char txMSG[5];
                                     int tempSPI;
-                                    txMSG[0] = 'S';
-                                    tempSPI = readTemperature('C');//to-do
-                                    txMSG[1] = (tempSPI&0xFF00)>>8;
-                                    txMSG[2] = (tempSPI&0x00FF);
-                                    txMSG[3] = '!';
+                                    txMSG[0] = '!';
+                                    txMSG[1] = 3;
+                                    txMSG[2] = 'S';
+                                    tempSPI = readTemperature(CEL);
+                                    txMSG[3] = (tempSPI&0xFF00)>>8;
+                                    txMSG[4] = (tempSPI&0x00FF);
+                                    txSerial1(txMSG,5);
                                     break;}
                                 case WLED:{
-                                    char txMSG[4];
+                                    char txMSG[5];
                                     int tempSPI;
-                                    txMSG[0] = 'S';
-                                    tempSPI = readTemperature(1);//to-do
-                                    txMSG[1] = (tempSPI&0xFF00)>>8;
-                                    txMSG[2] = (tempSPI&0x00FF);
-                                    txMSG[3] = '!';
+                                    txMSG[0] = '!';
+                                    txMSG[1] = 3;
+                                    txMSG[2] = 'S';
+                                    tempSPI = readADC(AN1);
+                                    txMSG[3] = (tempSPI&0xFF00)>>8;
+                                    txMSG[4] = (tempSPI&0x00FF);
+                                    txSerial1(txMSG,5);
                                     break;}
-                                case IRLED:break;
-                                case COMPASS:break;
-                                case ULTRAS:break;
-                                case ALLSENS:break;
+                                case IRLED:{
+                                    char txMSG[5];
+                                    int tempSPI;
+                                    txMSG[0] = '!';
+                                    txMSG[1] = 3;
+                                    txMSG[2] = 'S';
+                                    tempSPI = readADC(AN2);
+                                    txMSG[3] = (tempSPI&0xFF00)>>8;
+                                    txMSG[4] = (tempSPI&0x00FF);
+                                    txSerial1(txMSG,5);
+                                    break;}
+                                case COMPASS:{
+                                    char txMSG[5];
+                                    int tempSPI;
+                                    txMSG[0] = '!';
+                                    txMSG[1] = 3;
+                                    txMSG[2] = 'S';
+                                    tempSPI = readSlave(COMPASS,COMPASS_HEADING);
+                                    txMSG[3] = (tempSPI&0xFF00)>>8;
+                                    txMSG[4] = (tempSPI&0x00FF);
+                                    txSerial1(txMSG,5);
+                                    break;}
+                                case ULTRAS:{
+                                    char txMSG[5];
+                                    int tempSPI;
+                                    txMSG[0] = '!';
+                                    txMSG[1] = 3;
+                                    txMSG[2] = 'S';
+                                    tempSPI = readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
+                                    txMSG[3] = (tempSPI&0xFF00)>>8;
+                                    txMSG[4] = (tempSPI&0x00FF);
+                                    txSerial1(txMSG,5);
+                                    break;}
                             }
                             break;
 
