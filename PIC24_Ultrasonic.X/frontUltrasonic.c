@@ -214,7 +214,7 @@ double findObject(void){
     double baseDistance = leftLength * (sin(angleA * pi / 180));
 
     // if we are too close, then we need to backup/turn
-    if (baseDistance > 40)
+    if (baseDistance < 30)
     {
         _RB7 = HIGH;
     }

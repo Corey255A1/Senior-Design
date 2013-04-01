@@ -15,6 +15,8 @@
 #include "globals.h"
 #include "i2c.h"
 #include "spi.h"
+#include "temperature.h"
+#include "A2D.h"
 #include "../Global_PIC/spiMessages.h"
 
 /*
@@ -23,15 +25,25 @@
 #define HEADING SLAVEData.outData[0] // The port that will be read by mcp
 #define FIXEDPOINT_13BIT 8192 // the Shifting value to pass the radians value
                               // as a fixed point integer.
+
 int main( void ) {
-    //i2c_Init();
-    //init9axis();
+    i2c_Init();
+    init9axis();
+    initADC();
+    ANSELAbits.ANSA0 = 1;
+    ANSELAbits.ANSA1 = 1;
+    ANSELBbits.ANSB0 = 1;
+    ANSELBbits.ANSB1 = 1;
     configSPICommunication();
     double heading_d;
     //Use 1 sign bit and 2 integer bits and therefore 13 fraction bits it goes from -pi->pi
     //This means say 3.14 << 14bits
+    int advals[4];
+    int tempr;
     while(1){
-       heading_d = -3.1412;//updateHeading();
+       //readADC(advals);
+       tempr = readTemperature('F');
+       heading_d = updateHeading();
        HEADING = (int) (heading_d*FIXEDPOINT_13BIT); //cast as an integer after shifting 14
     }//end while
     return (EXIT_SUCCESS);

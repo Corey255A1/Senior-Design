@@ -12,10 +12,13 @@
 #include "stepper.h"
 #include <p24EP32MC202.h>
 #include "globals.h"
-
+#include "A2D.h"
+#include <math.h>
+#define SHORTARM
 int local_stepCount=0;
 int global_stepsInProgress=0;
 unsigned int local_stepper_speed=50000;
+double local_X=5, local_Y=5, local_R=0;
 
 /**
  * Enables all of the stepper motor phases
@@ -28,12 +31,13 @@ void initStepper( void ){
     _TRISB14 = 0;//make PWM servo port an output.
     _TRISB13 = 0;//make PWM servo port an output.
     _TRISB12 = 0;//make PWM servo port an output.
-    _TRISB5=0;//Gonna use this as the enable for now
+    _TRISB11=0;//Gonna use this as the enable for now
     _RB15=0;
     _RB14=0;
     _RB13=0;
     _RB12=0;
-    _RB5=0;
+    _RB11=0;
+
     PTCONbits.PTEN = 0;//Turn of the PWM Module
     PTCONbits.SYNCPOL = 0;//SYNCO output is active high?
     PTCONbits.SYNCOEN = 1;//Enable SYNCO output - Sync with master time
@@ -68,12 +72,12 @@ void initStepper( void ){
  * It also decrements the stepCount and clears the PWM
  */
 void __attribute__((__interrupt__, auto_psv)) _PWM2Interrupt(void){
-    local_stepCount--;
     global_stepsInProgress=local_stepCount;
     if(local_stepCount<=0){
         PTCONbits.PTEN = 0;//disable the PWM
-        _RB5=0;
+        _RB11=0;
     }
+    local_stepCount-=4;
     IFS5bits.PWM2IF=0;
 }
 
@@ -104,6 +108,110 @@ void takeSteps(unsigned int steps, char dir){
       PHASE2 =  0;
     }
    local_stepCount=steps;
-   _RB5=1;
+   _RB11=1;
    PTCONbits.PTEN = 1;//enable the PWM
+}
+void posXY(int x, int y){
+    double R;
+    double L;
+#ifdef LONGARM
+    double O1;
+    double r2;
+#endif
+#ifdef SHORTARM
+    double O2;
+    double r1;
+#endif
+    double delRad;
+    _Bool xDone = 0;
+    _Bool yDone = 0;
+    unsigned int steps;
+    unsigned int speed;
+    double prespeed;
+    char dir;
+    int totalSteps=0;
+    while(!xDone || !yDone){
+
+        if(local_X>(x+COORDRES)){
+            local_X = local_X - COORDRES;
+        }
+        else if (local_X<(x-COORDRES)){
+            local_X = local_X +COORDRES;
+        }
+        else{
+            xDone = 1;
+        }
+
+        if(local_Y>(y+COORDRES)){
+            local_Y = local_Y - COORDRES;
+        }
+        else if (local_Y<(y-COORDRES)){
+            local_Y = local_Y +COORDRES;
+        }
+        else{
+            yDone = 1;
+        }
+        R = atan(local_Y/local_X);
+        L = local_X/cos(R);
+#ifdef SHORTARM
+        O2 = acos((SSQR_m_LSQR+(L*L))/(STWO*L));
+        r1 = R - O2;
+        delRad = local_R - r1;
+        if(delRad < 0){
+            dir=REV;
+            delRad=-delRad;
+        }else{
+            dir=FWD;
+        }
+        local_R = r1;
+#endif
+#ifdef LONGARM
+        O1 = acos((LSQR_m_SSQR+L*L)/(LTWO*L));
+        r2 = O1 + R;
+        delRad = local_R - r2;
+        if(delRad < 0){
+            dir=REV;
+            delRad=-delRad;
+        }else{
+            dir=FWD;
+        }
+        local_R=r2;
+#endif
+        steps = floor(delRad*STEPPERRAD);
+        prespeed = (double)RADPERSECTION/delRad;
+        speed = floor(MIDSTEP*prespeed);
+        totalSteps += steps;
+        stepperSpeed(speed);
+        takeSteps(steps,dir);
+        while(PTCONbits.PTEN);
+    }
+}//end posXY
+void posRad(double rad){
+    if(rad>local_R+(0.314) || rad<local_R-(0.314)){
+        double temp_r;
+        if(local_R<0){
+            temp_r = local_R+(2*pi);
+        }else{
+            temp_r = local_R;
+        }
+        double delRad = temp_r - rad;
+        char dir;
+        if(delRad<0){
+            dir = REV;
+            delRad = -delRad;
+        }else{
+            dir = FWD;
+        }
+        int steps = floor(delRad*STEPPERRAD);
+        stepperSpeed(30000);
+        takeSteps(steps,dir);
+        while(PTCONbits.PTEN);
+        local_R = rad;
+    }
+}
+
+double getAngle ( void ){
+    int raw = readADC_single(AN1);
+    double angle = (double) raw * ((double)((3*pi)/2)/ (double)MAXANGLE);
+    return angle;
 }

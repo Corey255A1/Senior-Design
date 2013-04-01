@@ -23,6 +23,7 @@ void initSPI(void){
     SPI1STATbits.SPIEN = 1;
     LATG=LATG | (1<<COMPASS);
     LATG=LATG | (1<<STEPPER_DRIVER);
+    LATG=LATG | (1<<MOTOR_DRIVER);
 }//init
 
 /**

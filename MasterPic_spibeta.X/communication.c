@@ -1,3 +1,4 @@
+#include <p24FJ128GA010.h>
 #include "spi.h"
 #include "communication.h"
 #include "globals.h"

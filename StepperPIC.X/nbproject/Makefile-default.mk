@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/stepperMain.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/stepper.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/stepperMain.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/spi.o.d ${OBJECTDIR}/stepper.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/stepperMain.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/stepper.o ${OBJECTDIR}/A2D.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/stepperMain.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/spi.o.d ${OBJECTDIR}/stepper.o.d ${OBJECTDIR}/A2D.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/stepperMain.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/stepper.o
+OBJECTFILES=${OBJECTDIR}/stepperMain.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/stepper.o ${OBJECTDIR}/A2D.o
 
 
 CFLAGS=
@@ -93,6 +93,12 @@ ${OBJECTDIR}/stepper.o: stepper.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  stepper.c  -o ${OBJECTDIR}/stepper.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/stepper.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/stepper.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/A2D.o: A2D.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/A2D.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  A2D.c  -o ${OBJECTDIR}/A2D.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/A2D.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/A2D.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/stepperMain.o: stepperMain.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -117,6 +123,12 @@ ${OBJECTDIR}/stepper.o: stepper.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/stepper.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  stepper.c  -o ${OBJECTDIR}/stepper.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/stepper.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/stepper.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/A2D.o: A2D.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/A2D.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  A2D.c  -o ${OBJECTDIR}/A2D.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/A2D.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/A2D.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

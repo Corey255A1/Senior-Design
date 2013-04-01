@@ -26,6 +26,8 @@
 #define pi 3.141592653589
 #define FWD 'F'
 #define REV 'R'
+#define WLIGHT_ADBUF 1
+#define BLIGHT_ADBUF 2
 
 extern short global_u1_edge;
 extern long global_u1_time;
