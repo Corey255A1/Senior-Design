@@ -5,6 +5,11 @@
  * Created on March 25, 2013, 2:35 PM
  */
 
+#define BYTECOUNT 0
+#define GSHEADER 1
+#define DEVICEHEADER 2
+#define SENSEHEADER 3
+
 #define SET 'S'
 #define GET 'G'
 #define DCMOTOR 'M'
