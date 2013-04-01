@@ -121,6 +121,7 @@ int main(void) {
     char speedM1;
     char forwardDirM2;
     char speedM2;
+    char distance;
 
     DRIVE_EN        = EN;
     SPEEDM1         = 75;
@@ -154,6 +155,7 @@ int main(void) {
             speedM1         = (0x00F0 & curMasterConfig) >> 4;
             forwardDirM2    = (0x0F000 & curMasterConfig) >> 8;
             speedM2         = (0xF0000 & curMasterConfig) >> 12;
+            //distance =
 
 
             //-----------------------------------------------------------------
@@ -257,7 +259,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     {
         M1FdBckAEnd_t   = IC1BUF;   // Capture the end time from IC1 buffer
         M1FdBckAEdge    = RISE;     // Next interrupt occurs on rising edge
-        ++M1FdBckA_Samp;            // increase the sample count
+        ++M1FdBckA_SampCount;            // increase the sample count
     }
     // Get Direction of motor
 }
@@ -286,7 +288,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     {
         M1FdBckBEnd_t   = IC2BUF;   // Capture the end time from IC2 buffer
         M1FdBckBEdge    = RISE;     // Next interrupt occurs on rising edge
-        ++M1FdBckB_Samp;            // increase the sample count
+        ++M1FdBckB_SampCount;            // increase the sample count
         
         //---------------------------------------------------------------------
         //  I noticed that the value returned from the feedback sensors didn't
@@ -295,9 +297,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
         //  I'm only  going to worry about the tentht captured pulse, and
         //  measure that to get a more acurate reading.
         //---------------------------------------------------------------------
-        if (M1FdBckB_Samp == SAMPNUM)
+        if (M1FdBckB_SampCount == SAMPNUM)
         {
-            M1FdBckB_Samp = 1; // reset the samp counter
+            M1FdBckB_SampCount = 1; // reset the samp counter
             M1FdBckB_t  = M1FdBckBEnd_t - M1FdBckBStart_t;  // Calculate PW
 
             //-----------------------------------------------------------------
@@ -393,7 +395,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
     {
         M2FdBckAEnd_t   = IC3BUF;   // Capture the end time from IC3 buffer
         M2FdBckAEdge    = RISE;     // Next interrupt occurs on rising edge
-        ++M2FdBckA_Samp;            // increase the sample count
+        ++M2FdBckA_SampCount;            // increase the sample count
     }
     // Get Direction of motor
 }
@@ -422,7 +424,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
     {
         M2FdBckBEnd_t   = IC4BUF;   // Capture the end time from IC4 buffer
         M2FdBckBEdge    = RISE;     // Next interrupt occurs on rising edge
-        ++M2FdBckB_Samp;            // increase the sample count
+        ++M2FdBckB_SampCount;            // increase the sample count
 
         //---------------------------------------------------------------------
         //  I noticed that the value returned from the feedback sensors didn't
@@ -431,9 +433,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
         //  I'm only  going to worry about the tentht captured pulse, and
         //  measure that to get a more acurate reading.
         //---------------------------------------------------------------------
-        if (M2FdBckB_Samp == SAMPNUM)
+        if (M2FdBckB_SampCount == SAMPNUM)
         {
-            M2FdBckB_Samp = 1; // reset the samp counter
+            M2FdBckB_SampCount = 1; // reset the samp counter
             M2FdBckB_t  = M2FdBckBEnd_t - M2FdBckBStart_t;  // Calculate PW
 
             //-----------------------------------------------------------------

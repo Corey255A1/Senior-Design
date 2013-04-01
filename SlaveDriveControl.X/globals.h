@@ -45,6 +45,7 @@
 #define DRIVESTATUS         0
 #define INMSG               SLAVEData.inData[MMSG]
 #define OUTMSG              SLAVEData.outData[DRIVESTATUS]
+#define PULSES_PER_CENT     25
 
 #define M1FDBCKA_RPIPORT    47
 #define M1FDBCKA_RBPORT     _RB15

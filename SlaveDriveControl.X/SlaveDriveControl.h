@@ -36,10 +36,15 @@ long M1FdBckB_t     = 0;
 long M2FdBckA_t     = 0;
 long M2FdBckB_t     = 0;
 
-int M1FdBckA_Samp   = 0;
-int M1FdBckB_Samp   = 0;
-int M2FdBckA_Samp   = 0;
-int M2FdBckB_Samp   = 0;
+long M1FdBckA_SampCount   = 0;
+long M1FdBckB_SampCount   = 0;
+long M2FdBckA_SampCount   = 0;
+long M2FdBckB_SampCount   = 0;
+
+long M1FdBckA_SampReq   = 0;
+long M1FdBckB_SampReq   = 0;
+long M2FdBckA_SampReq   = 0;
+long M2FdBckB_SampReq   = 0;
 
 long M1FdBckAStart_t = 0;
 long M1FdBckAEnd_t   = 0;
