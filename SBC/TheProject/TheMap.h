@@ -62,6 +62,7 @@ private:
     COORDINATES loc;
     COORDINATES_DBL locD;
     double NORTH;
+    double dHeading;
 
 };
 

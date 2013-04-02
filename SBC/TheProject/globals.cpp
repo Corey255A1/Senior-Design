@@ -54,3 +54,16 @@ void UnCharCat(unsigned char* puszDestBuff, unsigned char* puszSourceBuff, int n
         }
     }
 }
+
+int BytesToInt(unsigned char* puszBuff, char pos1, char pos2)
+{
+    return ((int)(puszBuff[pos1] << 8)) | puszBuff[pos2];
+}
+
+char CheckAck(unsigned char* puszBuff)
+{
+    if (puszBuff[0] == 'A' && puszBuff[1] == 'C' && puszBuff[2] == 'K')
+    {
+        return TRUE;
+    }
+}

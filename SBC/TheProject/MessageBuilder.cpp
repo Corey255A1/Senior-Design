@@ -57,23 +57,58 @@ const unsigned char ucReverse           = 'R';
 //-----------------------------------------------------------------------------
 const unsigned char ucMsgStartSym       = '!';
 
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Data Size Constants
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 const unsigned char ucSetMotorDataSize  = 6;
 const unsigned char ucGetMotorDataSize  = 2;
 const unsigned char ucSetArmDataSize    = 4;
 const unsigned char ucGetArmDataSize    = 2;
 const unsigned char ucGetSensorDataSize = 3;
 
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Packet Sizes
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 const unsigned char ucSetMotorPacketSize        = 8;
 const unsigned char ucGetMotorPacketSize        = 4;
 const unsigned char ucSetArmPacketSize          = 6;
 const unsigned char ucGetArmPacketSize          = 4;
 const unsigned char ucGetSensorPacketSize       = 5;
+
+//-----------------------------------------------------------------------------
+// Array Message Positions.
+//-----------------------------------------------------------------------------
+const unsigned char ucMsgIdentifier     = 0;
+
+// Ultrasonic Definitions
+const unsigned char ucUltLeftFrontMSB     = 1;
+const unsigned char ucUltLeftFrontLSB     = 2;
+
+const unsigned char ucUltLeftBackMSB      = 3;
+const unsigned char ucUltLeftBackLSB      = 4;
+
+const unsigned char ucUltRightFrontMSB    = 5;
+const unsigned char ucUltRightFrontLSB    = 6;
+
+const unsigned char ucUltRightBackMSB     = 7;
+const unsigned char ucUltRightBackLSB     = 8;
+
+const unsigned char ucUltFrontMSB         = 9;
+const unsigned char ucUltFrontLSB         = 10;
+
+const unsigned char ucUltBackMSB          = 11;
+const unsigned char ucUltBackLSB          = 12;
+
+// Wheel Definitions
+const unsigned char ucLeftWheelMSB       = 1;
+const unsigned char ucLeftWheelLSB       = 2;
+
+const unsigned char ucRightWheelMSB      = 3;
+const unsigned char ucRightWheelLSB      = 4;
+
+// Compass Definitions
+const unsigned char ucCompassMSB        = 1;
+const unsigned char ucCompassLSB        = 2;
 
 /**
  * Fills the whole buffer with only null (0) values.

@@ -86,138 +86,236 @@ int main(int argc, char** argv)
     SoundRecorder soundRecorder;
     SoundFFT soundFFT;
     TheMap theMap;
+    COORDINATES roboCoord;
+    //roboCoord.x = 50;
+    //roboCoord.y = 50;
+    //theMap.setLocation(roboCoord);
     //enum STATE state = WAIT_FOR_TONE;
     
-    switch (state)
+    while (1)
     {
-        case INITIALIZE:
-            //-----------------------------------------------------------------
-            //  Open file hand for log output.
-            //-----------------------------------------------------------------
-//            OpenLogFile(sLogFilePath);
+        switch (state)
+        {
+            case INITIALIZE:
+                //-----------------------------------------------------------------
+                //  Open file hand for log output.
+                //-----------------------------------------------------------------
+                OpenLogFile(sLogFilePath);
 
-            //-----------------------------------------------------------------
-            //  Attempt to open serial port for Master Pic communication.
-            //-----------------------------------------------------------------
-            nRC = serialPort.connect();
+                //-----------------------------------------------------------------
+                //  Attempt to open serial port for Master Pic communication.
+                //-----------------------------------------------------------------
+                nRC = serialPort.connect();
 
-            //-----------------------------------------------------------------
-            //  Check to make sure the serial port opened successfully.
-            //-----------------------------------------------------------------
-            if (nRC != SUCCESS)
-            {
-                sLogMsg = "Communication Error: Failed to open serial communication:" + IntToString(nRC) + ". Exiting...\n";
-                WriteToLogFile(sLogMsg);
-                exit(-1);
-            }
+                //-----------------------------------------------------------------
+                //  Check to make sure the serial port opened successfully.
+                //-----------------------------------------------------------------
+                if (nRC != SUCCESS)
+                {
+                    sLogMsg = "Communication Error: Failed to open serial communication:" + IntToString(nRC) + ". Exiting...\n";
+                    WriteToLogFile(sLogMsg);
+                    exit(-1);
+                }
 
-            //-----------------------------------------------------------------
-            //  Create and let the color tracking thread start running.
-            //-----------------------------------------------------------------
-//            sLogMsg = "Creating thread...\n";
-//            WriteToLogFile(sLogMsg);
-            //nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
+                //-----------------------------------------------------------------
+                //  Create and let the color tracking thread start running.
+                //-----------------------------------------------------------------
+    //            sLogMsg = "Creating thread...\n";
+    //            WriteToLogFile(sLogMsg);
+                //nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
 
-            //-----------------------------------------------------------------
-            //  Check to make sure thread executed successfully.
-            //-----------------------------------------------------------------
-//            if (nRC)
-//            {
-//                sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(rc) + ". Exiting...\n";
-//                exit(-1);
-//            }
-            
-//            state = WAIT_FOR_TONE;
-            break;
-            
-        case WAIT_FOR_TONE:
-            
-            //-----------------------------------------------------------------
-            //  Sound Processing
-            //-----------------------------------------------------------------
-            dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
-            soundRecorder.record(frgSoundSamps);
-            
-            //-----------------------------------------------------------------
-            //  If the higher frequency is heard, then RoboWaiter needs to get
-            //  the plate on the lower shelf, and the state needs to advance
-            //  to SCAN_FOR_POS...
-            //-----------------------------------------------------------------
-            if (dblFreqSamp == LOW_SHELF_CLEAN_FREQ)
-            {
-                bGetUpperShelf  = FALSE;
-                bGetLowShelf    = TRUE;
+                //-----------------------------------------------------------------
+                //  Check to make sure thread executed successfully.
+                //-----------------------------------------------------------------
+    //            if (nRC)
+    //            {
+    //                sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(rc) + ". Exiting...\n";
+    //                exit(-1);
+    //            }
+
+    //            state = WAIT_FOR_TONE;
                 state = SCAN_FOR_POS;
-            }
-            
-            //-----------------------------------------------------------------
-            //  ... Else if the lower frequency is heard, then RoboWaiter needs 
-            //  to get the plate on the lower shelf, and the state needs to 
-            //  advance to SCAN_FOR_POS...
-            //-----------------------------------------------------------------
-            else if (dblFreqSamp == UPPER_SHELF_FREQ)
+                break;
+
+            case WAIT_FOR_TONE:
+
+                //-----------------------------------------------------------------
+                //  Sound Processing
+                //-----------------------------------------------------------------
+                dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
+                soundRecorder.record(frgSoundSamps);
+
+                //-----------------------------------------------------------------
+                //  If the higher frequency is heard, then RoboWaiter needs to get
+                //  the plate on the lower shelf, and the state needs to advance
+                //  to SCAN_FOR_POS...
+                //-----------------------------------------------------------------
+                if (dblFreqSamp == LOW_SHELF_CLEAN_FREQ)
+                {
+                    bGetUpperShelf  = FALSE;
+                    bGetLowShelf    = TRUE;
+                    state = SCAN_FOR_POS;
+                }
+
+                //-----------------------------------------------------------------
+                //  ... Else if the lower frequency is heard, then RoboWaiter needs 
+                //  to get the plate on the lower shelf, and the state needs to 
+                //  advance to SCAN_FOR_POS...
+                //-----------------------------------------------------------------
+                else if (dblFreqSamp == UPPER_SHELF_FREQ)
+                {
+                    bGetLowShelf    = FALSE;
+                    bGetUpperShelf  = TRUE;
+                    state = SCAN_FOR_POS;
+                }
+
+                //-----------------------------------------------------------------
+                //  ... Else remain at the current state.
+                //-----------------------------------------------------------------
+                else
+                {
+                    state = state;
+                }
+
+                break;
+
+            case SCAN_FOR_POS:
             {
-                bGetLowShelf    = FALSE;
-                bGetUpperShelf  = TRUE;
-                state = SCAN_FOR_POS;
+                int nRightFrontDist;
+                int nRightBackDist;
+
+                //-----------------------------------------------------------------
+                //  Build ultrasonic messages.
+                //-----------------------------------------------------------------
+                BuildSensGet(uszCommOutMsg, ucUltSel);
+                WR_SERIAL();
+
+                //-----------------------------------------------------------------
+                //  Find Ultrasonic distances to wall.
+                //-----------------------------------------------------------------
+                nRightFrontDist = BytesToInt(uszCommInMsg, ucUltRightFrontMSB, ucUltRightFrontLSB);
+                nRightBackDist = BytesToInt(uszCommInMsg, ucUltRightBackMSB, ucUltRightBackLSB);
+
+                //-----------------------------------------------------------------
+                //  If the front right ultrasonic is farther away we turn right...
+                //-----------------------------------------------------------------
+                if (nRightFrontDist > nRightBackDist)
+                {
+                    BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed4, ucForward, ucSpeed4);
+                }
+
+                //-----------------------------------------------------------------
+                //  ... Else if the front right ultrasonic is close turn left
+                //-----------------------------------------------------------------
+                else if (nRightFrontDist < nRightBackDist)
+                {
+                    BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4);
+                }
+
+                //-----------------------------------------------------------------
+                //  ... Else we good.
+                //-----------------------------------------------------------------
+                else
+                {
+                    double heading;
+
+                    //-------------------------------------------------------------
+                    //  Get the distance from the back of the robot to the wall.
+                    //-------------------------------------------------------------
+                    int nBackDist = BytesToInt(uszCommInMsg, ucUltBackMSB, ucUltBackLSB);
+
+                    //-------------------------------------------------------------
+                    //  Get the compass value for our heading offset.
+                    //-------------------------------------------------------------
+                    BuildSensGet(uszCommOutMsg, ucCompassSel);
+                    WR_SERIAL();
+                    heading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+                    theMap.orientNorth(heading / ((double) COMPASS_DIVISOR));
+
+                    //-------------------------------------------------------------
+                    //  Update the map with the robot's current position.
+                    //-------------------------------------------------------------
+                    roboCoord.x = nBackDist + CENTER_OFFSET;
+                    roboCoord.y = nRightFrontDist + CENTER_OFFSET;
+                    theMap.setLocation(roboCoord);
+
+                    //-------------------------------------------------------------
+                    //  Go to the next state (Find fridge trigger)
+                    //-------------------------------------------------------------
+                    state = FIND_FRIDGE_TRIGGER;
+                    break;
+                }
+
+                WR_SERIAL();
+
+                if (!CheckAck(uszCommInMsg))
+                {
+                    MOTOR_STOP();
+                    break;
+                }
+                else
+                {
+
+                    BuildMotorGet(uszCommOutMsg);
+                    do 
+                    {
+                        WR_SERIAL();
+                    } 
+                    while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < 100);
+
+                    
+                    MOTOR_STOP();
+
+                    if (!CheckAck(uszCommInMsg))
+                    {
+                        MOTOR_STOP();
+                        break;
+                    }
+                }
             }
-            
-            //-----------------------------------------------------------------
-            //  ... Else remain at the current state.
-            //-----------------------------------------------------------------
-            else
-            {
-                state = state;
-            }
-            
-            break;
-            
-        case SCAN_FOR_POS:
-            
-            
-            break;
-            
-        case FIND_FRIDGE_TRIGGER:
-            
-            state = DETECT_FRIDGE_IR;
-            break;
-            
-        case DETECT_FRIDGE_IR:
-            break;
-            
-        case OPEN_DOOR:
-            break;
-            
-        case LINE_UP_WITH_FRIDGE:
-            state = GET_PLATE_FRIDGE;
-            break;
-            
-        case GET_PLATE_FRIDGE:
-            break;
-            
-        case CLOSE_DOOR:
-            break;
-            
-        case GO_TO_TABLE:
-            break;
-            
-        case PLACE_PLATE:
-            break;
-            
-        case RETURN_START:
-            break;
-            
-        case GET_PLATE_TABLE:
-            break;
-            
-        case GO_TO_SINK:
-            break;
-            
-        default:
-            break;
+                break;
+
+            case FIND_FRIDGE_TRIGGER:
+
+                state = DETECT_FRIDGE_IR;
+                break;
+
+            case DETECT_FRIDGE_IR:
+                break;
+
+            case OPEN_DOOR:
+                break;
+
+            case LINE_UP_WITH_FRIDGE:
+                state = GET_PLATE_FRIDGE;
+                break;
+
+            case GET_PLATE_FRIDGE:
+                break;
+
+            case CLOSE_DOOR:
+                break;
+
+            case GO_TO_TABLE:
+                break;
+
+            case PLACE_PLATE:
+                break;
+
+            case RETURN_START:
+                break;
+
+            case GET_PLATE_TABLE:
+                break;
+
+            case GO_TO_SINK:
+                break;
+
+            default:
+                break;
+        }
+
     }
-    
-    
     
     
     //-------------------------------------------------------------------------
@@ -231,8 +329,10 @@ int main(int argc, char** argv)
     float pi = 3.14;
     unsigned char piFixed = pi * 32;
     
+    
     //BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4);
-    BuildMotorGet(uszCommOutMsg);
+    //BuildMotorGet(uszCommOutMsg);
+    BuildSensGet(uszCommOutMsg, ucCompassSel);
     //unsigned char testChar[5] = "!2GM";
 //    BuildSensGet(uszCommOutMsg, ucTempSensSel);
 //    BuildMotorGet(uszCommOutMsg);
@@ -255,7 +355,9 @@ int main(int argc, char** argv)
             serialPort.WritePort(uszCommOutMsg);
             
             serialPort.ReadPort(uszCommInMsg);
-        
+            
+            
+            
         //---------------------------------------------------------------------
         //  Gather camera information.
         //---------------------------------------------------------------------

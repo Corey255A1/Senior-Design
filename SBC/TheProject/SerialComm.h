@@ -40,6 +40,7 @@ public:
     virtual ~SerialComm();
     void WritePort(unsigned char* puszWriteBuff);
     int ReadPort(unsigned char* puszReadBuff);
+    void ZeroWritePort(unsigned char* puszWriteBuff, char buffSize);
     
 private:
     int ConfigCommPort();
