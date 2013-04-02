@@ -7,6 +7,7 @@
 #include <p24EP32MC202.h>
 #include "frontUltrasonic.h"
 #include "globalsTemp.h"
+#include "spi.h"
 #include <stdbool.h>
 #include <math.h>
 
@@ -238,6 +239,7 @@ double findObject(void){
 int main()
 {
     initFrontUltras();
+    configSPICommunication();
     Cair = 33150 + (60 * temp);
     while (1)
     {
