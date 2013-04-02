@@ -11,6 +11,7 @@
       <itemPath>spi.h</itemPath>
       <itemPath>A2D.h</itemPath>
       <itemPath>temperature.h</itemPath>
+      <itemPath>C:/Users/student/Documents/GitHub/Senior-Design/Global_PIC/spiMessages.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

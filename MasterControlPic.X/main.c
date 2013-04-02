@@ -21,6 +21,8 @@
  * while loop and wait for a serial message to parse and take
  * appropriate actions
  */
+int FAKE_HEADING = (int)((double)3.14*(8192));
+
 int main( void ) {
     initSerial1();
     initSPI();
@@ -111,7 +113,7 @@ int main( void ) {
                                     txMSG[0] = '!';
                                     txMSG[1] = 3;
                                     txMSG[2] = 'S';
-                                    tempSPI = readSlave(COMPASS,COMPASS_HEADING);
+                                    tempSPI = FAKE_HEADING;//readSlave(COMPASS,COMPASS_HEADING);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
                                     txSerial1(txMSG,5);
@@ -122,9 +124,14 @@ int main( void ) {
                                     txMSG[0] = '!';
                                     txMSG[1] = 3;
                                     txMSG[2] = 'S';
+                                    tempSPI = //readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
+                                    txMSG[3] = (tempSPI&0xFF00)>>8;
+                                    txMSG[4] = (tempSPI&0x00FF);
                                     tempSPI = readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
+                                    tempSPI = readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
+
                                     txSerial1(txMSG,5);
                                     break;}
                             }//switch - sensors
