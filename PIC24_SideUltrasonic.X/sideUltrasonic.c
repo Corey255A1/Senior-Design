@@ -9,6 +9,7 @@
 #include <p24EP32MC202.h>
 #include "sideUltrasonic.h"
 #include "globalsTemp.h"
+#include "spi.h"
 #include <stdbool.h>
 #include <math.h>
 
@@ -266,6 +267,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
 int main()
 {
     initSideUltras();
+    configSPICommunication();
     Cair = 33150 + (60 * temp);
     while(1)
     {
