@@ -22,6 +22,7 @@
 #define ULTRAS 'U'
 #define ALLSENS 'A'
 #define IRLED 'I'
+#define SEND_ACK txSerial1("!ACK",4)
 typedef struct{
     char Msg[20];
     char Length;

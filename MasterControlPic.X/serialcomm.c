@@ -25,7 +25,7 @@ int EXPECTEDLENGTH;
 void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(){
     lastchar = U1RXREG;
     U1STAbits.UTXEN = 1;
-    U1TXREG = lastchar;// uncomment for echoing commands
+//    U1TXREG = lastchar;// uncomment for echoing commands
     if(!RXMessage.Received){
         RXMessage.Msg[ch]=lastchar;
         //IF we know it is the first byte of our message is a ! then we

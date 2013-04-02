@@ -37,6 +37,7 @@ int main( void ) {
                                    (RXMessage.Msg[DEVICEHEADER+2] SPI_MOTOR_LEFT_DIR) |
                                    (RXMessage.Msg[DEVICEHEADER+3] SPI_MOTOR_RIGHT_SPEED) |
                                    (RXMessage.Msg[DEVICEHEADER+4] SPI_MOTOR_RIGHT_DIR));
+                            SEND_ACK;
                             break;
                         case ARM:
                             writeSlave(STEPPER_DRIVER1,SPI_STEPPER_X,RXMessage.Msg[DEVICEHEADER+1]);
@@ -45,6 +46,7 @@ int main( void ) {
                             writeSlave(STEPPER_DRIVER2,SPI_STEPPER_Y,RXMessage.Msg[DEVICEHEADER+2]);
                             //writeSlave(STEPPER_DRIVER3,SPI_STEPPER_X,RXMessage.Msg[DEVICEHEADER+1]);
                             //writeSlave(STEPPER_DRIVER3,SPI_STEPPER_Y,RXMessage.Msg[DEVICEHEADER+2]);
+                            SEND_ACK;
                             break;
                     }//switch
                     break;
@@ -132,7 +134,7 @@ int main( void ) {
             }//switch - get/set
             RXMessage.Received = 0;
         }//if
-        msDelay(10);
+       // msDelay(10);
     }//while
     return (0);
 }//main
