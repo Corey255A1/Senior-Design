@@ -213,53 +213,87 @@ void SerialComm::WritePort(unsigned char* puszWriteBuff)
 int SerialComm::ReadPort(unsigned char* puszReadBuff)
 {
     //-------------------------------------------------------------------------
-    //  bytesRead       - Integer variable to keep track of bytes we read
-    //  buffptr         - Pointer variable
-    //  to progress through the buffer.
+    //  nBytesRead      - Integer variable to keep track of bytes we read
+    //  puszBuffptr     - Pointer variable to progress through the buffer.
+    //  cDataByteCount  - Number of Data Bytes Read
+    //  cDataSize       - Number of data bytes expected in whole message
+    //  cExitLoop       - Flag to exit the main function loop.
     //-------------------------------------------------------------------------
     int nBytesRead;
-    //unsigned char tempBuff[BUFF_SIZE + 1];
     unsigned char* puszBuffptr = puszReadBuff;
-    char cByteCount = 0;
+    char cDataByteCount = 0;
     char cDataSize = 0;
-    char exitLoop = FALSE;
+    char cExitLoop = FALSE;
     unsigned char ucCurChar;
     
     //-------------------------------------------------------------------------
     //  As long as there are messages to read, we will continued reading.
     //-------------------------------------------------------------------------
-    //while ((nBytesRead = read(commPort, puszBuffptr, 1)) > 0)
     while ((nBytesRead = read(commPort, &ucCurChar, 1)) > 0)
     {
+        //---------------------------------------------------------------------
+        // If we read the '!', then we know that's the start of the message,
+        // and the end of any junk bytes. I.e, set the state to START.
+        //---------------------------------------------------------------------
         if (ucCurChar == '!')
         {
             packetType = START;
         }
         
+        //---------------------------------------------------------------------
+        // Take different actions with the read bytes depending on what kind
+        // of data we expect in the byte from the packet.
+        //---------------------------------------------------------------------
         switch (packetType)
         {
+            //-----------------------------------------------------------------
+            //  We detected a '!' signifying the start of the packet reading,
+            //  and we know the next byte should indicate the size (in number
+            //  of bytes) of our data.
+            //-----------------------------------------------------------------
             case START: 
                 packetType = DATA_SIZE;
                 break;
+                
+            //-----------------------------------------------------------------
+            //  Here we take the byte and store it so we know how many bytes
+            //  we expect to read next.
+            //-----------------------------------------------------------------
             case DATA_SIZE:
                 cDataSize = ucCurChar;
                 packetType = DATA_MINE;
                 break;
+                
+            //-----------------------------------------------------------------
+            //  In this state, we are mining and storing all of the data bytes
+            //-----------------------------------------------------------------
             case DATA_MINE:
-                ++cByteCount;
-                puszBuffptr[cByteCount - 1] = ucCurChar;
-                if (cByteCount == cDataSize)
+                ++cDataByteCount;
+                puszBuffptr[cDataByteCount - 1] = ucCurChar;
+                
+                //-------------------------------------------------------------
+                //  If the number of data bytes read equals the data size byte
+                //  from the packet, then we know we are done.
+                //-------------------------------------------------------------
+                if (cDataByteCount == cDataSize)
                 {
-                    exitLoop = TRUE;
+                    cExitLoop = TRUE;
                     packetType = JUNK;
                 }
-                //++puszBuffptr;
                 break;
+                
+            //-----------------------------------------------------------------
+            //  Default state - here we assume all of the bytes are junk up
+            //  until we recieve the character that signifies the start of the
+            //  message.
+            //-----------------------------------------------------------------
             case JUNK:
                 break;
         }
         //---------------------------------------------------------------------
-        if (exitLoop)
+        //  Break the loop as to return from the function when told.
+        //---------------------------------------------------------------------
+        if (cExitLoop)
         {
             break;
         }
