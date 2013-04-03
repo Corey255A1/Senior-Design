@@ -138,6 +138,9 @@ void __attribute__((__interrupt__, auto_psv)) _OC1Interrupt(void)
 {
     _OC1IF = 0;
 
+    // Reset everything
+    ULTRA_FRONT_DISTANCE = 0;
+
     leftFound = false;
     rightFound = false;
 }
@@ -173,6 +176,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
     if((u4_edge == RISE) && (U4_RBIport == HIGH)){
         u4_time_i = IC1BUF;
         u4_edge = FALL;
+
+        ULTRA_BACK_DISTANCE = 0;
+
+        backClose = false;
     }else{
         u4_time_f = IC1BUF;
         u4_edge = RISE;
@@ -180,7 +187,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
         // once we have the time, convert to distance
         backLength = convertToDistance(u4_time * timerPeriod);
 
-        ULTRA_BACK_DISTANCE = backLength;
+        ULTRA_BACK_DISTANCE = (int)backLength;
 
         if (backLength < 5)
         {
@@ -220,7 +227,7 @@ double findObject(void){
     // find distance to the object
     frontLength = leftLength * (sin(angleA * pi / 180));
 
-    ULTRA_FRONT_DISTANCE = frontLength;
+    ULTRA_FRONT_DISTANCE = (int)frontLength;
 
     // if we are too close, then we need to backup/turn
     if (frontLength < 30)
@@ -239,9 +246,6 @@ double findObject(void){
     else {
         return angleDiff;   // angle diff will represent how much it needs to turn
     }
-    
-    // still needs conditions if facing the fridge/etc
-    // need to find the distance to the object
 }
 
 int main()
