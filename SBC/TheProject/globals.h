@@ -33,6 +33,10 @@ using namespace std;
 #define CENTER_OFFSET           15
 #define PULSES_TO_CM            100
 #define COMPASS_ERROR           0.07
+#define ULT_STOP_THRESH         10
+#define ADJ_LEFT                1
+#define ADJ_RIGHT               2
+#define NO_ADJ                  3
 
 #define MOTOR_STOP() BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0); serialPort.ZeroWritePort(uszCommOutMsg, ucSetMotorPacketSize); serialPort.ReadPort(uszCommInMsg)
 #define WR_SERIAL() serialPort.WritePort(uszCommOutMsg); serialPort.ReadPort(uszCommInMsg)

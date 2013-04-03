@@ -329,3 +329,123 @@ int TheMap::checkCompassHeading(double curHeading)
     
     return FALSE;
 }
+
+int TheMap::checkHeadingDeviation(double curHeading)
+{
+    double lowThresh = curHeading - COMPASS_ERROR;
+    double highThresh = curHeading + COMPASS_ERROR;
+    double desiredHeading = dCurHeading;
+
+    //-------------------------------------------------------------------------
+    //  Problem where the low threshold rolls back over
+    //  to 2 pi
+    //-------------------------------------------------------------------------
+    if (lowThresh < 0)
+    {
+        lowThresh = (2*M_PI) + lowThresh;
+
+        if (((curHeading >= lowThresh) && (curHeading <= (2*M_PI)))
+            && ((desiredHeading >= lowThresh) && (desiredHeading <= (2*M_PI))))
+        {
+            if (curHeading <= desiredHeading)
+            {
+                return ADJ_RIGHT;
+            }
+            else if (curHeading >= desiredHeading)
+            {
+                return ADJ_LEFT;
+            }
+            else
+            {
+                return NO_ADJ;
+            }
+        }
+        else if (((curHeading <= highThresh) && (curHeading > 0))
+                 &&((desiredHeading <= highThresh) && (desiredHeading > 0)))
+        {
+            if (curHeading <= desiredHeading)
+            {
+                return ADJ_RIGHT;
+            }
+            else if (curHeading >= desiredHeading)
+            {
+                return ADJ_LEFT;
+            }
+            else
+            {
+                return NO_ADJ;
+            }
+        }
+        else
+        {
+            return NO_ADJ;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    //  Problem where the high threshold rolls over to
+    //  0
+    //-------------------------------------------------------------------------
+    else if (highThresh > (2*M_PI))
+    {
+        highThresh = 0 + (highThresh - (2*M_PI)); 
+
+        if (((curHeading >= lowThresh) && (curHeading <= (2*M_PI)))
+            && ((desiredHeading >= lowThresh) && (desiredHeading <= (2*M_PI))))
+        {
+            if (curHeading <= desiredHeading)
+            {
+                return ADJ_RIGHT;
+            }
+            else if (curHeading >= desiredHeading)
+            {
+                return ADJ_LEFT;
+            }
+            else
+            {
+                return NO_ADJ;
+            }
+        }
+        else if (((curHeading <= highThresh) && (curHeading > 0))
+                 &&((desiredHeading <= highThresh) && (desiredHeading > 0)))
+        {
+            if (curHeading <= desiredHeading)
+            {
+                return ADJ_RIGHT;
+            }
+            else if (curHeading >= desiredHeading)
+            {
+                return ADJ_LEFT;
+            }
+            else
+            {
+                return NO_ADJ;
+            }
+        }
+        else
+        {
+            return NO_ADJ;
+        }
+    }
+    
+    //-------------------------------------------------------------------------
+    //  ... Else we all good.
+    //-------------------------------------------------------------------------
+    else
+    {
+        if (curHeading <= desiredHeading)
+        {
+            return ADJ_RIGHT;
+        }
+        else if (curHeading >= desiredHeading)
+        {
+            return ADJ_LEFT;
+        }
+        else
+        {
+            return NO_ADJ;
+        }
+    }
+    
+    return FALSE;
+}

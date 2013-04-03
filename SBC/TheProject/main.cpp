@@ -332,6 +332,7 @@ int main(int argc, char** argv)
                         //-----------------------------------------------------
                         newHeading = theMap.determineHeading(theMap.destPt1);
 
+                        //  Determine spin direction.
                         if (theMap.spinDirection(newHeading) == CLKWISE)
                         {
                             SPIN_BOT_CLK();
@@ -341,6 +342,11 @@ int main(int argc, char** argv)
                             SPIN_BOT_CCLK();
                         }
 
+                        //-----------------------------------------------------
+                        //  While the compass heading is not matched with our
+                        //  desired heading at destination point 1, we want to
+                        //  keep spinning the robot.
+                        //-----------------------------------------------------
                         BuildSensGet(uszCommOutMsg, ucCompassSel);
                         do 
                         {
@@ -350,6 +356,90 @@ int main(int argc, char** argv)
                             
                         }
                         while (!theMap.checkCompassHeading(curHeading));
+                        MOTOR_STOP();
+                        
+                        //-----------------------------------------------------
+                        //  Need to go forward to finally move towards the
+                        //  destination point 1.
+                        //-----------------------------------------------------
+                        BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                        WR_SERIAL();
+                        
+                        //-----------------------------------------------------
+                        //  As we move forward to get to the destination, we
+                        //  do the following...
+                        //-----------------------------------------------------
+                        do
+                        {
+                            //  See if we are running into anything
+                            BuildSensGet(uszCommOutMsg, ucUltSel);
+                            WR_SERIAL();
+                            
+                            //-------------------------------------------------
+                            //  If we are going to run into anything then stop.
+                            //-------------------------------------------------
+                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
+                            {
+                                MOTOR_STOP();
+                                
+                                //---------------------------------------------
+                                //  Check to make sure if we received a return 
+                                //  ACK, if we did not then just send it again.
+                                //---------------------------------------------
+                                if (!CheckAck(uszCommInMsg))
+                                {
+                                    MOTOR_STOP();
+                                    break;
+                                }
+                            }
+                            
+                            
+                            //  Make sure we keep traveling strait.
+                            
+                            BuildSensGet(uszCommOutMsg, ucCompassSel);
+                            WR_SERIAL();
+                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+                            int nAdj = theMap.checkHeadingDeviation(curHeading);
+                           
+                            //  Adjust right, left, or keep going strait
+                            if (nAdj == ADJ_RIGHT)
+                            {
+                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
+                                  WR_SERIAL();
+                            }
+                            else if (nAdj == ADJ_LEFT)
+                            {
+                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
+                                WR_SERIAL();
+                            }
+                            else 
+                            {
+                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                                WR_SERIAL();
+                            }
+                            
+                           
+                            
+                            
+                            //  Get the steps again
+                            BuildMotorGet(uszCommOutMsg);
+                            WR_SERIAL();
+                            
+                            //-------------------------------------------------------------
+                            //  Check to make sure if we received a return ACK, if we did
+                            //  not then just send it again...
+                            //-------------------------------------------------------------
+                            if (!CheckAck(uszCommInMsg))
+                            {
+                                MOTOR_STOP();
+                                break;
+                            }
+                            
+                            
+                            
+                        }
+                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
                         
                         MOTOR_STOP();
                         
