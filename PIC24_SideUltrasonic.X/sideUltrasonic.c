@@ -13,25 +13,29 @@
 #include <stdbool.h>
 #include <math.h>
 
+#define ULTRA_LEFT_FRONT_DISTANCE SLAVEData.outData[0]
+#define ULTRA_LEFT_REAR_DISTANCE SLAVEData.outData[1]
+#define ULTRA_RIGHT_FRONT_DISTANCE SLAVEData.outData[2]
+#define ULTRA_RIGHT_REAR_DISTANCE SLAVEData.outData[3]
 
 double temp = 21; // degrees C
 double Cair = 0;
 
 double timerPeriod = 2e-6;
 
-double leftLeftPulse = 0;
-double leftRightPulse = 0;
+double leftLeftLength = 0;
+double leftRightLength = 0;
 
-double rightLeftPulse = 0;
-double rightRightPulse = 0;
+double rightLeftLength = 0;
+double rightRightLength = 0;
 
 double sideLength = 11.1;   // needs changed, but will be same for both
 
-bool foundLeftLeft = false;
-bool foundLeftRight = false;
+bool foundLeftRear = false;
+bool foundLeftFront = false;
 
-bool foundRightLeft = false;
-bool foundRightRight = false;
+bool foundRightFront = false;
+bool foundRightRear = false;
 
 short u5_edge = RISE;
 long u5_time = 0;
@@ -160,18 +164,14 @@ double convertToDistance(double time){
     return distance;
 }
 
-double findObject(double leftPulse, double rightPulse){
+double findObject(double leftLength, double rightLength){
     // one edge is global_u1_time, other is global_u2_time
 
     // perform law of cosines, let u1 = a, u2 = b, and base = c
-    double leftLength = convertToDistance(leftPulse * timerPeriod);
-    double rightLength = convertToDistance(rightPulse * timerPeriod);
-    double c = sideLength;
-
-    double preAngleA = (rightLength * rightLength + c * c - leftLength * leftLength) / (2 * rightLength * c);
+    double preAngleA = (rightLength * rightLength + sideLength * sideLength - leftLength * leftLength) / (2 * rightLength * sideLength);
     double angleA = acos(preAngleA) * 180 / pi;
 
-    double preAngleB = (leftLength * leftLength + c * c - rightLength * rightLength) / (2 * leftLength * c);
+    double preAngleB = (leftLength * leftLength + sideLength * sideLength - rightLength * rightLength) / (2 * leftLength * sideLength);
     double angleB = acos(preAngleB) * 180 / pi;
 
     double angleDiff = angleA - angleB;
@@ -203,13 +203,20 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     if((u5_edge == RISE) && (U5_RBIport == HIGH)){
         u5_time_i = IC1BUF;
         u5_edge = FALL;
+
+        ULTRA_RIGHT_FRONT_DISTANCE = 0;
+
+        foundRightFront = false;
     }else{
         u5_time_f = IC1BUF;
         u5_edge = RISE;
         u5_time = u5_time_i - u5_time_f;
 
-        rightLeftPulse = u5_time;
-        foundRightLeft = true;
+        rightLeftLength = convertToDistance(u5_time * timerPeriod);
+
+        ULTRA_RIGHT_FRONT_DISTANCE = (int)rightLeftLength;
+
+        foundRightFront = true;
     }
 }
 
@@ -220,13 +227,20 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     if((u6_edge == RISE) && (U6_RBIport == HIGH)){
         u6_time_i = IC2BUF;
         u6_edge = FALL;
+
+        ULTRA_RIGHT_REAR_DISTANCE = 0;
+
+        foundRightRear = false;
     }else{
         u6_time_f = IC2BUF;
         u6_edge = RISE;
         u6_time = u6_time_i - u6_time_f;
 
-        rightRightPulse = u6_time;
-        foundRightRight = true;
+        rightRightLength = convertToDistance(u6_time * timerPeriod);
+
+        ULTRA_RIGHT_REAR_DISTANCE = (int)rightRightLength;
+
+        foundRightRear = true;
     }
 }
 
@@ -237,13 +251,20 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
     if((u7_edge == RISE) && (U7_RBIport == HIGH)){
         u7_time_i = IC2BUF;
         u7_edge = FALL;
+
+        ULTRA_LEFT_FRONT_DISTANCE = 0;
+
+        foundLeftFront = false;
     }else{
         u7_time_f = IC2BUF;
         u7_edge = RISE;
         u7_time = u7_time_i - u7_time_f;
 
-        leftRightPulse = u7_time;
-        foundLeftRight = true;
+        leftRightLength = convertToDistance(u7_time * timerPeriod);
+
+        ULTRA_LEFT_FRONT_DISTANCE = (int)leftRightLength;
+
+        foundLeftFront = true;
     }
 }
 
@@ -254,13 +275,20 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
     if((u8_edge == RISE) && (U8_RBIport == HIGH)){
         u8_time_i = IC4BUF;
         u8_edge = FALL;
+
+        ULTRA_LEFT_REAR_DISTANCE = 0;
+
+        foundLeftRear = false;
     }else{
         u8_time_f = IC4BUF;
         u8_edge = RISE;
         u8_time = u8_time_i - u8_time_f;
 
-        leftLeftPulse = u8_time;
-        foundLeftLeft = true;
+        leftLeftLength = convertToDistance(u8_time * timerPeriod);
+
+        ULTRA_LEFT_REAR_DISTANCE = (int)leftLeftLength;
+
+        foundLeftRear = true;
     }
 }
 
@@ -271,18 +299,18 @@ int main()
     Cair = 33150 + (60 * temp);
     while(1)
     {
-        if (foundLeftLeft && foundLeftRight)
+        if (foundLeftRear && foundLeftFront)
         {
-            findObject(leftLeftPulse, leftRightPulse);
-            foundLeftLeft = false;
-            foundLeftRight = false;
+            findObject(leftLeftLength, leftRightLength);
+            foundLeftRear = false;
+            foundLeftFront = false;
         }
 
-        if (foundRightLeft && foundRightRight)
+        if (foundRightFront && foundRightRear)
         {
-            findObject(rightLeftPulse, rightRightPulse);
-            foundRightLeft = false;
-            foundRightRight = false;
+            findObject(rightLeftLength, rightRightLength);
+            foundRightFront = false;
+            foundRightRear = false;
         }
     }
 

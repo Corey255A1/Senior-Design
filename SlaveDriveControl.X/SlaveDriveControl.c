@@ -137,10 +137,12 @@ int main(void) {
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
-        //if (curConfig != INMSG)
-        if (SPEEDM1 == 20)
+        if (curMasterConfig != INMSG)
+        //if (SPEEDM1 == 20)
         {
             curMasterConfig = INMSG;
+            M1FdBckB_SampCount = 0;
+            M2FdBckB_SampCount = 0;
                     
             //-----------------------------------------------------------------
             //  Here we can parse the speed and direction from the
