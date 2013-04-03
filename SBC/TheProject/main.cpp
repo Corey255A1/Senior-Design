@@ -16,6 +16,7 @@
 #include "SoundRecorder.h"
 #include "SoundFFT.h"
 #include "MessageBuilder.h"
+#include <math.h>
 
 using namespace std;
 
@@ -38,6 +39,12 @@ enum STATE {
     RETURN_START,
     GET_PLATE_TABLE,
     GO_TO_SINK    
+};
+
+enum DST_PT {
+    DST_PT1,
+    DST_PT2,
+    DST_PT3
 };
 
 /**
@@ -83,6 +90,7 @@ int main(int argc, char** argv)
     string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
     string sLogMsg;
     enum STATE state = INITIALIZE;
+    enum DST_PT dstPt = DST_PT1;
     SoundRecorder soundRecorder;
     SoundFFT soundFFT;
     TheMap theMap;
@@ -133,8 +141,8 @@ int main(int argc, char** argv)
     //                exit(-1);
     //            }
 
-    //            state = WAIT_FOR_TONE;
-                state = SCAN_FOR_POS;
+                state = WAIT_FOR_TONE;
+                //state = SCAN_FOR_POS;
                 break;
 
             case WAIT_FOR_TONE:
@@ -142,15 +150,15 @@ int main(int argc, char** argv)
                 //-----------------------------------------------------------------
                 //  Sound Processing
                 //-----------------------------------------------------------------
-                dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
                 soundRecorder.record(frgSoundSamps);
+                dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
 
                 //-----------------------------------------------------------------
                 //  If the higher frequency is heard, then RoboWaiter needs to get
                 //  the plate on the lower shelf, and the state needs to advance
                 //  to SCAN_FOR_POS...
                 //-----------------------------------------------------------------
-                if (dblFreqSamp == LOW_SHELF_CLEAN_FREQ)
+                if ((dblFreqSamp <= LOW_SHELF_CLEAN_FREQ+100) && (dblFreqSamp > LOW_SHELF_CLEAN_FREQ-100))
                 {
                     bGetUpperShelf  = FALSE;
                     bGetLowShelf    = TRUE;
@@ -162,7 +170,7 @@ int main(int argc, char** argv)
                 //  to get the plate on the lower shelf, and the state needs to 
                 //  advance to SCAN_FOR_POS...
                 //-----------------------------------------------------------------
-                else if (dblFreqSamp == UPPER_SHELF_FREQ)
+                else if ((dblFreqSamp <= UPPER_SHELF_FREQ+100) && (dblFreqSamp > UPPER_SHELF_FREQ-100))
                 {
                     bGetLowShelf    = FALSE;
                     bGetUpperShelf  = TRUE;
@@ -231,6 +239,7 @@ int main(int argc, char** argv)
                     WR_SERIAL();
                     heading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
                     theMap.orientNorth(heading / ((double) COMPASS_DIVISOR));
+                    theMap.setHeading(heading / ((double) COMPASS_DIVISOR));
 
                     //-------------------------------------------------------------
                     //  Update the map with the robot's current position.
@@ -242,20 +251,37 @@ int main(int argc, char** argv)
                     //-------------------------------------------------------------
                     //  Go to the next state (Find fridge trigger)
                     //-------------------------------------------------------------
+                    theMap.destPt1.x = (int) theMap.getX();
+                    dstPt = DST_PT1;
                     state = FIND_FRIDGE_TRIGGER;
                     break;
                 }
-
+                
+                //-------------------------------------------------------------
+                //  Write the serial port with the set motor command built 
+                //  from above
+                //-------------------------------------------------------------
                 WR_SERIAL();
 
+                //-------------------------------------------------------------
+                //  Check to make sure if we received a return ACK, if we did
+                //  not then just send it again...
+                //-------------------------------------------------------------
                 if (!CheckAck(uszCommInMsg))
                 {
                     MOTOR_STOP();
                     break;
                 }
+                
+                //-------------------------------------------------------------
+                //  ... Else continue and monitor the stepper count of the turn
+                //-------------------------------------------------------------
                 else
                 {
-
+                    //---------------------------------------------------------
+                    //  While the the robot has not spinned enough. Keep
+                    //  writing set commands.
+                    //---------------------------------------------------------
                     BuildMotorGet(uszCommOutMsg);
                     do 
                     {
@@ -263,23 +289,139 @@ int main(int argc, char** argv)
                     } 
                     while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < 100);
 
-                    
+                    //---------------------------------------------------------
+                    //  Once we move enough, stop the robot.
+                    //---------------------------------------------------------
                     MOTOR_STOP();
 
+                    //---------------------------------------------------------
+                    //  Check to make sure the stop command was received.
+                    //---------------------------------------------------------
                     if (!CheckAck(uszCommInMsg))
                     {
+                        //-----------------------------------------------------
+                        //  Send stop again
+                        //-----------------------------------------------------
                         MOTOR_STOP();
                         break;
                     }
                 }
-            }
+                
                 break;
-
+            }
+                
             case FIND_FRIDGE_TRIGGER:
+            {
+                double newHeading;
+                double curHeading;
+                char inRange = FALSE;
+                
+                //-------------------------------------------------------------
+                //  We have set locations on the path to get to the door
+                //  trigger, so go to each one sequentually
+                //-------------------------------------------------------------
+                switch (dstPt)
+                {
+                    //---------------------------------------------------------
+                    //  Go to destination 1
+                    //---------------------------------------------------------
+                    case DST_PT1:
+                        
+                        //-----------------------------------------------------
+                        //  Determine heading.
+                        //-----------------------------------------------------
+                        newHeading = theMap.determineHeading(theMap.destPt1);
 
+                        if (theMap.spinDirection(newHeading) == CLKWISE)
+                        {
+                            SPIN_BOT_CLK();
+                        }
+                        else
+                        {
+                            SPIN_BOT_CCLK();
+                        }
+
+                        BuildSensGet(uszCommOutMsg, ucCompassSel);
+                        do 
+                        {
+                            WR_SERIAL();
+                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+                            
+                        }
+                        while (!theMap.checkCompassHeading(curHeading));
+                        
+                        MOTOR_STOP();
+                        
+                        dstPt = DST_PT2;
+                        break;
+                        
+                    case DST_PT2:
+                        
+                        //-----------------------------------------------------
+                        //  Determine heading.
+                        //-----------------------------------------------------
+                        newHeading = theMap.determineHeading(theMap.destPt2);
+                        
+                        if (theMap.spinDirection(newHeading) == CLKWISE)
+                        {
+                            SPIN_BOT_CLK();
+                        }
+                        else
+                        {
+                            SPIN_BOT_CCLK();
+                        }
+
+                        BuildSensGet(uszCommOutMsg, ucCompassSel);
+                        do 
+                        {
+                            WR_SERIAL();
+                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+                            
+                        }
+                        while (!theMap.checkCompassHeading(curHeading));
+                        
+                        MOTOR_STOP();
+                        
+                        dstPt = DST_PT3;
+                        break;
+                        
+                    case DST_PT3:
+                        
+                        //-----------------------------------------------------
+                        //  Determine heading.
+                        //-----------------------------------------------------
+                        newHeading = theMap.determineHeading(theMap.destPt3);
+                        
+                        if (theMap.spinDirection(newHeading) == CLKWISE)
+                        {
+                            SPIN_BOT_CLK();
+                        }
+                        else
+                        {
+                            SPIN_BOT_CCLK();
+                        }
+
+                        BuildSensGet(uszCommOutMsg, ucCompassSel);
+                        do 
+                        {
+                            WR_SERIAL();
+                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+                            
+                        }
+                        while (!theMap.checkCompassHeading(curHeading));
+                        
+                        MOTOR_STOP();
+                        
+                        dstPt = DST_PT3;
+                        break;
+                }
+                
                 state = DETECT_FRIDGE_IR;
                 break;
-
+            }
             case DETECT_FRIDGE_IR:
                 break;
 

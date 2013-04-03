@@ -29,6 +29,8 @@
 #define FLRSENSX 155
 #define FLRSENSY 182
 #define WALLBUFFER (5)
+#define CLKWISE 0
+#define CCLKWISE 1
 
 //-----------------------------------------------------------------------------
 //  Class variable and function declearations.
@@ -55,6 +57,14 @@ public:
     void display(void);
     void getMap(char[MAPSIZE][MAPSIZE]);
     double determineHeading( COORDINATES );
+    int spinDirection(double destHeading);
+    void setHeading(double newHeading);
+    int getStepCount();
+    int checkCompassHeading(double curHeading);
+    
+    COORDINATES destPt1;
+    COORDINATES destPt2;
+    COORDINATES destPt3;
 private:
     void addObject(char,int,int,int,int);
     void updateLoc(COORDINATES_DBL);
@@ -62,7 +72,8 @@ private:
     COORDINATES loc;
     COORDINATES_DBL locD;
     double NORTH;
-    double dHeading;
+    double dCurHeading;
+    int distToMove;
 
 };
 
