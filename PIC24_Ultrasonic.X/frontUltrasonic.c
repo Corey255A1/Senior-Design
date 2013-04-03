@@ -11,8 +11,8 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define ULTRA_FRONT_DISTANCE SLAVEData.outData(0)
-#define ULTRA_BACK_DISTANCE SLAVEData.outData(1)
+#define ULTRA_FRONT_DISTANCE SLAVEData.outData[0]
+#define ULTRA_BACK_DISTANCE SLAVEData.outData[1]
 
 double temp = 21; // degrees C
 double Cair = 0;

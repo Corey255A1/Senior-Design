@@ -13,10 +13,10 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define ULTRA_LEFT_FRONT_DISTANCE SLAVEData.outData(0)
-#define ULTRA_LEFT_REAR_DISTANCE SLAVEData.outData(1)
-#define ULTRA_RIGHT_FRONT_DISTANCE SLAVEData.outData(2)
-#define ULTRA_RIGHT_REAR_DISTANCE SLAVEData.outData(3)
+#define ULTRA_LEFT_FRONT_DISTANCE SLAVEData.outData[0]
+#define ULTRA_LEFT_REAR_DISTANCE SLAVEData.outData[1]
+#define ULTRA_RIGHT_FRONT_DISTANCE SLAVEData.outData[2]
+#define ULTRA_RIGHT_REAR_DISTANCE SLAVEData.outData[3]
 
 double temp = 21; // degrees C
 double Cair = 0;
