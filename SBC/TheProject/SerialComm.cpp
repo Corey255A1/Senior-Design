@@ -205,6 +205,11 @@ void SerialComm::WritePort(unsigned char* puszWriteBuff)
     int rc = write(commPort, puszWriteBuff, strlen(reinterpret_cast <const char*>(puszWriteBuff)));
 }
 
+void SerialComm::ZeroWritePort(unsigned char* puszWriteBuff, char buffSize)
+{
+    int rc = write(commPort, puszWriteBuff, buffSize);
+}
+
 /**
  * Reads the communication port for any available data.
  * @param readBuff Buffer to store incoming messages.

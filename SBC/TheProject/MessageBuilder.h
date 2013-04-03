@@ -88,6 +88,32 @@ extern "C" {
     extern const unsigned char ucSetArmPacketSize;
     extern const unsigned char ucGetArmPacketSize;
     extern const unsigned char ucGetSensorPacketSize;
+    
+    //-----------------------------------------------------------------------------
+    // Array Message Positions.
+    //-----------------------------------------------------------------------------
+    extern const unsigned char ucMsgIdentifier;
+    
+    extern const unsigned char ucUltLeftFrontMSB;
+    extern const unsigned char ucUltLeftFrontLSB;
+    extern const unsigned char ucUltLeftBackMSB;
+    extern const unsigned char ucUltLeftBackLSB;
+    extern const unsigned char ucUltRightFrontMSB;
+    extern const unsigned char ucUltRightFrontLSB;
+    extern const unsigned char ucUltRightBackMSB;
+    extern const unsigned char ucUltRightBackLSB;
+    extern const unsigned char ucUltFrontMSB;
+    extern const unsigned char ucUltFrontLSB;
+    extern const unsigned char ucUltBackMSB;
+    extern const unsigned char ucUltBackLSB;
+    
+    extern const unsigned char ucLeftWheelMSB;
+    extern const unsigned char ucLeftWheelLSB;
+    extern const unsigned char ucRightWheelMSB;
+    extern const unsigned char ucRightWheelLSB;
+    
+    extern const unsigned char ucCompassMSB;
+    extern const unsigned char ucCompassLSB;
 
 
 #ifdef	__cplusplus
