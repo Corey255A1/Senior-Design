@@ -11,13 +11,19 @@
 #include <stdbool.h>
 #include <math.h>
 
+#define ULTRA_FRONT_DISTANCE SLAVEData.outData(0)
+#define ULTRA_BACK_DISTANCE SLAVEData.outData(1)
+
 double temp = 21; // degrees C
 double Cair = 0;
 
-double leftPulse = 0;
-double rightPulse = 0;
+double leftLength = 0;
+double rightLength = 0;
 
-double baseLength = 7.3; //cm, NEEDS UPDATED
+double frontLength = 0;
+double backLength = 0;
+
+double baseLength = 7.3; //cm
 
 double angle = 0;
 
@@ -142,7 +148,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 
     if (!leftFound)
     {
-        leftPulse = IC1BUF;
+        leftLength = convertToDistance(IC1BUF * timerPeriod);
 
         leftFound = true;
     }
@@ -154,7 +160,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 
     if (!rightFound)
     {
-        rightPulse = IC2BUF;
+        rightLength = convertToDistance(IC2BUF * timerPeriod);
 
         rightFound = true;
     }
@@ -172,7 +178,11 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
         u4_edge = RISE;
         u4_time = u4_time_i - u4_time_f;
         // once we have the time, convert to distance
-        if (convertToDistance(u4_time * timerPeriod) < 5)
+        backLength = convertToDistance(u4_time * timerPeriod);
+
+        ULTRA_BACK_DISTANCE = backLength;
+
+        if (backLength < 5)
         {
             backClose = true;
         }
@@ -199,23 +209,21 @@ double findObject(void){
     // one edge is global_u1_time, other is global_u2_time
 
     // perform law of cosines, let u1 = a, u2 = b, and base = c
-    double leftLength = convertToDistance(leftPulse * timerPeriod);
-    double rightLength = convertToDistance(rightPulse * timerPeriod);
-    double c = baseLength;
-
-    double preAngleA = (rightLength * rightLength + c * c - leftLength * leftLength) / (2 * rightLength * c);
+    double preAngleA = (rightLength * rightLength + baseLength * baseLength - leftLength * leftLength) / (2 * rightLength * baseLength);
     double angleA = acos(preAngleA) * 180 / pi;
 
-    double preAngleB = (leftLength * leftLength + c * c - rightLength * rightLength) / (2 * leftLength * c);
+    double preAngleB = (leftLength * leftLength + baseLength * baseLength - rightLength * rightLength) / (2 * leftLength * baseLength);
     double angleB = acos(preAngleB) * 180 / pi;
 
     double angleDiff = angleA - angleB;
 
     // find distance to the object
-    double baseDistance = leftLength * (sin(angleA * pi / 180));
+    frontLength = leftLength * (sin(angleA * pi / 180));
+
+    ULTRA_FRONT_DISTANCE = frontLength;
 
     // if we are too close, then we need to backup/turn
-    if (baseDistance < 30)
+    if (frontLength < 30)
     {
         _RB7 = HIGH;
     }
