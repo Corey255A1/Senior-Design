@@ -60,10 +60,10 @@ int main( void ) {
                             txMSG[0] = '!';
                             txMSG[1] = 5;
                             txMSG[2] = 'M';
-                            tempSPI = readSlave(MOTOR_DRIVER,SPI_MOTOR1_STATUS);//to-do
+                            tempSPI = 100;//readSlave(MOTOR_DRIVER,SPI_MOTOR1_STATUS);//to-do
                             txMSG[3] = (tempSPI&0xFF00)>>8;
                             txMSG[4] = (tempSPI&0x00FF);
-                            tempSPI = readSlave(MOTOR_DRIVER,SPI_MOTOR2_STATUS);//to-do
+                            tempSPI = 100;//readSlave(MOTOR_DRIVER,SPI_MOTOR2_STATUS);//to-do
                             txMSG[5] = (tempSPI&0xFF00)>>8;
                             txMSG[6] = (tempSPI&0x00FF);
                             txSerial1(txMSG,7);
@@ -119,20 +119,40 @@ int main( void ) {
                                     txSerial1(txMSG,5);
                                     break;}
                                 case ULTRAS:{
-                                    char txMSG[5];
+                                    char txMSG[15];
                                     int tempSPI;
                                     txMSG[0] = '!';
-                                    txMSG[1] = 3;
+                                    txMSG[1] = 13;
                                     txMSG[2] = 'S';
-                                    tempSPI = //readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
+                                    
+                                    //LF
+                                    tempSPI = 45; //readSlave(ULTRAS,ULTRA_LEFT_FRONT_DISTANCE);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
-                                    tempSPI = readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
-                                    txMSG[3] = (tempSPI&0xFF00)>>8;
-                                    txMSG[4] = (tempSPI&0x00FF);
-                                    tempSPI = readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
+                                    //LB
+                                    tempSPI = 68;//readSlave(ULTRAS,ULTRA_LEFT_BACK_DISTANCE);
+                                    txMSG[5] = (tempSPI&0xFF00)>>8;
+                                    txMSG[6] = (tempSPI&0x00FF);
+                                    
+                                    //RF
+                                    tempSPI = 20;//readSlave(ULTRAS,ULTRA_RIGHT_FRONT_DISTANCE);
+                                    txMSG[7] = (tempSPI&0xFF00)>>8;
+                                    txMSG[8] = (tempSPI&0x00FF);
+                                    //RB
+                                    tempSPI = 20;//readSlave(ULTRAS,ULTRA_RIGHT_BACK_DISTANCE);
+                                    txMSG[9] = (tempSPI&0xFF00)>>8;
+                                    txMSG[10] = (tempSPI&0x00FF);
 
-                                    txSerial1(txMSG,5);
+                                    //F
+                                    tempSPI = 106;//readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
+                                    txMSG[11] = (tempSPI&0xFF00)>>8;
+                                    txMSG[12] = (tempSPI&0x00FF);
+                                    //B
+                                    tempSPI = 25;//readSlave(ULTRAS,ULTRA_BACK_DISTANCE);
+                                    txMSG[13] = (tempSPI&0xFF00)>>8;
+                                    txMSG[14] = (tempSPI&0x00FF);
+
+                                    txSerial1(txMSG,15);
                                     break;}
                             }//switch - sensors
                             break;
