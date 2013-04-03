@@ -89,8 +89,12 @@ int main(int argc, char** argv)
     SerialComm serialPort;
     string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
     string sLogMsg;
+<<<<<<< HEAD
+    enum STATE state = WAIT_FOR_TONE;
+=======
     enum STATE state = INITIALIZE;
     enum DST_PT dstPt = DST_PT1;
+>>>>>>> d47833d6d4dcdc31e8e37f2f05c568c0c210ded2
     SoundRecorder soundRecorder;
     SoundFFT soundFFT;
     TheMap theMap;
