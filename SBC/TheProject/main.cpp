@@ -82,7 +82,7 @@ int main(int argc, char** argv)
     SerialComm serialPort;
     string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
     string sLogMsg;
-    enum STATE state = INITIALIZE;
+    enum STATE state = WAIT_FOR_TONE;
     SoundRecorder soundRecorder;
     SoundFFT soundFFT;
     TheMap theMap;
@@ -133,8 +133,8 @@ int main(int argc, char** argv)
     //                exit(-1);
     //            }
 
-    //            state = WAIT_FOR_TONE;
-                state = SCAN_FOR_POS;
+                state = WAIT_FOR_TONE;
+                //state = SCAN_FOR_POS;
                 break;
 
             case WAIT_FOR_TONE:
@@ -142,8 +142,8 @@ int main(int argc, char** argv)
                 //-----------------------------------------------------------------
                 //  Sound Processing
                 //-----------------------------------------------------------------
-                dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
                 soundRecorder.record(frgSoundSamps);
+                dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
 
                 //-----------------------------------------------------------------
                 //  If the higher frequency is heard, then RoboWaiter needs to get
