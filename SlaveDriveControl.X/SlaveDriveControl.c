@@ -124,21 +124,21 @@ int main(void) {
     //char distance;
 
     DRIVE_EN        = EN;
-    SPEEDM1         = 100;
-    SPEEDM2         = 100;
+    //SPEEDM1         = 100;
+    //SPEEDM2         = 100;
     msgQueued       = EN;
-    M1FWD           = 1;
-    M1REV           = 0;
-    M2FWD           = 1;
-    M2REV           = 0;
+    //M1FWD           = 1;
+    //M1REV           = 0;
+    //M2FWD           = 1;
+    //M2REV           = 0;
   
     while(1)
     {
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
-        //if (curMasterConfig != INMSG)
-        if (SPEEDM1 == 20)
+        if (curMasterConfig != INMSG)
+        //if (SPEEDM1 == 20)
         {
             curMasterConfig = INMSG;
             M1FdBckB_SampCount = 0;
