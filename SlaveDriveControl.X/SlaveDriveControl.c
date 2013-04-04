@@ -121,10 +121,11 @@ int main(void) {
     char speedM1;
     char forwardDirM2;
     char speedM2;
+    int M1Speed;
+    int M2Speed;
     //char distance;
 
     DRIVE_EN        = EN;
-<<<<<<< HEAD
     //SPEEDM1         = 100;
     //SPEEDM2         = 100;
     msgQueued       = EN;
@@ -132,30 +133,25 @@ int main(void) {
     //M1REV           = 0;
     //M2FWD           = 1;
     //M2REV           = 0;
-=======
-    SPEEDM1         = 50;
-    SPEEDM2         = 50;
+    //SPEEDM1         = 1000;
+    //SPEEDM2         = 1000;
     msgQueued       = EN;
-    M1FWD           = 1;
-    M1REV           = 0;
-    M2FWD           = 0;
-    M2REV           = 1;
->>>>>>> 52f9a2ed697538ffb757e84ea7c68b97323d873a
+    //M1FWD           = 1;
+    //M1REV           = 0;
+    //M2FWD           = 0;
+    //M2REV           = 1;
   
     while(1)
     {
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
-<<<<<<< HEAD
-        if (curMasterConfig != INMSG)
-        //if (SPEEDM1 == 20)
-=======
-        if (SPEEDM1 == 20)
         //if (curMasterConfig != INMSG)
->>>>>>> 52f9a2ed697538ffb757e84ea7c68b97323d873a
+        if (1)
+        
         {
-            curMasterConfig = INMSG;
+            //curMasterConfig = INMSG;
+            curMasterConfig = 0x5151;
             M1FdBckB_SampCount = 0;
             M2FdBckB_SampCount = 0;
                     
@@ -202,6 +198,7 @@ int main(void) {
                 //-------------------------------------------------------------
                 M1REV = DISABLE;
                 M1FWD = EN;
+                M1Speed = motorStopVal + (speedM1*speedMult);
 
             //-----------------------------------------------------------------
             //  ... Else Motor 1 is in reverse...
@@ -213,6 +210,7 @@ int main(void) {
                 //-------------------------------------------------------------
                 M1FWD = DISABLE;
                 M1REV = EN;
+                M1Speed = motorStopVal - (speedM1*speedMult);
             }
 
             //-----------------------------------------------------------------
@@ -226,6 +224,7 @@ int main(void) {
                 //-------------------------------------------------------------
                 M2REV = DISABLE;
                 M2FWD = EN;
+                M2Speed = motorStopVal + (speedM2*speedMult);
 
             //-----------------------------------------------------------------
             //  ... Else Motor 2 is in reverse...
@@ -237,13 +236,14 @@ int main(void) {
                 //-------------------------------------------------------------
                 M2FWD = DISABLE;
                 M2REV = EN;
+                M2Speed = motorStopVal - (speedM2*speedMult);
             }
 
-            //-------------------------------------------------------------
+            //-----------------------------------------------------------------
             //  Set the speed of both motors.
-            //-------------------------------------------------------------
-            SPEEDM1 = (speedM1*OC1clkT)/10;
-            SPEEDM2 = (speedM2*OC1clkT)/10;
+            //-----------------------------------------------------------------
+            SPEEDM1 = 750;
+            SPEEDM2 = M2Speed;
         }
     }
     return 0;
