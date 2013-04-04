@@ -31,11 +31,11 @@ double rightRightLength = 0;
 
 double sideLength = 11.1;   // needs changed, but will be same for both
 
-bool foundLeftLeft = false;
-bool foundLeftRight = false;
+bool foundLeftRear = false;
+bool foundLeftFront = false;
 
-bool foundRightLeft = false;
-bool foundRightRight = false;
+bool foundRightFront = false;
+bool foundRightRear = false;
 
 short u5_edge = RISE;
 long u5_time = 0;
@@ -203,6 +203,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     if((u5_edge == RISE) && (U5_RBIport == HIGH)){
         u5_time_i = IC1BUF;
         u5_edge = FALL;
+
+        ULTRA_RIGHT_FRONT_DISTANCE = 0;
+
+        foundRightFront = false;
     }else{
         u5_time_f = IC1BUF;
         u5_edge = RISE;
@@ -210,9 +214,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 
         rightLeftLength = convertToDistance(u5_time * timerPeriod);
 
-        ULTRA_RIGHT_FRONT_DISTANCE = rightLeftLength;
+        ULTRA_RIGHT_FRONT_DISTANCE = (int)rightLeftLength;
 
-        foundRightLeft = true;
+        foundRightFront = true;
     }
 }
 
@@ -223,6 +227,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     if((u6_edge == RISE) && (U6_RBIport == HIGH)){
         u6_time_i = IC2BUF;
         u6_edge = FALL;
+
+        ULTRA_RIGHT_REAR_DISTANCE = 0;
+
+        foundRightRear = false;
     }else{
         u6_time_f = IC2BUF;
         u6_edge = RISE;
@@ -230,9 +238,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 
         rightRightLength = convertToDistance(u6_time * timerPeriod);
 
-        ULTRA_RIGHT_REAR_DISTANCE = rightRightLength;
+        ULTRA_RIGHT_REAR_DISTANCE = (int)rightRightLength;
 
-        foundRightRight = true;
+        foundRightRear = true;
     }
 }
 
@@ -243,6 +251,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
     if((u7_edge == RISE) && (U7_RBIport == HIGH)){
         u7_time_i = IC2BUF;
         u7_edge = FALL;
+
+        ULTRA_LEFT_FRONT_DISTANCE = 0;
+
+        foundLeftFront = false;
     }else{
         u7_time_f = IC2BUF;
         u7_edge = RISE;
@@ -250,9 +262,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
 
         leftRightLength = convertToDistance(u7_time * timerPeriod);
 
-        ULTRA_LEFT_FRONT_DISTANCE = leftRightLength;
+        ULTRA_LEFT_FRONT_DISTANCE = (int)leftRightLength;
 
-        foundLeftRight = true;
+        foundLeftFront = true;
     }
 }
 
@@ -263,6 +275,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
     if((u8_edge == RISE) && (U8_RBIport == HIGH)){
         u8_time_i = IC4BUF;
         u8_edge = FALL;
+
+        ULTRA_LEFT_REAR_DISTANCE = 0;
+
+        foundLeftRear = false;
     }else{
         u8_time_f = IC4BUF;
         u8_edge = RISE;
@@ -270,9 +286,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
 
         leftLeftLength = convertToDistance(u8_time * timerPeriod);
 
-        ULTRA_LEFT_REAR_DISTANCE = leftLeftLength;
+        ULTRA_LEFT_REAR_DISTANCE = (int)leftLeftLength;
 
-        foundLeftLeft = true;
+        foundLeftRear = true;
     }
 }
 
@@ -283,18 +299,18 @@ int main()
     Cair = 33150 + (60 * temp);
     while(1)
     {
-        if (foundLeftLeft && foundLeftRight)
+        if (foundLeftRear && foundLeftFront)
         {
             findObject(leftLeftLength, leftRightLength);
-            foundLeftLeft = false;
-            foundLeftRight = false;
+            foundLeftRear = false;
+            foundLeftFront = false;
         }
 
-        if (foundRightLeft && foundRightRight)
+        if (foundRightFront && foundRightRear)
         {
             findObject(rightLeftLength, rightRightLength);
-            foundRightLeft = false;
-            foundRightRight = false;
+            foundRightFront = false;
+            foundRightRear = false;
         }
     }
 

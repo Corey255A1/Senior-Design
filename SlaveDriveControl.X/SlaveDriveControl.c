@@ -124,8 +124,8 @@ int main(void) {
     //char distance;
 
     DRIVE_EN        = EN;
-    SPEEDM1         = 75;
-    SPEEDM2         = 75;
+    SPEEDM1         = 100;
+    SPEEDM2         = 100;
     msgQueued       = EN;
     M1FWD           = 1;
     M1REV           = 0;
@@ -137,8 +137,8 @@ int main(void) {
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
-        if (curMasterConfig != INMSG)
-        //if (SPEEDM1 == 20)
+        //if (curMasterConfig != INMSG)
+        if (SPEEDM1 == 20)
         {
             curMasterConfig = INMSG;
             M1FdBckB_SampCount = 0;

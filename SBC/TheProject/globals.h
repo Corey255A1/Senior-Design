@@ -27,14 +27,17 @@ using namespace std;
 #define FAIL_NO_TERM_REF        -2
 #define FAIL_GET_ATTRIB         -3
 #define BUFF_SIZE               100
-#define LOW_SHELF_CLEAN_FREQ    3.8
-#define UPPER_SHELF_FREQ        2.5
+#define LOW_SHELF_CLEAN_FREQ    3800
+#define UPPER_SHELF_FREQ        2500
 #define COMPASS_DIVISOR         8192
 #define CENTER_OFFSET           15
+#define PULSES_TO_CM            100
+#define COMPASS_ERROR           0.07
 
 #define MOTOR_STOP() BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0); serialPort.ZeroWritePort(uszCommOutMsg, ucSetMotorPacketSize); serialPort.ReadPort(uszCommInMsg)
 #define WR_SERIAL() serialPort.WritePort(uszCommOutMsg); serialPort.ReadPort(uszCommInMsg)
-
+#define SPIN_BOT_CLK() BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed4, ucForward, ucSpeed4); serialPort.WritePort(uszCommOutMsg); serialPort.ReadPort(uszCommInMsg)
+#define SPIN_BOT_CCLK() BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4); serialPort.WritePort(uszCommOutMsg); serialPort.ReadPort(uszCommInMsg)
 //-----------------------------------------------------------------------------
 //  Helper function declarations.
 //-----------------------------------------------------------------------------

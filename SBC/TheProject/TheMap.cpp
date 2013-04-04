@@ -6,6 +6,7 @@
  */
 
 #include "TheMap.h"
+#include "globals.h"
 #include <stdio.h>
 #include <math.h>
 char map[MAPSIZE][MAPSIZE];
@@ -24,6 +25,13 @@ TheMap::TheMap()
     addObject(OBJECT,205,40,245,90);
     addObject(FRIDGE,220,160,245,205);
     addObject(FLOORSENS,155,182,156,183);
+    
+    destPt1.y = 95;
+    destPt2.x = 190;
+    destPt2.y = 95;
+    destPt3.x = 190;
+    destPt3.y = 202;
+    
 }
 
 /**
@@ -201,11 +209,123 @@ double TheMap::determineHeading(COORDINATES crds)
     int dY = loc.y - crds.y;
     double rad = atan((double)dY/(double)dX);
     if(dX>0 && dY<0){
-        rad = rad+M_PI;
+        rad = rad+M_PI+NORTH;
     }else if(dX>0 && dY>0){
-        rad = rad+M_PI;
+        rad = rad+M_PI+NORTH;
     }else if(dX<0 && dY>0){
-        rad = rad+2*M_PI;
+        rad = rad+2*M_PI+NORTH;
     }
+    if(rad>=2*M_PI){
+        rad-=2*M_PI;
+    }
+    
+    distToMove = sqrt((dX*dX) + (dY*dY));
     return rad;
+}
+
+int TheMap::getStepCount()
+{
+    return ((int) distToMove) * PULSES_TO_CM;
+}
+
+int TheMap::spinDirection(double destHeading)
+{
+    if ((dCurHeading >= 0) && (dCurHeading < (M_PI / 2)))
+    {
+        if ((destHeading >= (5*M_PI/4)) && (destHeading < (2*M_PI)))
+        {
+            return CCLKWISE;
+        }
+        else
+        {
+            return CLKWISE;
+        }
+    }
+    else if ((dCurHeading >= (M_PI / 2)) && (dCurHeading < M_PI))
+    {
+        if (destHeading < dCurHeading)
+        {
+            return CCLKWISE;
+        }
+        else
+        {
+            return CLKWISE;
+        }
+    }
+    else if ((dCurHeading >= M_PI) && (dCurHeading < (M_PI*3/2)))
+    {
+        if (destHeading < dCurHeading)
+        {
+            return CCLKWISE;
+        }
+        else
+        {
+            return CLKWISE;
+        }
+    }
+    else
+    {
+        if ((destHeading <= (3*M_PI/4)) && (destHeading >= 0))
+        {
+            return CLKWISE;
+        }
+        else
+        {
+            return CCLKWISE;
+        }
+    }
+}
+
+void TheMap::setHeading(double newHeading)
+{
+    dCurHeading = newHeading;
+}
+
+int TheMap::checkCompassHeading(double curHeading)
+{
+    double lowThresh = curHeading - COMPASS_ERROR;
+    double highThresh = curHeading + COMPASS_ERROR;
+
+    //-------------------------------------------------------------------------
+    //  Problem where the low threshold rolls back over
+    //  to 2 pi
+    //-------------------------------------------------------------------------
+    if (lowThresh < 0)
+    {
+        lowThresh = (2*M_PI) + lowThresh;
+
+        if (((curHeading >= lowThresh) && (curHeading <= (2*M_PI)))
+            || ((curHeading <= highThresh) && (curHeading >= 0)))
+        {
+            return TRUE;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    //  Problem where the high threshold rolls over to
+    //  0
+    //-------------------------------------------------------------------------
+    else if (highThresh > (2*M_PI))
+    {
+        highThresh = 0 + (highThresh - (2*M_PI)); 
+
+        if (((curHeading >= lowThresh) && (curHeading <= (2*M_PI)))
+            || ((curHeading >= 0) && (curHeading <= highThresh)))
+        {
+            return TRUE;
+        }
+    }
+    
+    //-------------------------------------------------------------------------
+    //  ... Else we all good.
+    //-------------------------------------------------------------------------
+    else
+    {
+        if ((curHeading >= lowThresh) && (curHeading <= highThresh))
+        {
+            return TRUE;
+        }
+    }
+    
+    return FALSE;
 }

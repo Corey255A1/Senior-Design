@@ -39,7 +39,11 @@ SoundRecorder::SoundRecorder()
     //                                      additional setup information.
     //          
     //-------------------------------------------------------------------------
+    
+    int devcount = Pa_GetDeviceCount();
+    printf("Dev Count: %d\n",devcount);
     inputParameters.device = Pa_GetDefaultInputDevice();
+    //inputParameters.device = 11;
     if (inputParameters.device == paNoDevice) {
       fprintf(stderr,"Error: No default input device.\n");
     }
@@ -47,7 +51,7 @@ SoundRecorder::SoundRecorder()
     inputParameters.sampleFormat = PA_SAMPLE_TYPE;
     inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowInputLatency;
     inputParameters.hostApiSpecificStreamInfo = NULL;
-
+  
 }
 
 /**
