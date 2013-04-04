@@ -61,6 +61,7 @@ public:
     void setHeading(double newHeading);
     int getStepCount();
     int checkCompassHeading(double curHeading);
+    int checkHeadingDeviation(double curHeading);
     
     COORDINATES destPt1;
     COORDINATES destPt2;

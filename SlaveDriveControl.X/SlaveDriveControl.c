@@ -124,6 +124,7 @@ int main(void) {
     //char distance;
 
     DRIVE_EN        = EN;
+<<<<<<< HEAD
     //SPEEDM1         = 100;
     //SPEEDM2         = 100;
     msgQueued       = EN;
@@ -131,14 +132,28 @@ int main(void) {
     //M1REV           = 0;
     //M2FWD           = 1;
     //M2REV           = 0;
+=======
+    SPEEDM1         = 50;
+    SPEEDM2         = 50;
+    msgQueued       = EN;
+    M1FWD           = 1;
+    M1REV           = 0;
+    M2FWD           = 0;
+    M2REV           = 1;
+>>>>>>> 52f9a2ed697538ffb757e84ea7c68b97323d873a
   
     while(1)
     {
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
+<<<<<<< HEAD
         if (curMasterConfig != INMSG)
         //if (SPEEDM1 == 20)
+=======
+        if (SPEEDM1 == 20)
+        //if (curMasterConfig != INMSG)
+>>>>>>> 52f9a2ed697538ffb757e84ea7c68b97323d873a
         {
             curMasterConfig = INMSG;
             M1FdBckB_SampCount = 0;
