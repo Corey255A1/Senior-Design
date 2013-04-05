@@ -12,6 +12,7 @@
 #include "string.h"
 #include "stdlib.h"
 #include "communication.h"
+#include "motordrive.h"
 #include "spi.h"
 #include "A2D.h"
 #include "temperature.h"
@@ -33,8 +34,7 @@ int main( void ) {
                 case SET:
                     switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:
-                            writeSlave(MOTOR_DRIVER,
-                                   SPI_MOTOR,
+                            setMotor(
                                    (RXMessage.Msg[DEVICEHEADER+1] SPI_MOTOR_LEFT_SPEED) |
                                    (RXMessage.Msg[DEVICEHEADER+2] SPI_MOTOR_LEFT_DIR) |
                                    (RXMessage.Msg[DEVICEHEADER+3] SPI_MOTOR_RIGHT_SPEED) |
@@ -55,18 +55,19 @@ int main( void ) {
                 case GET:
                     switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:{
-                            char txMSG[7];
-                            int tempSPI;
+                            char txMSG[11];
                             txMSG[0] = '!';
-                            txMSG[1] = 5;
+                            txMSG[1] = 8;
                             txMSG[2] = 'M';
-                            tempSPI = 100;//readSlave(MOTOR_DRIVER,SPI_MOTOR1_STATUS);//to-do
-                            txMSG[3] = (tempSPI&0xFF00)>>8;
-                            txMSG[4] = (tempSPI&0x00FF);
-                            tempSPI = 100;//readSlave(MOTOR_DRIVER,SPI_MOTOR2_STATUS);//to-do
-                            txMSG[5] = (tempSPI&0xFF00)>>8;
-                            txMSG[6] = (tempSPI&0x00FF);
-                            txSerial1(txMSG,7);
+                            txMSG[3] = IC1_COUNTS_BYTE4;
+                            txMSG[4] = IC1_COUNTS_BYTE3;
+                            txMSG[5] = IC1_COUNTS_BYTE2;
+                            txMSG[6] = IC1_COUNTS_BYTE1;
+                            txMSG[7] = IC2_COUNTS_BYTE4;
+                            txMSG[8] = IC2_COUNTS_BYTE3;
+                            txMSG[9] = IC2_COUNTS_BYTE2;
+                            txMSG[10] = IC2_COUNTS_BYTE1;
+                            txSerial1(txMSG,11);
                             break;}
                         case ARM:{
                          //TO-DO Figure out what to return from the ARM

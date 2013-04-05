@@ -41,7 +41,6 @@
         <developmentServer>localhost</developmentServer>
         <targetDevice>PIC24FJ128GB106</targetDevice>
         <targetHeader></targetHeader>
-        <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.10</languageToolchainVersion>
