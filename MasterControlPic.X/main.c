@@ -29,7 +29,12 @@ int main( void ) {
     configOutputCompare();
     initSPI();
     initADC();
-    setMotor(0x50A1);
+setMotor(
+       (0xA MOTOR_LEFT_SPEED) |
+       (MOTOR_FWD MOTOR_LEFT_DIR) |
+       (0xA MOTOR_RIGHT_SPEED) |
+       (MOTOR_FWD MOTOR_RIGHT_DIR)
+        );
     while(1);
     while(0){
         if(RXMessage.Received){
@@ -38,10 +43,10 @@ int main( void ) {
                     switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:
                             setMotor(
-                                   (RXMessage.Msg[DEVICEHEADER+1] SPI_MOTOR_LEFT_SPEED) |
-                                   (RXMessage.Msg[DEVICEHEADER+2] SPI_MOTOR_LEFT_DIR) |
-                                   (RXMessage.Msg[DEVICEHEADER+3] SPI_MOTOR_RIGHT_SPEED) |
-                                   (RXMessage.Msg[DEVICEHEADER+4] SPI_MOTOR_RIGHT_DIR));
+                                   (RXMessage.Msg[DEVICEHEADER+3] MOTOR_LEFT_SPEED) |
+                                   (RXMessage.Msg[DEVICEHEADER+4] MOTOR_LEFT_DIR) |
+                                   (RXMessage.Msg[DEVICEHEADER+1] MOTOR_RIGHT_SPEED) |
+                                   (RXMessage.Msg[DEVICEHEADER+2] MOTOR_RIGHT_DIR));
                             SEND_ACK;
                             break;
                         case ARM:

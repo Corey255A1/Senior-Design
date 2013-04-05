@@ -11,6 +11,13 @@
 #define MSTOP_PULSE 750
 #define CLK_PER 1500
 
+#define MOTOR_LEFT_DIR <<0
+#define MOTOR_LEFT_SPEED <<4
+#define MOTOR_RIGHT_DIR <<8
+#define MOTOR_RIGHT_SPEED <<12
+#define MOTOR_FWD 0
+#define MOTOR_REV 1
+
 extern long IC1_COUNT;
 extern long IC2_COUNT;
 #define IC1_COUNTS_BYTE1 ((IC1_COUNT&0xFF000000)>>24)
