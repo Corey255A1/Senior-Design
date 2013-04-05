@@ -12,6 +12,7 @@
       <itemPath>A2D.h</itemPath>
       <itemPath>temperature.h</itemPath>
       <itemPath>C:/Users/student/Documents/GitHub/Senior-Design/Global_PIC/spiMessages.h</itemPath>
+      <itemPath>motordrive.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -27,6 +28,7 @@
       <itemPath>spi.c</itemPath>
       <itemPath>A2D.c</itemPath>
       <itemPath>temperature.c</itemPath>
+      <itemPath>motordrive.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

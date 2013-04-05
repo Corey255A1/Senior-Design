@@ -5,22 +5,6 @@
  * Created on March 26, 2013, 8:09 PM
  */
 
-#ifndef CONFIGS_H
-#define	CONFIGS_H
-
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
-
-
-
-#ifdef	__cplusplus
-}
-#endif
-
-#endif	/* CONFIGS_H */
-
 // PIC24FJ128GB106 Configuration Bit Settings
 
 #include <p24FJ128GB106.h>

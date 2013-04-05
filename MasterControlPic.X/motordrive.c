@@ -63,6 +63,10 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 
 void configOutputCompare(void)
 {
+    AD1PCFGLbits.PCFG6=1;
+    AD1PCFGLbits.PCFG7=1;
+    _TRISB6=0;
+    _TRISB7=0;
     //-------------------------------------------------------------------------
     //  Setup Output Compare Timer 1 (Timer 3)
     //-------------------------------------------------------------------------
@@ -77,10 +81,10 @@ void configOutputCompare(void)
     OC1CON2             = CLEAR;    // Clear out second configuration register
     OC1CON1bits.OCTSEL  = 0b001;    // Set TMR3 as the source timer.
     OC1CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
-    OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
+    OC1CON2bits.SYNCSEL = 0b01101;     // Period Control to OC1RS
     OC1RS               = CLK_PER;  // Set period of OC1 ... Here we want a
                                     // period of 4000 micro seconds.
-    OC1R                = 0;        // Set duty duration of OC1
+    OC1R                = MSTOP_PULSE;        // Set duty duration of OC1
     RPOR3bits.RP6R     = 18;        // Maps the OC1 output to the RP37R pin
                                     // (pin 14) on the pick. The 0b010001 is
                                     // defined in the "Output Mapping" section
@@ -93,10 +97,10 @@ void configOutputCompare(void)
     OC2CON2             = CLEAR;    // Clear out second configuration register
     OC2CON1bits.OCTSEL  = 0b001;    // Set TMR2 as the source timer.
     OC2CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
-    OC2CON2bits.SYNCSEL = 0x1F;     // Period Control to OC2RS
+    OC2CON2bits.SYNCSEL = 0b01101;     // Period Control to OC2RS
     OC2RS               = CLK_PER;  // Set period of OC1 ... Here we want a
                                     // period of 4000 micro seconds
-    OC2R                = 0;        // Set duty duration of OC2
+    OC2R                = MSTOP_PULSE;        // Set duty duration of OC1
     RPOR3bits.RP7R     = 19;        // Maps the OC2 output to the RP38R pin
                                     // (pin 15) on the pick. The 0b010000 is
                                     // defined in the "Output Mapping" section
@@ -106,7 +110,6 @@ void configOutputCompare(void)
     //  Ready to turn TMR3 and TMR2 on.
     //-------------------------------------------------------------------------
     T3CONbits.TON = 1;
-    T2CONbits.TON = 1;
 }
 
 void setMotor(int control){

@@ -20,7 +20,7 @@ int global_temp = 0;
  * be sure to explicitly initialize the AD channel
  */
 void initTemperature( void ){
-    TEMPERATUREport = 1;//set the AD channel to Analog just incase
+    TEMPERATUREport = 0;//set the AD channel to Analog just incase
 }//endinit
 
 

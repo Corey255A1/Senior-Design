@@ -26,9 +26,10 @@ int FAKE_HEADING = (int)((double)3.14*(8192));
 
 int main( void ) {
     initSerial1();
+    configOutputCompare();
     initSPI();
     initADC();
-    while(1){
+    while(0){
         if(RXMessage.Received){
             switch(RXMessage.Msg[GSHEADER]){
                 case SET:

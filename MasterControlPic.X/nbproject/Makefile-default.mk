@@ -41,11 +41,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/communication.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/main.o ${OBJECTDIR}/serialcomm.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/A2D.o ${OBJECTDIR}/temperature.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/communication.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/serialcomm.o.d ${OBJECTDIR}/spi.o.d ${OBJECTDIR}/A2D.o.d ${OBJECTDIR}/temperature.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/communication.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/main.o ${OBJECTDIR}/serialcomm.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/A2D.o ${OBJECTDIR}/temperature.o ${OBJECTDIR}/motordrive.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/communication.o.d ${OBJECTDIR}/globals.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/serialcomm.o.d ${OBJECTDIR}/spi.o.d ${OBJECTDIR}/A2D.o.d ${OBJECTDIR}/temperature.o.d ${OBJECTDIR}/motordrive.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/communication.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/main.o ${OBJECTDIR}/serialcomm.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/A2D.o ${OBJECTDIR}/temperature.o
+OBJECTFILES=${OBJECTDIR}/communication.o ${OBJECTDIR}/globals.o ${OBJECTDIR}/main.o ${OBJECTDIR}/serialcomm.o ${OBJECTDIR}/spi.o ${OBJECTDIR}/A2D.o ${OBJECTDIR}/temperature.o ${OBJECTDIR}/motordrive.o
 
 
 CFLAGS=
@@ -111,6 +111,12 @@ ${OBJECTDIR}/temperature.o: temperature.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  temperature.c  -o ${OBJECTDIR}/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/temperature.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/temperature.o.d" $(SILENT) 
 	
+${OBJECTDIR}/motordrive.o: motordrive.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/motordrive.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  motordrive.c  -o ${OBJECTDIR}/motordrive.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/motordrive.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_ICD3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/motordrive.o.d" $(SILENT) 
+	
 else
 ${OBJECTDIR}/communication.o: communication.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -153,6 +159,12 @@ ${OBJECTDIR}/temperature.o: temperature.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/temperature.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  temperature.c  -o ${OBJECTDIR}/temperature.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/temperature.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/temperature.o.d" $(SILENT) 
+	
+${OBJECTDIR}/motordrive.o: motordrive.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/motordrive.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  motordrive.c  -o ${OBJECTDIR}/motordrive.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/motordrive.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/motordrive.o.d" $(SILENT) 
 	
 endif
 
