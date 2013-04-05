@@ -1,1 +1,3 @@
-build/default/debug/globals.o: globals.c globals.h
+build/default/debug/globals.o:  \
+globals.c  \
+globals.h 

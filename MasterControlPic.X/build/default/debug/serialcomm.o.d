@@ -1,1 +1,4 @@
-build/default/debug/serialcomm.o: serialcomm.c globals.h serialcomm.h
+build/default/debug/serialcomm.o:  \
+serialcomm.c  \
+globals.h  \
+serialcomm.h 

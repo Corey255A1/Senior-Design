@@ -29,6 +29,8 @@ int main( void ) {
     configOutputCompare();
     initSPI();
     initADC();
+    setMotor(0x50A1);
+    while(1);
     while(0){
         if(RXMessage.Received){
             switch(RXMessage.Msg[GSHEADER]){

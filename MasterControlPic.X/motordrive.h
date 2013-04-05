@@ -9,7 +9,7 @@
 #define SPEEDM2     OC2R
 #define SPEEDMULT   25
 #define MSTOP_PULSE 750
-#define CLK_PER 2000
+#define CLK_PER 1500
 
 extern long IC1_COUNT;
 extern long IC2_COUNT;

@@ -67,10 +67,12 @@ void configOutputCompare(void)
     AD1PCFGLbits.PCFG7=1;
     _TRISB6=0;
     _TRISB7=0;
+
     //-------------------------------------------------------------------------
     //  Setup Output Compare Timer 1 (Timer 3)
     //-------------------------------------------------------------------------
     TMR3            = 0;        // Clear TMR3
+    T3CON           = 0;
     T3CONbits.TON   = DISABLE;  // Turn off TMR3
     T3CONbits.TCKPS = 0b01;     // Set Pre-scalar to 1:8
 
@@ -81,7 +83,7 @@ void configOutputCompare(void)
     OC1CON2             = CLEAR;    // Clear out second configuration register
     OC1CON1bits.OCTSEL  = 0b001;    // Set TMR3 as the source timer.
     OC1CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
-    OC1CON2bits.SYNCSEL = 0b01101;     // Period Control to OC1RS
+    OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
     OC1RS               = CLK_PER;  // Set period of OC1 ... Here we want a
                                     // period of 4000 micro seconds.
     OC1R                = MSTOP_PULSE;        // Set duty duration of OC1
@@ -97,7 +99,7 @@ void configOutputCompare(void)
     OC2CON2             = CLEAR;    // Clear out second configuration register
     OC2CON1bits.OCTSEL  = 0b001;    // Set TMR2 as the source timer.
     OC2CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
-    OC2CON2bits.SYNCSEL = 0b01101;     // Period Control to OC2RS
+    OC2CON2bits.SYNCSEL = 0x1F;     // Period Control to OC
     OC2RS               = CLK_PER;  // Set period of OC1 ... Here we want a
                                     // period of 4000 micro seconds
     OC2R                = MSTOP_PULSE;        // Set duty duration of OC1
@@ -121,8 +123,8 @@ void setMotor(int control){
         int M2Speed;
         forwardDirM1    = 0x000F & control;
         speedM1         = (0x00F0 & control) >> 4;
-        forwardDirM2    = (0x0F000 & control) >> 8;
-        speedM2         = (0xF0000 & control) >> 12;
+        forwardDirM2    = (0x0F00 & control) >> 8;
+        speedM2         = (0xF000 & control) >> 12;
         IC1_COUNT =0;
         IC2_COUNT =0;
 
@@ -189,6 +191,6 @@ void setMotor(int control){
             //-----------------------------------------------------------------
             //  Set the speed of both motors.
             //-----------------------------------------------------------------
-            SPEEDM1 = 750;
+            SPEEDM1 = M1Speed;
             SPEEDM2 = M2Speed;
  }//endsetmotor
