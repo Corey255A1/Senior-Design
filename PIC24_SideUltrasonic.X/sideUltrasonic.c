@@ -179,10 +179,13 @@ double findObject(double leftLength, double rightLength){
     // find distance to the object
     double baseDistance = leftLength * (sin(angleA * pi / 180));
 
+    // DEBUGGING
     // if we are too close, then we need to backup/turn
+    /*
     if (baseDistance > 40)
     {
     }
+    */
 
     // if the angles are less than 5 degrees apart consider it straight ahead
     if (fabs(angleDiff) <= 5 ){

@@ -229,7 +229,9 @@ double findObject(void){
 
     ULTRA_FRONT_DISTANCE = (int)frontLength;
 
+    // DEBUGGING ONLY
     // if we are too close, then we need to backup/turn
+    /*
     if (frontLength < 30)
     {
         _RB7 = HIGH;
@@ -238,6 +240,7 @@ double findObject(void){
     {
         _RB7 = LOW;
     }
+    */
 
     // if the angles are less than 5 degrees apart consider it straight ahead
     if (fabs(angleDiff) <= 5 ){
