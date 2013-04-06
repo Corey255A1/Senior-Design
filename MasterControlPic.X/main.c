@@ -36,7 +36,7 @@ setMotor(
        (0x0 MOTOR_RIGHT_SPEED) |
        (MOTOR_FWD MOTOR_RIGHT_DIR)
         );
-
+int test = readSlave(SENSOR_BOARD, COMPASS_HEADING);
 //
     while(1){
         if(RXMessage.Received){
@@ -124,7 +124,7 @@ setMotor(
                                     txMSG[0] = '!';
                                     txMSG[1] = 3;
                                     txMSG[2] = 'S';
-                                    tempSPI = readSlave(COMPASS,COMPASS_HEADING);
+                                    tempSPI = readSlave(SENSOR_BOARD,COMPASS_HEADING);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
                                     txSerial1(txMSG,5);
@@ -137,29 +137,29 @@ setMotor(
                                     txMSG[2] = 'S';
                                     
                                     //LF
-                                    tempSPI = readSlave(ULTRAS,ULTRA_LEFT_FRONT_DISTANCE);
+                                    tempSPI = readSlave(S_ULTRAS,ULTRA_LEFT_FRONT_DISTANCE);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
                                     //LB
-                                    tempSPI = readSlave(ULTRAS,ULTRA_LEFT_BACK_DISTANCE);
+                                    tempSPI = readSlave(S_ULTRAS,ULTRA_LEFT_BACK_DISTANCE);
                                     txMSG[5] = (tempSPI&0xFF00)>>8;
                                     txMSG[6] = (tempSPI&0x00FF);
                                     
                                     //RF
-                                    tempSPI = readSlave(ULTRAS,ULTRA_RIGHT_FRONT_DISTANCE);
+                                    tempSPI = readSlave(S_ULTRAS,ULTRA_RIGHT_FRONT_DISTANCE);
                                     txMSG[7] = (tempSPI&0xFF00)>>8;
                                     txMSG[8] = (tempSPI&0x00FF);
                                     //RB
-                                    tempSPI = readSlave(ULTRAS,ULTRA_RIGHT_BACK_DISTANCE);
+                                    tempSPI = readSlave(S_ULTRAS,ULTRA_RIGHT_BACK_DISTANCE);
                                     txMSG[9] = (tempSPI&0xFF00)>>8;
                                     txMSG[10] = (tempSPI&0x00FF);
 
                                     //F
-                                    tempSPI = readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
+                                    tempSPI = readSlave(FB_ULTRAS,ULTRA_FRONT_DISTANCE);
                                     txMSG[11] = (tempSPI&0xFF00)>>8;
                                     txMSG[12] = (tempSPI&0x00FF);
                                     //B
-                                    tempSPI = readSlave(ULTRAS,ULTRA_BACK_DISTANCE);
+                                    tempSPI = readSlave(FB_ULTRAS,ULTRA_BACK_DISTANCE);
                                     txMSG[13] = (tempSPI&0xFF00)>>8;
                                     txMSG[14] = (tempSPI&0x00FF);
 
