@@ -254,7 +254,7 @@ float getHeading( void ){
     float Xh = mag_norm[xaxis] * cosPitch + mag_norm[zaxis] * sinPitch;
     float Yh = mag_norm[xaxis] * sinRoll * sinPitch + mag_norm[yaxis] * cosRoll - mag_norm[zaxis] * sinRoll * cosPitch;
     neinAxis_semaphore = UNLOCKED;
-    return atan2f(Yh, Xh);
+    return atan2f(Yh, Xh)+pi;
 }
 //force a read and update the global values
 float updateHeading( void ){
@@ -295,7 +295,7 @@ float updateHeading( void ){
     float Xh = mag_norm[xaxis] * cosPitch + mag_norm[zaxis] * sinPitch;
     float Yh = mag_norm[xaxis] * sinRoll * sinPitch + mag_norm[yaxis] * cosRoll - mag_norm[zaxis] * sinRoll * cosPitch;
     neinAxis_semaphore = UNLOCKED;
-    return atan2f(Yh, Xh);
+    return atan2f(Yh, Xh)+pi;
 }
 
 
