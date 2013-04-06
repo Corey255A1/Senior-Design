@@ -27,16 +27,18 @@ int FAKE_HEADING = (int)((double)3.14*(8192));
 int main( void ) {
     initSerial1();
     configOutputCompare();
+    configInputCaptures();
     initSPI();
     initADC();
 setMotor(
-       (0xA MOTOR_LEFT_SPEED) |
+       (0x0 MOTOR_LEFT_SPEED) |
        (MOTOR_FWD MOTOR_LEFT_DIR) |
-       (0xA MOTOR_RIGHT_SPEED) |
+       (0x0 MOTOR_RIGHT_SPEED) |
        (MOTOR_FWD MOTOR_RIGHT_DIR)
         );
-    while(1);
-    while(0){
+
+//
+    while(1){
         if(RXMessage.Received){
             switch(RXMessage.Msg[GSHEADER]){
                 case SET:
@@ -122,7 +124,7 @@ setMotor(
                                     txMSG[0] = '!';
                                     txMSG[1] = 3;
                                     txMSG[2] = 'S';
-                                    tempSPI = FAKE_HEADING;//readSlave(COMPASS,COMPASS_HEADING);
+                                    tempSPI = readSlave(COMPASS,COMPASS_HEADING);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
                                     txSerial1(txMSG,5);
@@ -135,29 +137,29 @@ setMotor(
                                     txMSG[2] = 'S';
                                     
                                     //LF
-                                    tempSPI = 45; //readSlave(ULTRAS,ULTRA_LEFT_FRONT_DISTANCE);
+                                    tempSPI = readSlave(ULTRAS,ULTRA_LEFT_FRONT_DISTANCE);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
                                     //LB
-                                    tempSPI = 68;//readSlave(ULTRAS,ULTRA_LEFT_BACK_DISTANCE);
+                                    tempSPI = readSlave(ULTRAS,ULTRA_LEFT_BACK_DISTANCE);
                                     txMSG[5] = (tempSPI&0xFF00)>>8;
                                     txMSG[6] = (tempSPI&0x00FF);
                                     
                                     //RF
-                                    tempSPI = 20;//readSlave(ULTRAS,ULTRA_RIGHT_FRONT_DISTANCE);
+                                    tempSPI = readSlave(ULTRAS,ULTRA_RIGHT_FRONT_DISTANCE);
                                     txMSG[7] = (tempSPI&0xFF00)>>8;
                                     txMSG[8] = (tempSPI&0x00FF);
                                     //RB
-                                    tempSPI = 20;//readSlave(ULTRAS,ULTRA_RIGHT_BACK_DISTANCE);
+                                    tempSPI = readSlave(ULTRAS,ULTRA_RIGHT_BACK_DISTANCE);
                                     txMSG[9] = (tempSPI&0xFF00)>>8;
                                     txMSG[10] = (tempSPI&0x00FF);
 
                                     //F
-                                    tempSPI = 106;//readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
+                                    tempSPI = readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
                                     txMSG[11] = (tempSPI&0xFF00)>>8;
                                     txMSG[12] = (tempSPI&0x00FF);
                                     //B
-                                    tempSPI = 25;//readSlave(ULTRAS,ULTRA_BACK_DISTANCE);
+                                    tempSPI = readSlave(ULTRAS,ULTRA_BACK_DISTANCE);
                                     txMSG[13] = (tempSPI&0xFF00)>>8;
                                     txMSG[14] = (tempSPI&0x00FF);
 

@@ -38,11 +38,8 @@ int main( void ) {
     double heading_d;
     //Use 1 sign bit and 2 integer bits and therefore 13 fraction bits it goes from -pi->pi
     //This means say 3.14 << 14bits
-    int advals[4];
-    int tempr;
     while(1){
        //readADC(advals);
-       tempr = readTemperature('F');
        heading_d = updateHeading();
        HEADING = (int) (heading_d*FIXEDPOINT_13BIT); //cast as an integer after shifting 14
     }//end while

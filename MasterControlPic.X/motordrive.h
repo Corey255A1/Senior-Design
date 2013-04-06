@@ -32,3 +32,4 @@ extern long IC2_COUNT;
 
 void configOutputCompare(void);
 void setMotor(int);
+void configInputCaptures();
