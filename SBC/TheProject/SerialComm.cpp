@@ -174,8 +174,8 @@ int SerialComm::ConfigCommPort()
     // Communication speed (simple version, using the predefined
     // constants)
     //-------------------------------------------------------------------------
-    cfsetispeed(&config, B38400);
-    cfsetospeed(&config, B38400);
+    cfsetispeed(&config, B2400);
+    cfsetospeed(&config, B2400);
     
     //-------------------------------------------------------------------------
     // Apply the configuration to the communication port.
@@ -200,15 +200,16 @@ void SerialComm::closeConnection(){
  * Write the port with the data passed in by writeData.
  * @param writeData
  */
-void SerialComm::WritePort(unsigned char* puszWriteBuff)
+void SerialComm::WritePort(unsigned char* puszWriteBuff, char buffSize)
 {
-    int rc = write(commPort, puszWriteBuff, strlen(reinterpret_cast <const char*>(puszWriteBuff)));
+    int rc = write(commPort, puszWriteBuff, buffSize);
 }
 
 void SerialComm::ZeroWritePort(unsigned char* puszWriteBuff, char buffSize)
 {
     int rc = write(commPort, puszWriteBuff, buffSize);
 }
+
 
 /**
  * Reads the communication port for any available data.

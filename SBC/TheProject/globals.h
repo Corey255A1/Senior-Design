@@ -14,6 +14,8 @@
 #include <string>
 #include <string.h>
 #include <sstream>
+
+#include "MessageBuilder.h"
 using namespace std;
 
 //-----------------------------------------------------------------------------
@@ -29,19 +31,24 @@ using namespace std;
 #define BUFF_SIZE               100
 #define LOW_SHELF_CLEAN_FREQ    3800
 #define UPPER_SHELF_FREQ        2500
+#define FREQ_THRESH             600
 #define COMPASS_DIVISOR         8192
 #define CENTER_OFFSET           15
-#define PULSES_TO_CM            100
+#define PULSES_TO_CM            (double) 0.01
 #define COMPASS_ERROR           0.07
 #define ULT_STOP_THRESH         10
 #define ADJ_LEFT                1
 #define ADJ_RIGHT               2
 #define NO_ADJ                  3
 
-#define MOTOR_STOP() BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0); serialPort.ZeroWritePort(uszCommOutMsg, ucSetMotorPacketSize); serialPort.ReadPort(uszCommInMsg)
-#define WR_SERIAL() serialPort.WritePort(uszCommOutMsg); serialPort.ReadPort(uszCommInMsg)
-#define SPIN_BOT_CLK() BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed4, ucForward, ucSpeed4); serialPort.WritePort(uszCommOutMsg); serialPort.ReadPort(uszCommInMsg)
-#define SPIN_BOT_CCLK() BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4); serialPort.WritePort(uszCommOutMsg); serialPort.ReadPort(uszCommInMsg)
+#define MOTOR_STOP() BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0); serialPort.WritePort(uszCommOutMsg, sizeof(uszCommOutMsg)); serialPort.ReadPort(uszCommInMsg)
+#define WR_SET_MOTOR() serialPort.WritePort(uszCommOutMsg, ucSetMotorPacketSize); serialPort.ReadPort(uszCommInMsg)
+#define WR_GET_MOTOR() serialPort.WritePort(uszCommOutMsg, ucGetMotorPacketSize); serialPort.ReadPort(uszCommInMsg)
+#define WR_SET_ARM() serialPort.WritePort(uszCommOutMsg, ucSetArmPacketSize); serialPort.ReadPort(uszCommInMsg)
+#define WR_GET_ARM() serialPort.WritePort(uszCommOutMsg, ucGetArmPacketSize); serialPort.ReadPort(uszCommInMsg)
+#define WR_GET_SENS() serialPort.WritePort(uszCommOutMsg, ucGetSensorPacketSize); serialPort.ReadPort(uszCommInMsg)
+#define SPIN_BOT_CLK() BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed4, ucForward, ucSpeed4); serialPort.WritePort(uszCommOutMsg, ucSetMotorPacketSize); serialPort.ReadPort(uszCommInMsg)
+#define SPIN_BOT_CCLK() BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4); serialPort.WritePort(uszCommOutMsg, ucSetMotorPacketSize); serialPort.ReadPort(uszCommInMsg)
 //-----------------------------------------------------------------------------
 //  Helper function declarations.
 //-----------------------------------------------------------------------------

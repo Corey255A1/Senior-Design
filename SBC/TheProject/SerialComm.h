@@ -38,7 +38,7 @@ public:
     SerialComm();
     SerialComm(const SerialComm& orig);
     virtual ~SerialComm();
-    void WritePort(unsigned char* puszWriteBuff);
+    void WritePort(unsigned char* puszWriteBuff, char buffSize);
     int ReadPort(unsigned char* puszReadBuff);
     void ZeroWritePort(unsigned char* puszWriteBuff, char buffSize);
     

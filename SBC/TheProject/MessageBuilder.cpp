@@ -49,8 +49,8 @@ const unsigned char ucSpeed10           = 10;
 //-----------------------------------------------------------------------------
 // Direction Select Constants
 //-----------------------------------------------------------------------------
-const unsigned char ucForward           = 'F';
-const unsigned char ucReverse           = 'R';
+const unsigned char ucForward           = 0;
+const unsigned char ucReverse           = 1;
 
 //-----------------------------------------------------------------------------
 // Message Terminator

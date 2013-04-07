@@ -17,12 +17,14 @@
 #include "SoundFFT.h"
 #include "MessageBuilder.h"
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 using namespace std;
 
 #define NUM_THREADS     5
 
-char cDebug = FALSE;
+char cDebug = TRUE;
 
 enum STATE {
     INITIALIZE,
@@ -38,7 +40,9 @@ enum STATE {
     PLACE_PLATE,
     RETURN_START,
     GET_PLATE_TABLE,
-    GO_TO_SINK    
+    GO_TO_SINK,
+    HARD_CODE,
+    HARD_END
 };
 
 enum DST_PT {
@@ -89,12 +93,9 @@ int main(int argc, char** argv)
     SerialComm serialPort;
     string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
     string sLogMsg;
-<<<<<<< HEAD
-    enum STATE state = WAIT_FOR_TONE;
-=======
+    //enum STATE state = WAIT_FOR_TONE;
     enum STATE state = INITIALIZE;
     enum DST_PT dstPt = DST_PT1;
->>>>>>> d47833d6d4dcdc31e8e37f2f05c568c0c210ded2
     SoundRecorder soundRecorder;
     SoundFFT soundFFT;
     TheMap theMap;
@@ -103,6 +104,8 @@ int main(int argc, char** argv)
     //roboCoord.y = 50;
     //theMap.setLocation(roboCoord);
     //enum STATE state = WAIT_FOR_TONE;
+    
+    
     
     while (1)
     {
@@ -132,21 +135,43 @@ int main(int argc, char** argv)
                 //-----------------------------------------------------------------
                 //  Create and let the color tracking thread start running.
                 //-----------------------------------------------------------------
-    //            sLogMsg = "Creating thread...\n";
-    //            WriteToLogFile(sLogMsg);
-                //nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
+//                sLogMsg = "Creating thread...\n";
+//                WriteToLogFile(sLogMsg);
+//                nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
 
                 //-----------------------------------------------------------------
                 //  Check to make sure thread executed successfully.
                 //-----------------------------------------------------------------
-    //            if (nRC)
-    //            {
-    //                sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(rc) + ". Exiting...\n";
-    //                exit(-1);
-    //            }
-
+//                if (nRC)
+//                {
+//                    sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(nRC) + ". Exiting...\n";
+//                    exit(-1);
+//                }
+                
+                /***********************************************************
+                 
+                 TESTING CODE!!!
+                 * 
+                 
+                 
+                 */
+                //BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed7, ucReverse, ucSpeed5);
+//                BuildSensGet(uszCommOutMsg, ucCompassSel);
+//                WR_GET_SENS();
+                        
+                        //BuildMotorSet(uszCommOutMsg, ucSpeed10, 1, ucSpeed10, 1);
+                //WR_SET_MOTOR();
+                
+                //MOTOR_STOP();
+                //serialPort.ZeroWritePort(uszCommOutMsg, sizeof(uszCommOutMsg));
+                
+//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+//                WR_SET_MOTOR();
+//    
+//                MOTOR_STOP();
                 state = WAIT_FOR_TONE;
                 //state = SCAN_FOR_POS;
+                MOTOR_STOP();
                 break;
 
             case WAIT_FOR_TONE:
@@ -156,17 +181,17 @@ int main(int argc, char** argv)
                 //-----------------------------------------------------------------
                 soundRecorder.record(frgSoundSamps);
                 dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
-
+                printf("Tone: %f\n", dblFreqSamp);
                 //-----------------------------------------------------------------
                 //  If the higher frequency is heard, then RoboWaiter needs to get
                 //  the plate on the lower shelf, and the state needs to advance
                 //  to SCAN_FOR_POS...
                 //-----------------------------------------------------------------
-                if ((dblFreqSamp <= LOW_SHELF_CLEAN_FREQ+100) && (dblFreqSamp > LOW_SHELF_CLEAN_FREQ-100))
+                if ((dblFreqSamp <= LOW_SHELF_CLEAN_FREQ+FREQ_THRESH) && (dblFreqSamp > LOW_SHELF_CLEAN_FREQ-FREQ_THRESH))
                 {
                     bGetUpperShelf  = FALSE;
                     bGetLowShelf    = TRUE;
-                    state = SCAN_FOR_POS;
+                    state = HARD_CODE;
                 }
 
                 //-----------------------------------------------------------------
@@ -174,11 +199,11 @@ int main(int argc, char** argv)
                 //  to get the plate on the lower shelf, and the state needs to 
                 //  advance to SCAN_FOR_POS...
                 //-----------------------------------------------------------------
-                else if ((dblFreqSamp <= UPPER_SHELF_FREQ+100) && (dblFreqSamp > UPPER_SHELF_FREQ-100))
+                else if ((dblFreqSamp <= UPPER_SHELF_FREQ+FREQ_THRESH) && (dblFreqSamp > UPPER_SHELF_FREQ-FREQ_THRESH))
                 {
                     bGetLowShelf    = FALSE;
                     bGetUpperShelf  = TRUE;
-                    state = SCAN_FOR_POS;
+                    state = HARD_CODE;
                 }
 
                 //-----------------------------------------------------------------
@@ -191,6 +216,205 @@ int main(int argc, char** argv)
 
                 break;
 
+            case HARD_CODE:
+//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+//                WR_SET_MOTOR();
+//                
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < 85);
+//                
+//                MOTOR_STOP(); 
+//                state = HARD_END;
+//                break;
+//                
+                
+                
+                //---------------------------------------------------------
+                //  While the the robot has not spinned enough. Keep
+                //  writing set commands.
+                //---------------------------------------------------------
+                // Spin left and go strait
+                SPIN_BOT_CCLK();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                } 
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double) 22.42 / PULSES_TO_CM));
+                
+                MOTOR_STOP();
+                MOTOR_STOP();
+                
+                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                WR_SET_MOTOR();
+                
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)90 / PULSES_TO_CM));
+                
+                MOTOR_STOP();
+                MOTOR_STOP();
+                
+                
+                // Spin right and move forward
+                SPIN_BOT_CLK();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                } 
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+                
+                MOTOR_STOP();
+                MOTOR_STOP();
+                
+                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                WR_SET_MOTOR();
+                
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)200 / PULSES_TO_CM));
+                MOTOR_STOP();
+                 MOTOR_STOP();
+                
+                // Spin Right and move forward
+                SPIN_BOT_CLK();
+                
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+                
+                
+                MOTOR_STOP();
+                                MOTOR_STOP();
+                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                WR_SET_MOTOR();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)88 / PULSES_TO_CM));
+                MOTOR_STOP();
+                
+                // Spin left and reverse?
+                SPIN_BOT_CCLK();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+                
+                MOTOR_STOP();
+                               MOTOR_STOP();
+                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
+                WR_SET_MOTOR();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)35 / PULSES_TO_CM));
+                
+                MOTOR_STOP();
+                               MOTOR_STOP(); 
+                // Set the Arm
+                if (bGetLowShelf)
+                {
+                    BuildArmSet(uszCommOutMsg, 0,0);
+                }
+                else 
+                {
+                    BuildArmSet(uszCommOutMsg, 0,1);
+                }
+                WR_SET_ARM();
+                
+                // Move forward to fridge
+                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed2, ucForward, ucSpeed2);
+                WR_SET_MOTOR();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)43 / PULSES_TO_CM));
+                MOTOR_STOP();
+                  MOTOR_STOP();              
+                // Backup to close fridge
+                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
+                WR_SET_MOTOR();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)43 / PULSES_TO_CM));
+                MOTOR_STOP();
+                        MOTOR_STOP();        
+                // Spin Left
+                SPIN_BOT_CCLK();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+                
+                MOTOR_STOP();
+                 MOTOR_STOP();               
+                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
+                WR_SET_MOTOR();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)35 / PULSES_TO_CM));
+                MOTOR_STOP();
+                             MOTOR_STOP();   
+                // Spin left
+                SPIN_BOT_CCLK();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+                
+                MOTOR_STOP();
+                               MOTOR_STOP(); 
+                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                WR_SET_MOTOR();
+                BuildMotorGet(uszCommInMsg);
+                do
+                {
+                    WR_GET_MOTOR();
+                }
+                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+                
+                MOTOR_STOP();
+                                MOTOR_STOP();
+                state = HARD_END;
+                break;
+                
+            case HARD_END:
+                MOTOR_STOP();
+                                MOTOR_STOP();
+                break;
             case SCAN_FOR_POS:
             {
                 int nRightFrontDist;
@@ -200,7 +424,7 @@ int main(int argc, char** argv)
                 //  Build ultrasonic messages.
                 //-----------------------------------------------------------------
                 BuildSensGet(uszCommOutMsg, ucUltSel);
-                WR_SERIAL();
+                WR_GET_SENS();
 
                 //-----------------------------------------------------------------
                 //  Find Ultrasonic distances to wall.
@@ -240,7 +464,7 @@ int main(int argc, char** argv)
                     //  Get the compass value for our heading offset.
                     //-------------------------------------------------------------
                     BuildSensGet(uszCommOutMsg, ucCompassSel);
-                    WR_SERIAL();
+                    WR_GET_SENS();
                     heading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
                     theMap.orientNorth(heading / ((double) COMPASS_DIVISOR));
                     theMap.setHeading(heading / ((double) COMPASS_DIVISOR));
@@ -265,7 +489,7 @@ int main(int argc, char** argv)
                 //  Write the serial port with the set motor command built 
                 //  from above
                 //-------------------------------------------------------------
-                WR_SERIAL();
+                WR_SET_MOTOR();
 
                 //-------------------------------------------------------------
                 //  Check to make sure if we received a return ACK, if we did
@@ -289,7 +513,7 @@ int main(int argc, char** argv)
                     BuildMotorGet(uszCommOutMsg);
                     do 
                     {
-                        WR_SERIAL();
+                        WR_GET_MOTOR();
                     } 
                     while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < 100);
 
@@ -354,7 +578,7 @@ int main(int argc, char** argv)
                         BuildSensGet(uszCommOutMsg, ucCompassSel);
                         do 
                         {
-                            WR_SERIAL();
+                            WR_GET_SENS();
                             curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
                             curHeading = curHeading / ((double) COMPASS_DIVISOR);
                             
@@ -367,7 +591,128 @@ int main(int argc, char** argv)
                         //  destination point 1.
                         //-----------------------------------------------------
                         BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-                        WR_SERIAL();
+                        WR_SET_MOTOR();
+                        
+                        //-----------------------------------------------------
+                        //  As we move forward to get to the destination, we
+                        //  do the following...
+                        //-----------------------------------------------------
+                        do
+                        {
+                            //  See if we are running into anything
+//                            BuildSensGet(uszCommOutMsg, ucUltSel);
+//                            WR_GET_SENS();
+//                            
+//                            //-------------------------------------------------
+//                            //  If we are going to run into anything then stop.
+//                            //-------------------------------------------------
+//                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
+//                            {
+//                                MOTOR_STOP();
+//                                
+//                                //---------------------------------------------
+//                                //  Check to make sure if we received a return 
+//                                //  ACK, if we did not then just send it again.
+//                                //---------------------------------------------
+//                                if (!CheckAck(uszCommInMsg))
+//                                {
+//                                    MOTOR_STOP();
+//                                    break;
+//                                }
+//                            }
+                            
+                            
+                            //  Make sure we keep traveling strait.
+                            
+                            BuildSensGet(uszCommOutMsg, ucCompassSel);
+                            WR_GET_SENS();
+                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+                            int nAdj = theMap.checkHeadingDeviation(curHeading);
+                           
+                            //  Adjust right, left, or keep going strait
+                            if (nAdj == ADJ_RIGHT)
+                            {
+                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
+                                  WR_SET_MOTOR();
+                            }
+                            else if (nAdj == ADJ_LEFT)
+                            {
+                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
+                                WR_SET_MOTOR();
+                            }
+                            else 
+                            {
+                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                                WR_SET_MOTOR();
+                            }
+                            
+                           
+                            
+                            
+                            //  Get the steps again
+                            BuildMotorGet(uszCommOutMsg);
+                            WR_GET_MOTOR();
+                            
+                            //-------------------------------------------------------------
+                            //  Check to make sure if we received a return ACK, if we did
+                            //  not then just send it again...
+                            //-------------------------------------------------------------
+                            if (!CheckAck(uszCommInMsg))
+                            {
+                                MOTOR_STOP();
+                                break;
+                            }
+                            
+                            
+                            
+                        }
+                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
+                        
+                        MOTOR_STOP();
+                        
+                        //dstPt = DST_PT2;
+                        break;
+                        
+                    case DST_PT2:
+                        
+                        //-----------------------------------------------------
+                        //  Determine heading.
+                        //-----------------------------------------------------
+                        newHeading = theMap.determineHeading(theMap.destPt2);
+                        
+                        //  Determine spin direction.
+                        if (theMap.spinDirection(newHeading) == CLKWISE)
+                        {
+                            SPIN_BOT_CLK();
+                        }
+                        else
+                        {
+                            SPIN_BOT_CCLK();
+                        }
+
+                        //-----------------------------------------------------
+                        //  While the compass heading is not matched with our
+                        //  desired heading at destination point 1, we want to
+                        //  keep spinning the robot.
+                        //-----------------------------------------------------
+                        BuildSensGet(uszCommOutMsg, ucCompassSel);
+                        do 
+                        {
+                            WR_GET_SENS();
+                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+                            
+                        }
+                        while (!theMap.checkCompassHeading(curHeading));
+                        MOTOR_STOP();
+                        
+                        //-----------------------------------------------------
+                        //  Need to go forward to finally move towards the
+                        //  destination point 1.
+                        //-----------------------------------------------------
+                        BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                        WR_SET_MOTOR();
                         
                         //-----------------------------------------------------
                         //  As we move forward to get to the destination, we
@@ -377,7 +722,7 @@ int main(int argc, char** argv)
                         {
                             //  See if we are running into anything
                             BuildSensGet(uszCommOutMsg, ucUltSel);
-                            WR_SERIAL();
+                            WR_GET_SENS();
                             
                             //-------------------------------------------------
                             //  If we are going to run into anything then stop.
@@ -401,7 +746,7 @@ int main(int argc, char** argv)
                             //  Make sure we keep traveling strait.
                             
                             BuildSensGet(uszCommOutMsg, ucCompassSel);
-                            WR_SERIAL();
+                            WR_GET_SENS();
                             curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
                             curHeading = curHeading / ((double) COMPASS_DIVISOR);
                             int nAdj = theMap.checkHeadingDeviation(curHeading);
@@ -410,17 +755,17 @@ int main(int argc, char** argv)
                             if (nAdj == ADJ_RIGHT)
                             {
                                   BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
-                                  WR_SERIAL();
+                                  WR_SET_MOTOR();
                             }
                             else if (nAdj == ADJ_LEFT)
                             {
                                 BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
-                                WR_SERIAL();
+                                WR_SET_MOTOR();
                             }
                             else 
                             {
                                 BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-                                WR_SERIAL();
+                                WR_SET_MOTOR();
                             }
                             
                            
@@ -428,7 +773,128 @@ int main(int argc, char** argv)
                             
                             //  Get the steps again
                             BuildMotorGet(uszCommOutMsg);
-                            WR_SERIAL();
+                            WR_GET_MOTOR();
+                            
+                            //-------------------------------------------------------------
+                            //  Check to make sure if we received a return ACK, if we did
+                            //  not then just send it again...
+                            //-------------------------------------------------------------
+                            if (!CheckAck(uszCommInMsg))
+                            {
+                                MOTOR_STOP();
+                                break;
+                            }
+                            
+                            
+                            
+                        }
+                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
+                        
+                        MOTOR_STOP();
+                        
+                        dstPt = DST_PT3;
+                        break;
+                        
+                    case DST_PT3:
+                        
+                        //-----------------------------------------------------
+                        //  Determine heading.
+                        //-----------------------------------------------------
+                        newHeading = theMap.determineHeading(theMap.destPt3);
+                        
+                        //  Determine spin direction.
+                        if (theMap.spinDirection(newHeading) == CLKWISE)
+                        {
+                            SPIN_BOT_CLK();
+                        }
+                        else
+                        {
+                            SPIN_BOT_CCLK();
+                        }
+
+                        //-----------------------------------------------------
+                        //  While the compass heading is not matched with our
+                        //  desired heading at destination point 1, we want to
+                        //  keep spinning the robot.
+                        //-----------------------------------------------------
+                        BuildSensGet(uszCommOutMsg, ucCompassSel);
+                        do 
+                        {
+                            WR_GET_SENS();
+                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+                            
+                        }
+                        while (!theMap.checkCompassHeading(curHeading));
+                        MOTOR_STOP();
+                        
+                        //-----------------------------------------------------
+                        //  Need to go forward to finally move towards the
+                        //  destination point 1.
+                        //-----------------------------------------------------
+                        BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                        WR_SET_MOTOR();
+                        
+                        //-----------------------------------------------------
+                        //  As we move forward to get to the destination, we
+                        //  do the following...
+                        //-----------------------------------------------------
+                        do
+                        {
+                            //  See if we are running into anything
+                            BuildSensGet(uszCommOutMsg, ucUltSel);
+                            WR_GET_SENS();
+                            
+                            //-------------------------------------------------
+                            //  If we are going to run into anything then stop.
+                            //-------------------------------------------------
+                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
+                            {
+                                MOTOR_STOP();
+                                
+                                //---------------------------------------------
+                                //  Check to make sure if we received a return 
+                                //  ACK, if we did not then just send it again.
+                                //---------------------------------------------
+                                if (!CheckAck(uszCommInMsg))
+                                {
+                                    MOTOR_STOP();
+                                    break;
+                                }
+                            }
+                            
+                            
+                            //  Make sure we keep traveling strait.
+                            
+                            BuildSensGet(uszCommOutMsg, ucCompassSel);
+                            WR_GET_SENS();
+                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+                            int nAdj = theMap.checkHeadingDeviation(curHeading);
+                           
+                            //  Adjust right, left, or keep going strait
+                            if (nAdj == ADJ_RIGHT)
+                            {
+                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
+                                  WR_SET_MOTOR();
+                            }
+                            else if (nAdj == ADJ_LEFT)
+                            {
+                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
+                                WR_SET_MOTOR();
+                            }
+                            else 
+                            {
+                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                                WR_SET_MOTOR();
+                            }
+                            
+                           
+                            
+                            
+                            //  Get the steps again
+                            BuildMotorGet(uszCommOutMsg);
+                            WR_GET_MOTOR();
                             
                             //-------------------------------------------------------------
                             //  Check to make sure if we received a return ACK, if we did
@@ -449,77 +915,39 @@ int main(int argc, char** argv)
                         
                         dstPt = DST_PT2;
                         break;
-                        
-                    case DST_PT2:
-                        
-                        //-----------------------------------------------------
-                        //  Determine heading.
-                        //-----------------------------------------------------
-                        newHeading = theMap.determineHeading(theMap.destPt2);
-                        
-                        if (theMap.spinDirection(newHeading) == CLKWISE)
-                        {
-                            SPIN_BOT_CLK();
-                        }
-                        else
-                        {
-                            SPIN_BOT_CCLK();
-                        }
-
-                        BuildSensGet(uszCommOutMsg, ucCompassSel);
-                        do 
-                        {
-                            WR_SERIAL();
-                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-                            
-                        }
-                        while (!theMap.checkCompassHeading(curHeading));
-                        
-                        MOTOR_STOP();
-                        
-                        dstPt = DST_PT3;
-                        break;
-                        
-                    case DST_PT3:
-                        
-                        //-----------------------------------------------------
-                        //  Determine heading.
-                        //-----------------------------------------------------
-                        newHeading = theMap.determineHeading(theMap.destPt3);
-                        
-                        if (theMap.spinDirection(newHeading) == CLKWISE)
-                        {
-                            SPIN_BOT_CLK();
-                        }
-                        else
-                        {
-                            SPIN_BOT_CCLK();
-                        }
-
-                        BuildSensGet(uszCommOutMsg, ucCompassSel);
-                        do 
-                        {
-                            WR_SERIAL();
-                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-                            
-                        }
-                        while (!theMap.checkCompassHeading(curHeading));
-                        
-                        MOTOR_STOP();
-                        
-                        dstPt = DST_PT3;
-                        break;
                 }
                 
                 state = DETECT_FRIDGE_IR;
                 break;
             }
             case DETECT_FRIDGE_IR:
-                break;
+            {
+                int nFrontDist;
+                
+                // Mesaure distance from bottom wall
+                BuildSensGet(uszCommOutMsg, ucUltSel);
+                WR_GET_SENS();
 
+                //-----------------------------------------------------------------
+                //  Find Ultrasonic distances to wall.
+                //-----------------------------------------------------------------
+                nFrontDist = BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB);
+                
+                
+                // Spin 90 degrees CCW (or whatever amount to point map-north)
+                // Detect the Fridge IR emitter.
+                
+                break;
+            }
             case OPEN_DOOR:
+                
+                // Measure distance and parallelism from bottom wall
+                // Adjust as usual to be parallel (and get distance to bot wall)
+                // Measure distance to fridge
+                // Isolate location and update our map for precision
+                // drive backwards to get to the bottom sensor position
+                // See if we detect floor LED.
+                // Go to LINE_UP_WITH_FRIDGE
                 break;
 
             case LINE_UP_WITH_FRIDGE:
@@ -588,9 +1016,9 @@ int main(int argc, char** argv)
     //-------------------------------------------------------------------------
     while (1)
     {
-            serialPort.WritePort(uszCommOutMsg);
+            //serialPort.WritePort(uszCommOutMsg);
             
-            serialPort.ReadPort(uszCommInMsg);
+            //serialPort.ReadPort(uszCommInMsg);
             
             
             
