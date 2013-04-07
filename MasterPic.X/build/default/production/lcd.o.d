@@ -1,4 +1,1 @@
-build/default/production/lcd.o:  \
-lcd.c  \
-lcd.h  \
-globals.h 
+build/default/production/lcd.o: lcd.c lcd.h globals.h

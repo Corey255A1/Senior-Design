@@ -135,13 +135,20 @@ int main(int argc, char** argv)
                 //-----------------------------------------------------------------
                 //  Create and let the color tracking thread start running.
                 //-----------------------------------------------------------------
+<<<<<<< HEAD
 //                sLogMsg = "Creating thread...\n";
 //                WriteToLogFile(sLogMsg);
 //                nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
+=======
+                sLogMsg = "Creating thread...\n";
+                WriteToLogFile(sLogMsg);
+                nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
 
                 //-----------------------------------------------------------------
                 //  Check to make sure thread executed successfully.
                 //-----------------------------------------------------------------
+<<<<<<< HEAD
 //                if (nRC)
 //                {
 //                    sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(nRC) + ". Exiting...\n";
@@ -169,6 +176,14 @@ int main(int argc, char** argv)
 //                WR_SET_MOTOR();
 //    
 //                MOTOR_STOP();
+=======
+                if (nRC)
+                {
+                    sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(nRC) + ". Exiting...\n";
+                    exit(-1);
+                }
+
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                 state = WAIT_FOR_TONE;
                 //state = SCAN_FOR_POS;
                 MOTOR_STOP();
@@ -712,7 +727,11 @@ int main(int argc, char** argv)
                         //  destination point 1.
                         //-----------------------------------------------------
                         BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+<<<<<<< HEAD
                         WR_SET_MOTOR();
+=======
+                        WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                         
                         //-----------------------------------------------------
                         //  As we move forward to get to the destination, we
@@ -722,7 +741,11 @@ int main(int argc, char** argv)
                         {
                             //  See if we are running into anything
                             BuildSensGet(uszCommOutMsg, ucUltSel);
+<<<<<<< HEAD
                             WR_GET_SENS();
+=======
+                            WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             
                             //-------------------------------------------------
                             //  If we are going to run into anything then stop.
@@ -746,7 +769,11 @@ int main(int argc, char** argv)
                             //  Make sure we keep traveling strait.
                             
                             BuildSensGet(uszCommOutMsg, ucCompassSel);
+<<<<<<< HEAD
                             WR_GET_SENS();
+=======
+                            WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
                             curHeading = curHeading / ((double) COMPASS_DIVISOR);
                             int nAdj = theMap.checkHeadingDeviation(curHeading);
@@ -755,17 +782,29 @@ int main(int argc, char** argv)
                             if (nAdj == ADJ_RIGHT)
                             {
                                   BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
+<<<<<<< HEAD
                                   WR_SET_MOTOR();
+=======
+                                  WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             }
                             else if (nAdj == ADJ_LEFT)
                             {
                                 BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
+<<<<<<< HEAD
                                 WR_SET_MOTOR();
+=======
+                                WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             }
                             else 
                             {
                                 BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+<<<<<<< HEAD
                                 WR_SET_MOTOR();
+=======
+                                WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             }
                             
                            
@@ -773,7 +812,11 @@ int main(int argc, char** argv)
                             
                             //  Get the steps again
                             BuildMotorGet(uszCommOutMsg);
+<<<<<<< HEAD
                             WR_GET_MOTOR();
+=======
+                            WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             
                             //-------------------------------------------------------------
                             //  Check to make sure if we received a return ACK, if we did
@@ -833,7 +876,11 @@ int main(int argc, char** argv)
                         //  destination point 1.
                         //-----------------------------------------------------
                         BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+<<<<<<< HEAD
                         WR_SET_MOTOR();
+=======
+                        WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                         
                         //-----------------------------------------------------
                         //  As we move forward to get to the destination, we
@@ -843,7 +890,11 @@ int main(int argc, char** argv)
                         {
                             //  See if we are running into anything
                             BuildSensGet(uszCommOutMsg, ucUltSel);
+<<<<<<< HEAD
                             WR_GET_SENS();
+=======
+                            WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             
                             //-------------------------------------------------
                             //  If we are going to run into anything then stop.
@@ -867,7 +918,11 @@ int main(int argc, char** argv)
                             //  Make sure we keep traveling strait.
                             
                             BuildSensGet(uszCommOutMsg, ucCompassSel);
+<<<<<<< HEAD
                             WR_GET_SENS();
+=======
+                            WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
                             curHeading = curHeading / ((double) COMPASS_DIVISOR);
                             int nAdj = theMap.checkHeadingDeviation(curHeading);
@@ -876,17 +931,29 @@ int main(int argc, char** argv)
                             if (nAdj == ADJ_RIGHT)
                             {
                                   BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
+<<<<<<< HEAD
                                   WR_SET_MOTOR();
+=======
+                                  WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             }
                             else if (nAdj == ADJ_LEFT)
                             {
                                 BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
+<<<<<<< HEAD
                                 WR_SET_MOTOR();
+=======
+                                WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             }
                             else 
                             {
                                 BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+<<<<<<< HEAD
                                 WR_SET_MOTOR();
+=======
+                                WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             }
                             
                            
@@ -894,7 +961,11 @@ int main(int argc, char** argv)
                             
                             //  Get the steps again
                             BuildMotorGet(uszCommOutMsg);
+<<<<<<< HEAD
                             WR_GET_MOTOR();
+=======
+                            WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
                             
                             //-------------------------------------------------------------
                             //  Check to make sure if we received a return ACK, if we did
@@ -926,7 +997,11 @@ int main(int argc, char** argv)
                 
                 // Mesaure distance from bottom wall
                 BuildSensGet(uszCommOutMsg, ucUltSel);
+<<<<<<< HEAD
                 WR_GET_SENS();
+=======
+                WR_SERIAL();
+>>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
 
                 //-----------------------------------------------------------------
                 //  Find Ultrasonic distances to wall.

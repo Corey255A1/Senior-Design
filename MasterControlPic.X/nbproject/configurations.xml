@@ -12,6 +12,7 @@
       <itemPath>A2D.h</itemPath>
       <itemPath>temperature.h</itemPath>
       <itemPath>C:/Users/student/Documents/GitHub/Senior-Design/Global_PIC/spiMessages.h</itemPath>
+      <itemPath>motordrive.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -27,6 +28,7 @@
       <itemPath>spi.c</itemPath>
       <itemPath>A2D.c</itemPath>
       <itemPath>temperature.c</itemPath>
+      <itemPath>motordrive.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -44,8 +46,8 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
-        <languageToolchainVersion>1.10</languageToolchainVersion>
-        <platform>3</platform>
+        <languageToolchainVersion>1.11</languageToolchainVersion>
+        <platform>2</platform>
       </toolsSet>
       <compileType>
         <linkerTool>
@@ -131,7 +133,7 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.end" value="0x157f7"/>
         <property key="memories.programmemory.start" value="0x0"/>
-        <property key="poweroptions.powerenable" value="true"/>
+        <property key="poweroptions.powerenable" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveprogramrange" value="false"/>

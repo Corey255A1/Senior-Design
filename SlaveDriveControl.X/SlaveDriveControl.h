@@ -21,6 +21,9 @@ int curDriveState   = 0;        // Speed and direction of both motors. Bits are
                                 // as follows:
                                 // M2speed,M2Dir,M1speed,M1Dir. All 4-bits wide
 
+int speedMult       = 25;
+int motorStopVal    = 750;
+
 char M1FdBckASet    = 0;        // Whether or not M1 feedback A has arrived
 char M1FdBckBSet    = 0;        // Whether or not M1 feedback B has arrived
 char M2FdBckASet    = 0;        // Whether or not M2 feedback A has arrived

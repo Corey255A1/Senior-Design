@@ -12,6 +12,7 @@
  * @author Nicholas Fragiskatos (Senior Design Team #12 - Robo Waiter)
  */
 #include "ConfigPeriphs.h"
+#include "globals.h"
 
 /**
  * Configure the Output Compare (OC1) that will be used to send the PWMs to the
@@ -26,14 +27,14 @@ void configOutputCompare(void)
     //-------------------------------------------------------------------------
     TMR3            = 0;        // Clear TMR3
     T3CONbits.TON   = DISABLE;  // Turn off TMR3
-    T3CONbits.TCKPS = 0b00;     // Set Pre-scalar to 1:1
+    T3CONbits.TCKPS = 0b01;     // Set Pre-scalar to 1:8
 
     //-------------------------------------------------------------------------
     //  Setup Output Compare Timer 2 (Timer 2)
     //-------------------------------------------------------------------------
     TMR2            = 0;        // Clear TMR2
     T2CONbits.TON   = DISABLE;  // Turn off TMR2
-    T2CONbits.TCKPS = 0b00;     // Set Pre-scalar to 1:1
+    T2CONbits.TCKPS = 0b01;     // Set Pre-scalar to 1:8
 
     //-------------------------------------------------------------------------
     //  Setup Output Compare (OC1)
@@ -43,7 +44,8 @@ void configOutputCompare(void)
     OC1CON1bits.OCTSEL  = 0b001;    // Set TMR3 as the source timer.
     OC1CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
     OC1CON2bits.SYNCSEL = 0x1F;     // Period Control to OC1RS
-    OC1RS               = CLK_PER;  // Set period of OC1
+    OC1RS               = CLK_PER;  // Set period of OC1 ... Here we want a
+                                    // period of 4000 micro seconds.
     OC1R                = 0;        // Set duty duration of OC1
     RPOR1bits.RP37R     = 0b010000; // Maps the OC1 output to the RP37R pin
                                     // (pin 14) on the pick. The 0b010001 is
@@ -58,7 +60,8 @@ void configOutputCompare(void)
     OC2CON1bits.OCTSEL  = 0b000;    // Set TMR2 as the source timer.
     OC2CON1bits.OCM     = 0b110;    // Edge aligned PWM mode.
     OC2CON2bits.SYNCSEL = 0x1F;     // Period Control to OC2RS
-    OC2RS               = CLK_PER;  // Set period of OC2
+    OC2RS               = CLK_PER;  // Set period of OC1 ... Here we want a
+                                    // period of 4000 micro seconds
     OC2R                = 0;        // Set duty duration of OC2
     RPOR2bits.RP38R     = 0b010001; // Maps the OC2 output to the RP38R pin
                                     // (pin 15) on the pick. The 0b010000 is

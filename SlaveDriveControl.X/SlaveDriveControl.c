@@ -121,26 +121,37 @@ int main(void) {
     char speedM1;
     char forwardDirM2;
     char speedM2;
+    int M1Speed;
+    int M2Speed;
     //char distance;
 
     DRIVE_EN        = EN;
-    SPEEDM1         = 50;
-    SPEEDM2         = 50;
+    //SPEEDM1         = 100;
+    //SPEEDM2         = 100;
     msgQueued       = EN;
-    M1FWD           = 1;
-    M1REV           = 0;
-    M2FWD           = 0;
-    M2REV           = 1;
+    //M1FWD           = 1;
+    //M1REV           = 0;
+    //M2FWD           = 1;
+    //M2REV           = 0;
+    //SPEEDM1         = 1000;
+    //SPEEDM2         = 1000;
+    msgQueued       = EN;
+    //M1FWD           = 1;
+    //M1REV           = 0;
+    //M2FWD           = 0;
+    //M2REV           = 1;
   
     while(1)
     {
         //---------------------------------------------------------------------
         //  If a message needs decoding...
         //---------------------------------------------------------------------
-        if (SPEEDM1 == 20)
         //if (curMasterConfig != INMSG)
+        if (1)
+        
         {
-            curMasterConfig = INMSG;
+            //curMasterConfig = INMSG;
+            curMasterConfig = 0x5151;
             M1FdBckB_SampCount = 0;
             M2FdBckB_SampCount = 0;
                     
@@ -187,6 +198,7 @@ int main(void) {
                 //-------------------------------------------------------------
                 M1REV = DISABLE;
                 M1FWD = EN;
+                M1Speed = motorStopVal + (speedM1*speedMult);
 
             //-----------------------------------------------------------------
             //  ... Else Motor 1 is in reverse...
@@ -198,6 +210,7 @@ int main(void) {
                 //-------------------------------------------------------------
                 M1FWD = DISABLE;
                 M1REV = EN;
+                M1Speed = motorStopVal - (speedM1*speedMult);
             }
 
             //-----------------------------------------------------------------
@@ -211,6 +224,7 @@ int main(void) {
                 //-------------------------------------------------------------
                 M2REV = DISABLE;
                 M2FWD = EN;
+                M2Speed = motorStopVal + (speedM2*speedMult);
 
             //-----------------------------------------------------------------
             //  ... Else Motor 2 is in reverse...
@@ -222,13 +236,14 @@ int main(void) {
                 //-------------------------------------------------------------
                 M2FWD = DISABLE;
                 M2REV = EN;
+                M2Speed = motorStopVal - (speedM2*speedMult);
             }
 
-            //-------------------------------------------------------------
+            //-----------------------------------------------------------------
             //  Set the speed of both motors.
-            //-------------------------------------------------------------
-            SPEEDM1 = (speedM1*OC1clkT)/10;
-            SPEEDM2 = (speedM2*OC1clkT)/10;
+            //-----------------------------------------------------------------
+            SPEEDM1 = 750;
+            SPEEDM2 = M2Speed;
         }
     }
     return 0;
@@ -516,4 +531,59 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
             }
         }
     }
+}
+
+/**
+ * Configure input captures for all four feedback lines coming from the Hall
+ * sensor of the two motors (2 feedback lines for each motor)
+ * <p>
+ * Input Capture 1 is the direction motor 1 is turning (forward or reverse)
+ * Input Capture 2 is the speed of motor 1
+ * Input Capture 3 is the direction motor 2 is turning (forward or reverse)
+ * Input Capture 4 is the speed of motor 2
+ */
+void configInputCaptures()
+{
+    //-------------------------------------------------------------------------
+    //  Setup Input Compare Timer (Timer 4) for all 4 Input Compares
+    //-------------------------------------------------------------------------
+    TMR4            = 0;        // Clear TMR4
+    T4CONbits.TON   = DISABLE;  // Turn off TMR4
+    T4CONbits.TCKPS = 0b00;     // Set Pre-scalar to 1:1
+
+    //-------------------------------------------------------------------------
+    //  Input Capture 1 (Motor 1 Feedback-A)
+    //-------------------------------------------------------------------------
+    M1FDBCKA_TRISREG    = INPUT;            // Set pin to input
+    RPINR7bits.IC1R     = M1FDBCKA_RPIPORT; // Set IC input to RPI input
+    IC1TMR              = 0;                // Clear the IC1 Timer
+    IC1CON1             = 0;                // Clear the config 1 register
+    IC1CON2             = 0;                // Clear the config 2 register
+    IPC0bits.IC1IP      = 1;                // Set IC1 Interrupt Priority to 1
+    IFS0bits.IC1IF      = 0;                // Clear the IC1 interrupt flag
+    IC1CON1bits.ICTSEL  = 0b010;            // Set IC1 to TMR4
+    IC1CON1bits.ICI     = 0;                // Interrupt on every capture
+    IC1CON1bits.ICM     = 0x001;            // Capture on every edge trigger
+
+    //-------------------------------------------------------------------------
+    //  Input Capture 2 (Motor 1 Feedback-B)
+    //-------------------------------------------------------------------------
+    M1FDBCKB_TRISREG    = INPUT;            // Set pin to input
+    RPINR7bits.IC2R     = M1FDBCKB_RPIPORT; // Set IC input to RPI input
+    IC2TMR              = 0;                // Clear the IC2 Timer
+    IC2CON1             = 0;                // Clear the config 1 register
+    IC2CON2             = 0;                // Clear the config 2 register
+    IPC1bits.IC2IP      = 1;                // Set IC2 Interrupt Priority to 1
+    IFS0bits.IC2IF      = 0;                // Clear the IC2 interrupt flag
+    IC2CON1bits.ICTSEL  = 0b010;            // Set IC2 to TMR4
+    IC2CON1bits.ICI     = 0;                // Interrupt on every capture
+    IC2CON1bits.ICM     = 0x001;            // Capture on every edge trigger
+
+
+    //-------------------------------------------------------------------------
+    //  Turn the stuff on
+    //-------------------------------------------------------------------------
+    IEC0bits.IC1IE  = 1;    // Enable IC1 interrupts
+    IEC0bits.IC2IE  = 1;    // Enable IC2 interrupts
+    T4CONbits.TON   = 1;    // Turn on Timer 4
 }

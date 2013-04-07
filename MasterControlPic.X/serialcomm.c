@@ -22,9 +22,9 @@ int EXPECTEDLENGTH;
  * characters. It breaks and indicates message received when it receives an
  * ! (exclamation point)
  */
-void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(){
-    lastchar = U1RXREG;
-    U1STAbits.UTXEN = 1;
+void __attribute__((__interrupt__, auto_psv)) _U2RXInterrupt(){
+    lastchar = U2RXREG;
+    U2STAbits.UTXEN = 1;
 //    U1TXREG = lastchar;// uncomment for echoing commands
     if(!RXMessage.Received){
         RXMessage.Msg[ch]=lastchar;
@@ -57,7 +57,7 @@ void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(){
             RXMessage.Received = 1;
         };
     }//endif
-    IFS0bits.U1RXIF = 0;
+    IFS1bits.U2RXIF = 0;
 }
 
 /**
@@ -68,17 +68,17 @@ void __attribute__((__interrupt__, auto_psv)) _U1RXInterrupt(){
  * 
  */
 void initSerial1 ( void ){
-    RPINR18bits.U1RXR = 12; //
-    RPOR5bits.RP11R = 3;
-    U1MODEbits.UARTEN = 0;//disable;
-    U1MODE = 0;//clear that bitch
-    U1STA = 0;// clea this bitch
-    U1BRG = 25; // set baud to 38461
-    U1MODEbits.BRGH = 1; //this needs to be a 1 for High mode
-    U1STAbits.UTXEN = 1; // enable transmit
-    IFS0bits.U1RXIF = 0;//clear interupt flag
-    IEC0bits.U1RXIE = 1;//enable interrupt
-    U1MODEbits.UARTEN = 1;//enable UART
+    RPINR19bits.U2RXR = 12; //
+    RPOR5bits.RP11R = 5;
+    U2MODEbits.UARTEN = 0;//disable;
+    U2MODE = 0;//clear that bitch
+    U2STA = 0;// clea this bitch
+    U2BRG = 103; // set baud to 38461
+    U2MODEbits.BRGH = 0; //this needs to be a 1 for High mode
+    U2STAbits.UTXEN = 1; // enable transmit
+    IFS1bits.U2RXIF = 0;//clear interupt flag
+    IEC1bits.U2RXIE = 1;//enable interrupt
+    U2MODEbits.UARTEN = 1;//enable UART
 }
 
 /**
@@ -89,10 +89,10 @@ void initSerial1 ( void ){
  */
 void txSerial1(char msg[],int size){
     int i;
-    U1STAbits.UTXEN = 1;
+    U2STAbits.UTXEN = 1;
     for(i=0;i<size;i++){
-        U1TXREG = msg[i];
-        while(!U1STAbits.TRMT){};
+        U2TXREG = msg[i];
+        while(!U2STAbits.TRMT){};
     }//end for
 }//tx
 
@@ -104,9 +104,9 @@ void txSerial1(char msg[],int size){
 void txSerial1_str(char msg[]){
     int length = strlen(msg);
     int i;
-    U1STAbits.UTXEN = 1;
+    U2STAbits.UTXEN = 1;
     for(i=0;i<length;i++){
-        U1TXREG = msg[i];
-        while(!U1STAbits.TRMT){};
+        U2TXREG = msg[i];
+        while(!U2STAbits.TRMT){};
     }//end for
 }//tx

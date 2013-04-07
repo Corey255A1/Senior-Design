@@ -64,6 +64,7 @@
 #define M2FDBCKB_RPIPORT    44
 #define M2FDBCKB_RBPORT     _RB12
 #define M2FDBCKB_TRISREG    TRISBbits.TRISB12
+#define CLK_PER    2000
 
 extern short global_u1_edge;
 extern long global_u1_time;

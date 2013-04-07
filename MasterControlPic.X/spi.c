@@ -24,8 +24,9 @@ void initSPI(void){
     
     //Set the SPI ports
     RPOR1bits.RP2R = 8;
-    RPOR2bits.RP4R = 7;
-    RPINR20bits.SDI1R = 3;
+
+    RPOR1bits.RP3R = 7;
+    RPINR20bits.SDI1R = 4;
 
     //Setup SPI
     SPI1CON1bits.CKE = 1;

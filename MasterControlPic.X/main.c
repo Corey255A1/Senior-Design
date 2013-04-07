@@ -12,6 +12,7 @@
 #include "string.h"
 #include "stdlib.h"
 #include "communication.h"
+#include "motordrive.h"
 #include "spi.h"
 #include "A2D.h"
 #include "temperature.h"
@@ -25,20 +26,29 @@ int FAKE_HEADING = (int)((double)3.14*(8192));
 
 int main( void ) {
     initSerial1();
+    configOutputCompare();
+    configInputCaptures();
     initSPI();
     initADC();
+setMotor(
+       (0x0 MOTOR_LEFT_SPEED) |
+       (MOTOR_FWD MOTOR_LEFT_DIR) |
+       (0x0 MOTOR_RIGHT_SPEED) |
+       (MOTOR_FWD MOTOR_RIGHT_DIR)
+        );
+int test = readSlave(SENSOR_BOARD, COMPASS_HEADING);
+//
     while(1){
         if(RXMessage.Received){
             switch(RXMessage.Msg[GSHEADER]){
                 case SET:
                     switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:
-                            writeSlave(MOTOR_DRIVER,
-                                   SPI_MOTOR,
-                                   (RXMessage.Msg[DEVICEHEADER+1] SPI_MOTOR_LEFT_SPEED) |
-                                   (RXMessage.Msg[DEVICEHEADER+2] SPI_MOTOR_LEFT_DIR) |
-                                   (RXMessage.Msg[DEVICEHEADER+3] SPI_MOTOR_RIGHT_SPEED) |
-                                   (RXMessage.Msg[DEVICEHEADER+4] SPI_MOTOR_RIGHT_DIR));
+                            setMotor(
+                                   (RXMessage.Msg[DEVICEHEADER+3] MOTOR_LEFT_SPEED) |
+                                   (RXMessage.Msg[DEVICEHEADER+4] MOTOR_LEFT_DIR) |
+                                   (RXMessage.Msg[DEVICEHEADER+1] MOTOR_RIGHT_SPEED) |
+                                   (RXMessage.Msg[DEVICEHEADER+2] MOTOR_RIGHT_DIR));
                             SEND_ACK;
                             break;
                         case ARM:
@@ -55,18 +65,19 @@ int main( void ) {
                 case GET:
                     switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:{
-                            char txMSG[7];
-                            int tempSPI;
+                            char txMSG[11];
                             txMSG[0] = '!';
-                            txMSG[1] = 5;
+                            txMSG[1] = 8;
                             txMSG[2] = 'M';
-                            tempSPI = 100;//readSlave(MOTOR_DRIVER,SPI_MOTOR1_STATUS);//to-do
-                            txMSG[3] = (tempSPI&0xFF00)>>8;
-                            txMSG[4] = (tempSPI&0x00FF);
-                            tempSPI = 100;//readSlave(MOTOR_DRIVER,SPI_MOTOR2_STATUS);//to-do
-                            txMSG[5] = (tempSPI&0xFF00)>>8;
-                            txMSG[6] = (tempSPI&0x00FF);
-                            txSerial1(txMSG,7);
+                            txMSG[3] = IC1_COUNTS_BYTE4;
+                            txMSG[4] = IC1_COUNTS_BYTE3;
+                            txMSG[5] = IC1_COUNTS_BYTE2;
+                            txMSG[6] = IC1_COUNTS_BYTE1;
+                            txMSG[7] = IC2_COUNTS_BYTE4;
+                            txMSG[8] = IC2_COUNTS_BYTE3;
+                            txMSG[9] = IC2_COUNTS_BYTE2;
+                            txMSG[10] = IC2_COUNTS_BYTE1;
+                            txSerial1(txMSG,11);
                             break;}
                         case ARM:{
                          //TO-DO Figure out what to return from the ARM
@@ -113,7 +124,7 @@ int main( void ) {
                                     txMSG[0] = '!';
                                     txMSG[1] = 3;
                                     txMSG[2] = 'S';
-                                    tempSPI = FAKE_HEADING;//readSlave(COMPASS,COMPASS_HEADING);
+                                    tempSPI = readSlave(SENSOR_BOARD,COMPASS_HEADING);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
                                     txSerial1(txMSG,5);
@@ -126,29 +137,29 @@ int main( void ) {
                                     txMSG[2] = 'S';
                                     
                                     //LF
-                                    tempSPI = 45; //readSlave(ULTRAS,ULTRA_LEFT_FRONT_DISTANCE);
+                                    tempSPI = readSlave(S_ULTRAS,ULTRA_LEFT_FRONT_DISTANCE);
                                     txMSG[3] = (tempSPI&0xFF00)>>8;
                                     txMSG[4] = (tempSPI&0x00FF);
                                     //LB
-                                    tempSPI = 68;//readSlave(ULTRAS,ULTRA_LEFT_BACK_DISTANCE);
+                                    tempSPI = readSlave(S_ULTRAS,ULTRA_LEFT_BACK_DISTANCE);
                                     txMSG[5] = (tempSPI&0xFF00)>>8;
                                     txMSG[6] = (tempSPI&0x00FF);
                                     
                                     //RF
-                                    tempSPI = 20;//readSlave(ULTRAS,ULTRA_RIGHT_FRONT_DISTANCE);
+                                    tempSPI = readSlave(S_ULTRAS,ULTRA_RIGHT_FRONT_DISTANCE);
                                     txMSG[7] = (tempSPI&0xFF00)>>8;
                                     txMSG[8] = (tempSPI&0x00FF);
                                     //RB
-                                    tempSPI = 20;//readSlave(ULTRAS,ULTRA_RIGHT_BACK_DISTANCE);
+                                    tempSPI = readSlave(S_ULTRAS,ULTRA_RIGHT_BACK_DISTANCE);
                                     txMSG[9] = (tempSPI&0xFF00)>>8;
                                     txMSG[10] = (tempSPI&0x00FF);
 
                                     //F
-                                    tempSPI = 106;//readSlave(ULTRAS,ULTRA_FRONT_DISTANCE);
+                                    tempSPI = readSlave(FB_ULTRAS,ULTRA_FRONT_DISTANCE);
                                     txMSG[11] = (tempSPI&0xFF00)>>8;
                                     txMSG[12] = (tempSPI&0x00FF);
                                     //B
-                                    tempSPI = 25;//readSlave(ULTRAS,ULTRA_BACK_DISTANCE);
+                                    tempSPI = readSlave(FB_ULTRAS,ULTRA_BACK_DISTANCE);
                                     txMSG[13] = (tempSPI&0xFF00)>>8;
                                     txMSG[14] = (tempSPI&0x00FF);
 
