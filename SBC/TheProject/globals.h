@@ -34,7 +34,7 @@ using namespace std;
 #define FREQ_THRESH             600
 #define COMPASS_DIVISOR         8192
 #define CENTER_OFFSET           15
-#define PULSES_TO_CM            (double) 0.01
+#define CM_TO_PULSES            (double) 0.0737
 #define COMPASS_ERROR           0.07
 #define ULT_STOP_THRESH         10
 #define ADJ_LEFT                1
@@ -60,5 +60,7 @@ string IntToString(int nNumber);
 void UnCharCat(unsigned char* puszDestBuff, unsigned char* puszSourceBuff, int nDestBuffSize);
 int BytesToInt(unsigned char* puszBuff, char pos1, char pos2);
 char CheckAck(unsigned char* puszBuff);
+void MoveRobot(unsigned char* puszCommOutMsg, unsigned char M1speed, unsigned char M1dir, unsigned char M2speed, unsigned char M2dir);
+long BytesToLong(unsigned char* puszBuff, char pos1, char pos2, char pos3, char pos4);
 #endif	/* GLOBALS_H */
 

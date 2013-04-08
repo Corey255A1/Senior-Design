@@ -26,7 +26,8 @@ using namespace std;
 
 char cDebug = TRUE;
 
-enum STATE {
+enum DEMO_STATE {
+    
     INITIALIZE,
     WAIT_FOR_TONE,
     SCAN_FOR_POS,
@@ -44,6 +45,12 @@ enum STATE {
     HARD_CODE,
     HARD_END
 };
+
+//enum DEMO_STATE
+//{
+//    INITIALIZE,
+//    WAIT_FOR_TONE
+//};
 
 enum DST_PT {
     DST_PT1,
@@ -94,7 +101,7 @@ int main(int argc, char** argv)
     string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
     string sLogMsg;
     //enum STATE state = WAIT_FOR_TONE;
-    enum STATE state = INITIALIZE;
+    enum DEMO_STATE state = INITIALIZE;
     enum DST_PT dstPt = DST_PT1;
     SoundRecorder soundRecorder;
     SoundFFT soundFFT;
@@ -135,56 +142,62 @@ int main(int argc, char** argv)
                 //-----------------------------------------------------------------
                 //  Create and let the color tracking thread start running.
                 //-----------------------------------------------------------------
-<<<<<<< HEAD
+
 //                sLogMsg = "Creating thread...\n";
 //                WriteToLogFile(sLogMsg);
 //                nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
-=======
-                sLogMsg = "Creating thread...\n";
-                WriteToLogFile(sLogMsg);
-                nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
+
+//                sLogMsg = "Creating thread...\n";
+//                WriteToLogFile(sLogMsg);
+//                nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
 
                 //-----------------------------------------------------------------
                 //  Check to make sure thread executed successfully.
                 //-----------------------------------------------------------------
-<<<<<<< HEAD
+
 //                if (nRC)
 //                {
 //                    sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(nRC) + ". Exiting...\n";
 //                    exit(-1);
 //                }
-                
-                /***********************************************************
-                 
-                 TESTING CODE!!!
-                 * 
-                 
-                 
-                 */
-                //BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed7, ucReverse, ucSpeed5);
-//                BuildSensGet(uszCommOutMsg, ucCompassSel);
-//                WR_GET_SENS();
-                        
-                        //BuildMotorSet(uszCommOutMsg, ucSpeed10, 1, ucSpeed10, 1);
-                //WR_SET_MOTOR();
-                
-                //MOTOR_STOP();
-                //serialPort.ZeroWritePort(uszCommOutMsg, sizeof(uszCommOutMsg));
-                
-//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-//                WR_SET_MOTOR();
-//    
-//                MOTOR_STOP();
-=======
-                if (nRC)
-                {
-                    sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(nRC) + ". Exiting...\n";
-                    exit(-1);
-                }
+               
 
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                state = WAIT_FOR_TONE;
+//                if (nRC)
+//                {
+//                    sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(nRC) + ". Exiting...\n";
+//                    exit(-1);
+//                }
+
+                MOTOR_STOP();
+                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4);
+                WR_SET_MOTOR();
+                
+                long shit;
+                int coreySucksPenis;
+                int danIsASissy;
+                do
+                {
+                    BuildSensGet(uszCommOutMsg, ucUltSel);
+                    WR_GET_SENS();
+                    
+                    coreySucksPenis = BytesToInt(uszCommInMsg, ucUltLeftFrontMSB, ucUltLeftFrontLSB);
+                    danIsASissy = BytesToInt(uszCommInMsg, ucUltLeftBackMSB, ucUltLeftBackLSB);
+
+                    
+                    
+                    
+                    
+                    
+                    BuildMotorGet(uszCommOutMsg);
+                    WR_GET_MOTOR();
+                    
+                    shit = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
+                    
+                }
+                while (shit < ((double)24.5 / CM_TO_PULSES));
+                
+                MOTOR_STOP();
+                //state = WAIT_FOR_TONE;
                 //state = SCAN_FOR_POS;
                 MOTOR_STOP();
                 break;
@@ -206,7 +219,7 @@ int main(int argc, char** argv)
                 {
                     bGetUpperShelf  = FALSE;
                     bGetLowShelf    = TRUE;
-                    state = HARD_CODE;
+                    
                 }
 
                 //-----------------------------------------------------------------
@@ -253,176 +266,176 @@ int main(int argc, char** argv)
                 //  writing set commands.
                 //---------------------------------------------------------
                 // Spin left and go strait
-                SPIN_BOT_CCLK();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                } 
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double) 22.42 / PULSES_TO_CM));
-                
-                MOTOR_STOP();
-                MOTOR_STOP();
-                
-                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-                WR_SET_MOTOR();
-                
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)90 / PULSES_TO_CM));
-                
-                MOTOR_STOP();
-                MOTOR_STOP();
-                
-                
-                // Spin right and move forward
-                SPIN_BOT_CLK();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                } 
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-                
-                MOTOR_STOP();
-                MOTOR_STOP();
-                
-                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-                WR_SET_MOTOR();
-                
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)200 / PULSES_TO_CM));
-                MOTOR_STOP();
-                 MOTOR_STOP();
-                
-                // Spin Right and move forward
-                SPIN_BOT_CLK();
-                
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-                
-                
-                MOTOR_STOP();
-                                MOTOR_STOP();
-                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-                WR_SET_MOTOR();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)88 / PULSES_TO_CM));
-                MOTOR_STOP();
-                
-                // Spin left and reverse?
-                SPIN_BOT_CCLK();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-                
-                MOTOR_STOP();
-                               MOTOR_STOP();
-                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
-                WR_SET_MOTOR();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)35 / PULSES_TO_CM));
-                
-                MOTOR_STOP();
-                               MOTOR_STOP(); 
-                // Set the Arm
-                if (bGetLowShelf)
-                {
-                    BuildArmSet(uszCommOutMsg, 0,0);
-                }
-                else 
-                {
-                    BuildArmSet(uszCommOutMsg, 0,1);
-                }
-                WR_SET_ARM();
-                
-                // Move forward to fridge
-                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed2, ucForward, ucSpeed2);
-                WR_SET_MOTOR();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)43 / PULSES_TO_CM));
-                MOTOR_STOP();
-                  MOTOR_STOP();              
-                // Backup to close fridge
-                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
-                WR_SET_MOTOR();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)43 / PULSES_TO_CM));
-                MOTOR_STOP();
-                        MOTOR_STOP();        
-                // Spin Left
-                SPIN_BOT_CCLK();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-                
-                MOTOR_STOP();
-                 MOTOR_STOP();               
-                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
-                WR_SET_MOTOR();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)35 / PULSES_TO_CM));
-                MOTOR_STOP();
-                             MOTOR_STOP();   
-                // Spin left
-                SPIN_BOT_CCLK();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-                
-                MOTOR_STOP();
-                               MOTOR_STOP(); 
-                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-                WR_SET_MOTOR();
-                BuildMotorGet(uszCommInMsg);
-                do
-                {
-                    WR_GET_MOTOR();
-                }
-                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-                
-                MOTOR_STOP();
-                                MOTOR_STOP();
+//                SPIN_BOT_CCLK();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                } 
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double) 22.42 / PULSES_TO_CM));
+//                
+//                MOTOR_STOP();
+//                MOTOR_STOP();
+//                
+//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+//                WR_SET_MOTOR();
+//                
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)90 / PULSES_TO_CM));
+//                
+//                MOTOR_STOP();
+//                MOTOR_STOP();
+//                
+//                
+//                // Spin right and move forward
+//                SPIN_BOT_CLK();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                } 
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+//                
+//                MOTOR_STOP();
+//                MOTOR_STOP();
+//                
+//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+//                WR_SET_MOTOR();
+//                
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)200 / PULSES_TO_CM));
+//                MOTOR_STOP();
+//                 MOTOR_STOP();
+//                
+//                // Spin Right and move forward
+//                SPIN_BOT_CLK();
+//                
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+//                
+//                
+//                MOTOR_STOP();
+//                                MOTOR_STOP();
+//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+//                WR_SET_MOTOR();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)88 / PULSES_TO_CM));
+//                MOTOR_STOP();
+//                
+//                // Spin left and reverse?
+//                SPIN_BOT_CCLK();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+//                
+//                MOTOR_STOP();
+//                               MOTOR_STOP();
+//                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
+//                WR_SET_MOTOR();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)35 / PULSES_TO_CM));
+//                
+//                MOTOR_STOP();
+//                               MOTOR_STOP(); 
+//                // Set the Arm
+//                if (bGetLowShelf)
+//                {
+//                    BuildArmSet(uszCommOutMsg, 0,0);
+//                }
+//                else 
+//                {
+//                    BuildArmSet(uszCommOutMsg, 0,1);
+//                }
+//                WR_SET_ARM();
+//                
+//                // Move forward to fridge
+//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed2, ucForward, ucSpeed2);
+//                WR_SET_MOTOR();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)43 / PULSES_TO_CM));
+//                MOTOR_STOP();
+//                  MOTOR_STOP();              
+//                // Backup to close fridge
+//                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
+//                WR_SET_MOTOR();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)43 / PULSES_TO_CM));
+//                MOTOR_STOP();
+//                        MOTOR_STOP();        
+//                // Spin Left
+//                SPIN_BOT_CCLK();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+//                
+//                MOTOR_STOP();
+//                 MOTOR_STOP();               
+//                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
+//                WR_SET_MOTOR();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)35 / PULSES_TO_CM));
+//                MOTOR_STOP();
+//                             MOTOR_STOP();   
+//                // Spin left
+//                SPIN_BOT_CCLK();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+//                
+//                MOTOR_STOP();
+//                               MOTOR_STOP(); 
+//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+//                WR_SET_MOTOR();
+//                BuildMotorGet(uszCommInMsg);
+//                do
+//                {
+//                    WR_GET_MOTOR();
+//                }
+//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
+//                
+//                MOTOR_STOP();
+//                                MOTOR_STOP();
                 state = HARD_END;
                 break;
                 
@@ -525,14 +538,14 @@ int main(int argc, char** argv)
                     //  While the the robot has not spinned enough. Keep
                     //  writing set commands.
                     //---------------------------------------------------------
-                    BuildMotorGet(uszCommOutMsg);
-                    do 
-                    {
-                        WR_GET_MOTOR();
-                    } 
-                    while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < 100);
-
-                    //---------------------------------------------------------
+//                    BuildMotorGet(uszCommOutMsg);
+//                    do 
+//                    {
+//                        WR_GET_MOTOR();
+//                    } 
+//                    while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < 100);
+//
+//                    //---------------------------------------------------------
                     //  Once we move enough, stop the robot.
                     //---------------------------------------------------------
                     MOTOR_STOP();
@@ -612,77 +625,77 @@ int main(int argc, char** argv)
                         //  As we move forward to get to the destination, we
                         //  do the following...
                         //-----------------------------------------------------
-                        do
-                        {
-                            //  See if we are running into anything
-//                            BuildSensGet(uszCommOutMsg, ucUltSel);
-//                            WR_GET_SENS();
+//                        do
+//                        {
+//                            //  See if we are running into anything
+////                            BuildSensGet(uszCommOutMsg, ucUltSel);
+////                            WR_GET_SENS();
+////                            
+////                            //-------------------------------------------------
+////                            //  If we are going to run into anything then stop.
+////                            //-------------------------------------------------
+////                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
+////                            {
+////                                MOTOR_STOP();
+////                                
+////                                //---------------------------------------------
+////                                //  Check to make sure if we received a return 
+////                                //  ACK, if we did not then just send it again.
+////                                //---------------------------------------------
+////                                if (!CheckAck(uszCommInMsg))
+////                                {
+////                                    MOTOR_STOP();
+////                                    break;
+////                                }
+////                            }
 //                            
-//                            //-------------------------------------------------
-//                            //  If we are going to run into anything then stop.
-//                            //-------------------------------------------------
-//                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
+//                            
+//                            //  Make sure we keep traveling strait.
+//                            
+//                            BuildSensGet(uszCommOutMsg, ucCompassSel);
+//                            WR_GET_SENS();
+//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+//                            int nAdj = theMap.checkHeadingDeviation(curHeading);
+//                           
+//                            //  Adjust right, left, or keep going strait
+//                            if (nAdj == ADJ_RIGHT)
+//                            {
+//                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
+//                                  WR_SET_MOTOR();
+//                            }
+//                            else if (nAdj == ADJ_LEFT)
+//                            {
+//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
+//                                WR_SET_MOTOR();
+//                            }
+//                            else 
+//                            {
+//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+//                                WR_SET_MOTOR();
+//                            }
+//                            
+//                           
+//                            
+//                            
+//                            //  Get the steps again
+//                            BuildMotorGet(uszCommOutMsg);
+//                            WR_GET_MOTOR();
+//                            
+//                            //-------------------------------------------------------------
+//                            //  Check to make sure if we received a return ACK, if we did
+//                            //  not then just send it again...
+//                            //-------------------------------------------------------------
+//                            if (!CheckAck(uszCommInMsg))
 //                            {
 //                                MOTOR_STOP();
-//                                
-//                                //---------------------------------------------
-//                                //  Check to make sure if we received a return 
-//                                //  ACK, if we did not then just send it again.
-//                                //---------------------------------------------
-//                                if (!CheckAck(uszCommInMsg))
-//                                {
-//                                    MOTOR_STOP();
-//                                    break;
-//                                }
+//                                break;
 //                            }
-                            
-                            
-                            //  Make sure we keep traveling strait.
-                            
-                            BuildSensGet(uszCommOutMsg, ucCompassSel);
-                            WR_GET_SENS();
-                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-                            int nAdj = theMap.checkHeadingDeviation(curHeading);
-                           
-                            //  Adjust right, left, or keep going strait
-                            if (nAdj == ADJ_RIGHT)
-                            {
-                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
-                                  WR_SET_MOTOR();
-                            }
-                            else if (nAdj == ADJ_LEFT)
-                            {
-                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
-                                WR_SET_MOTOR();
-                            }
-                            else 
-                            {
-                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-                                WR_SET_MOTOR();
-                            }
-                            
-                           
-                            
-                            
-                            //  Get the steps again
-                            BuildMotorGet(uszCommOutMsg);
-                            WR_GET_MOTOR();
-                            
-                            //-------------------------------------------------------------
-                            //  Check to make sure if we received a return ACK, if we did
-                            //  not then just send it again...
-                            //-------------------------------------------------------------
-                            if (!CheckAck(uszCommInMsg))
-                            {
-                                MOTOR_STOP();
-                                break;
-                            }
-                            
-                            
-                            
-                        }
-                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
+//                            
+//                            
+//                            
+//                        }
+//                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
                         
                         MOTOR_STOP();
                         
@@ -727,111 +740,111 @@ int main(int argc, char** argv)
                         //  destination point 1.
                         //-----------------------------------------------------
                         BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-<<<<<<< HEAD
+
                         WR_SET_MOTOR();
-=======
-                        WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
+
+                        //
+
                         
                         //-----------------------------------------------------
                         //  As we move forward to get to the destination, we
                         //  do the following...
                         //-----------------------------------------------------
-                        do
-                        {
-                            //  See if we are running into anything
-                            BuildSensGet(uszCommOutMsg, ucUltSel);
-<<<<<<< HEAD
-                            WR_GET_SENS();
-=======
-                            WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            
-                            //-------------------------------------------------
-                            //  If we are going to run into anything then stop.
-                            //-------------------------------------------------
-                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
-                            {
-                                MOTOR_STOP();
-                                
-                                //---------------------------------------------
-                                //  Check to make sure if we received a return 
-                                //  ACK, if we did not then just send it again.
-                                //---------------------------------------------
-                                if (!CheckAck(uszCommInMsg))
-                                {
-                                    MOTOR_STOP();
-                                    break;
-                                }
-                            }
-                            
-                            
-                            //  Make sure we keep traveling strait.
-                            
-                            BuildSensGet(uszCommOutMsg, ucCompassSel);
-<<<<<<< HEAD
-                            WR_GET_SENS();
-=======
-                            WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-                            int nAdj = theMap.checkHeadingDeviation(curHeading);
-                           
-                            //  Adjust right, left, or keep going strait
-                            if (nAdj == ADJ_RIGHT)
-                            {
-                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
-<<<<<<< HEAD
-                                  WR_SET_MOTOR();
-=======
-                                  WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            }
-                            else if (nAdj == ADJ_LEFT)
-                            {
-                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
-<<<<<<< HEAD
-                                WR_SET_MOTOR();
-=======
-                                WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            }
-                            else 
-                            {
-                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-<<<<<<< HEAD
-                                WR_SET_MOTOR();
-=======
-                                WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            }
-                            
-                           
-                            
-                            
-                            //  Get the steps again
-                            BuildMotorGet(uszCommOutMsg);
-<<<<<<< HEAD
-                            WR_GET_MOTOR();
-=======
-                            WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            
-                            //-------------------------------------------------------------
-                            //  Check to make sure if we received a return ACK, if we did
-                            //  not then just send it again...
-                            //-------------------------------------------------------------
-                            if (!CheckAck(uszCommInMsg))
-                            {
-                                MOTOR_STOP();
-                                break;
-                            }
-                            
-                            
-                            
-                        }
-                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
+//                        do
+//                        {
+//                            //  See if we are running into anything
+//                            BuildSensGet(uszCommOutMsg, ucUltSel);
+//
+//                            WR_GET_SENS();
+//
+//                            //
+//
+//                            
+//                            //-------------------------------------------------
+//                            //  If we are going to run into anything then stop.
+//                            //-------------------------------------------------
+//                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
+//                            {
+//                                MOTOR_STOP();
+//                                
+//                                //---------------------------------------------
+//                                //  Check to make sure if we received a return 
+//                                //  ACK, if we did not then just send it again.
+//                                //---------------------------------------------
+//                                if (!CheckAck(uszCommInMsg))
+//                                {
+//                                    MOTOR_STOP();
+//                                    break;
+//                                }
+//                            }
+//                            
+//                            
+//                            //  Make sure we keep traveling strait.
+//                            
+//                            BuildSensGet(uszCommOutMsg, ucCompassSel);
+//
+//                            WR_GET_SENS();
+//
+//                            //
+//
+//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+//                            int nAdj = theMap.checkHeadingDeviation(curHeading);
+//                           
+//                            //  Adjust right, left, or keep going strait
+//                            if (nAdj == ADJ_RIGHT)
+//                            {
+//                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
+//
+//                                  WR_SET_MOTOR();
+//
+//                                  //
+//
+//                            }
+//                            else if (nAdj == ADJ_LEFT)
+//                            {
+//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
+//
+//                                WR_SET_MOTOR();
+//
+//                                //
+//
+//                            }
+//                            else 
+//                            {
+//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+//
+//                                WR_SET_MOTOR();
+//
+//                                
+//
+//                            }
+//                            
+//                           
+//                            
+//                            
+//                            //  Get the steps again
+//                            BuildMotorGet(uszCommOutMsg);
+//
+//                            WR_GET_MOTOR();
+//
+//                            
+//
+//                            
+//                            //-------------------------------------------------------------
+//                            //  Check to make sure if we received a return ACK, if we did
+//                            //  not then just send it again...
+//                            //-------------------------------------------------------------
+//                            if (!CheckAck(uszCommInMsg))
+//                            {
+//                                MOTOR_STOP();
+//                                break;
+//                            }
+//                            
+//                            
+//                            
+//                        }
+//                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
                         
                         MOTOR_STOP();
                         
@@ -876,111 +889,111 @@ int main(int argc, char** argv)
                         //  destination point 1.
                         //-----------------------------------------------------
                         BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-<<<<<<< HEAD
+
                         WR_SET_MOTOR();
-=======
-                        WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
+
+                        //
+
                         
                         //-----------------------------------------------------
                         //  As we move forward to get to the destination, we
                         //  do the following...
                         //-----------------------------------------------------
-                        do
-                        {
-                            //  See if we are running into anything
-                            BuildSensGet(uszCommOutMsg, ucUltSel);
-<<<<<<< HEAD
-                            WR_GET_SENS();
-=======
-                            WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            
-                            //-------------------------------------------------
-                            //  If we are going to run into anything then stop.
-                            //-------------------------------------------------
-                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
-                            {
-                                MOTOR_STOP();
-                                
-                                //---------------------------------------------
-                                //  Check to make sure if we received a return 
-                                //  ACK, if we did not then just send it again.
-                                //---------------------------------------------
-                                if (!CheckAck(uszCommInMsg))
-                                {
-                                    MOTOR_STOP();
-                                    break;
-                                }
-                            }
-                            
-                            
-                            //  Make sure we keep traveling strait.
-                            
-                            BuildSensGet(uszCommOutMsg, ucCompassSel);
-<<<<<<< HEAD
-                            WR_GET_SENS();
-=======
-                            WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-                            int nAdj = theMap.checkHeadingDeviation(curHeading);
-                           
-                            //  Adjust right, left, or keep going strait
-                            if (nAdj == ADJ_RIGHT)
-                            {
-                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
-<<<<<<< HEAD
-                                  WR_SET_MOTOR();
-=======
-                                  WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            }
-                            else if (nAdj == ADJ_LEFT)
-                            {
-                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
-<<<<<<< HEAD
-                                WR_SET_MOTOR();
-=======
-                                WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            }
-                            else 
-                            {
-                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-<<<<<<< HEAD
-                                WR_SET_MOTOR();
-=======
-                                WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            }
-                            
-                           
-                            
-                            
-                            //  Get the steps again
-                            BuildMotorGet(uszCommOutMsg);
-<<<<<<< HEAD
-                            WR_GET_MOTOR();
-=======
-                            WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
-                            
-                            //-------------------------------------------------------------
-                            //  Check to make sure if we received a return ACK, if we did
-                            //  not then just send it again...
-                            //-------------------------------------------------------------
-                            if (!CheckAck(uszCommInMsg))
-                            {
-                                MOTOR_STOP();
-                                break;
-                            }
-                            
-                            
-                            
-                        }
-                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
+//                        do
+//                        {
+//                            //  See if we are running into anything
+//                            BuildSensGet(uszCommOutMsg, ucUltSel);
+//
+//                            WR_GET_SENS();
+//
+//                           // 
+//
+//                            
+//                            //-------------------------------------------------
+//                            //  If we are going to run into anything then stop.
+//                            //-------------------------------------------------
+//                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
+//                            {
+//                                MOTOR_STOP();
+//                                
+//                                //---------------------------------------------
+//                                //  Check to make sure if we received a return 
+//                                //  ACK, if we did not then just send it again.
+//                                //---------------------------------------------
+//                                if (!CheckAck(uszCommInMsg))
+//                                {
+//                                    MOTOR_STOP();
+//                                    break;
+//                                }
+//                            }
+//                            
+//                            
+//                            //  Make sure we keep traveling strait.
+//                            
+//                            BuildSensGet(uszCommOutMsg, ucCompassSel);
+//
+//                            WR_GET_SENS();
+//
+//                            
+//
+//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+//                            int nAdj = theMap.checkHeadingDeviation(curHeading);
+//                           
+//                            //  Adjust right, left, or keep going strait
+//                            if (nAdj == ADJ_RIGHT)
+//                            {
+//                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
+//
+//                                  WR_SET_MOTOR();
+//
+//                                  
+//
+//                            }
+//                            else if (nAdj == ADJ_LEFT)
+//                            {
+//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
+//
+//                                WR_SET_MOTOR();
+//
+//                                
+//
+//                            }
+//                            else 
+//                            {
+//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+//
+//                                WR_SET_MOTOR();
+//
+//                                
+//
+//                            }
+//                            
+//                           
+//                            
+//                            
+//                            //  Get the steps again
+//                            BuildMotorGet(uszCommOutMsg);
+//
+//                            WR_GET_MOTOR();
+//
+//                            
+//
+//                            
+//                            //-------------------------------------------------------------
+//                            //  Check to make sure if we received a return ACK, if we did
+//                            //  not then just send it again...
+//                            //-------------------------------------------------------------
+//                            if (!CheckAck(uszCommInMsg))
+//                            {
+//                                MOTOR_STOP();
+//                                break;
+//                            }
+//                            
+//                            
+//                            
+//                        }
+//                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
                         
                         MOTOR_STOP();
                         
@@ -997,11 +1010,11 @@ int main(int argc, char** argv)
                 
                 // Mesaure distance from bottom wall
                 BuildSensGet(uszCommOutMsg, ucUltSel);
-<<<<<<< HEAD
+
                 WR_GET_SENS();
-=======
-                WR_SERIAL();
->>>>>>> 62827de6e2cea5719a0f714aae2451f833c5115d
+
+                
+
 
                 //-----------------------------------------------------------------
                 //  Find Ultrasonic distances to wall.

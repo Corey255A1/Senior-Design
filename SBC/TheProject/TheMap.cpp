@@ -225,7 +225,7 @@ double TheMap::determineHeading(COORDINATES crds)
 
 int TheMap::getStepCount()
 {
-    return ((int) distToMove) * PULSES_TO_CM;
+    return ((int) distToMove); //* PULSES_TO_CM;
 }
 
 int TheMap::spinDirection(double destHeading)

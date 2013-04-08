@@ -167,15 +167,15 @@ int SerialComm::ConfigCommPort()
     //          VTIME   - Timeout in deciseconds for noncanonical read (1)
     //-------------------------------------------------------------------------
     config.c_cc[VMIN]  = 0;
-    config.c_cc[VTIME] = 1;
+    config.c_cc[VTIME] = 5;
     
     
     //-------------------------------------------------------------------------
     // Communication speed (simple version, using the predefined
     // constants)
     //-------------------------------------------------------------------------
-    cfsetispeed(&config, B2400);
-    cfsetospeed(&config, B2400);
+    cfsetispeed(&config, B38400);
+    cfsetospeed(&config, B38400);
     
     //-------------------------------------------------------------------------
     // Apply the configuration to the communication port.

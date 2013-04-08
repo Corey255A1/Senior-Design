@@ -100,11 +100,15 @@ const unsigned char ucUltBackMSB          = 11;
 const unsigned char ucUltBackLSB          = 12;
 
 // Wheel Definitions
-const unsigned char ucLeftWheelMSB       = 1;
-const unsigned char ucLeftWheelLSB       = 2;
+const unsigned char ucLeftWheelMSB1     = 1;
+const unsigned char ucLeftWheelMSB2     = 2;
+const unsigned char ucLeftWheelLSB1     = 3;
+const unsigned char ucLeftWheelLSB2     = 4;
 
-const unsigned char ucRightWheelMSB      = 3;
-const unsigned char ucRightWheelLSB      = 4;
+const unsigned char ucRightWheelMSB1    = 5;
+const unsigned char ucRightWheelMSB2    = 6;
+const unsigned char ucRightWheelLSB1    = 7;
+const unsigned char ucRightWheelLSB2    = 8;
 
 // Compass Definitions
 const unsigned char ucCompassMSB        = 1;
