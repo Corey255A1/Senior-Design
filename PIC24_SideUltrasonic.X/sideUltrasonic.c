@@ -5,11 +5,11 @@
  *
  */
 
-
 #include <p24EP32MC202.h>
 #include "sideUltrasonic.h"
 #include "globalsTemp.h"
 #include "spi.h"
+#include "configs.h"
 #include <stdbool.h>
 #include <math.h>
 
@@ -63,15 +63,16 @@ int u8_time_f;
 
 void initSideUltras( void ){
     U5_RPOreg = OC1port; // set ultra1 RPO register to OC1 output
-    U6_RPOreg = OC1port;
+    U6_RPOreg = OC2port;
 
     U7_RPOreg = OC1port;
-    U8_RPOreg = OC1port;
+    U8_RPOreg = OC2port;
 
     U5_RBreg = INPUT; // Set ultra1 Tris RB register to input mode
     U6_RBreg = INPUT;
     U7_RBreg = INPUT;
     U8_RBreg = INPUT;
+    
     RPINR7bits.IC1R = U5_RPIport; // set IC1 input to ultra1 RP input
     RPINR7bits.IC2R = U6_RPIport;
     RPINR8bits.IC3R = U7_RPIport;
@@ -89,8 +90,18 @@ void initSideUltras( void ){
     OC1CON1bits.OCM = 0b110; // set to edge-aligned PWM
     OC1CON2bits.SYNCSEL = 0x1F; // set period control to OC1RS
 
-    OC1RS = 30000; // set period of OC1
-    OC1R = 10000; // set duration of OC1
+    OC1RS = 35000; // set period of OC1
+    OC1R = 15000; // set duration of OC1
+
+    OC2CON1 = 0; // clear control registers
+    OC2CON2 = 0;
+
+    OC2CON1bits.OCTSEL = 0x001; // set to TMR3
+    OC2CON1bits.OCM = 0b110; // set to edge-aligned PWM
+    OC2CON2bits.SYNCSEL = 0x1F; // set period control to O2RS
+
+    OC2RS = 30000; // set period of OC1
+    OC2R = 10000; // set duration of OC1
 
     // setup input capture module 1
     IC1CON1bits.ICM = 0x000; // turn off

@@ -8,6 +8,7 @@
 #include "frontUltrasonic.h"
 #include "globalsTemp.h"
 #include "spi.h"
+#include "configs.h"
 #include <stdbool.h>
 #include <math.h>
 
