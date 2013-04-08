@@ -23,11 +23,13 @@ double Cair = 0;
 
 double timerPeriod = 2e-6;
 
-double leftLeftLength = 0;
-double leftRightLength = 0;
+int maxPulse = 12500;
 
-double rightLeftLength = 0;
-double rightRightLength = 0;
+int leftLeftLength = 0;
+int leftRightLength = 0;
+
+int rightLeftLength = 0;
+int rightRightLength = 0;
 
 double sideLength = 11.1;   // needs changed, but will be same for both
 
@@ -38,28 +40,28 @@ bool foundRightFront = false;
 bool foundRightRear = false;
 
 short u5_edge = RISE;
-long u5_time = 0;
+unsigned int u5_time = 0;
 
-int u5_time_i;
-int u5_time_f;
+unsigned int u5_time_i;
+unsigned int u5_time_f;
 
 short u6_edge = RISE;
-long u6_time = 0;
+unsigned int u6_time = 0;
 
-int u6_time_i;
-int u6_time_f;
+unsigned int u6_time_i;
+unsigned int u6_time_f;
 
 short u7_edge = RISE;
-long u7_time = 0;
+unsigned int u7_time = 0;
 
-int u7_time_i;
-int u7_time_f;
+unsigned int u7_time_i;
+unsigned int u7_time_f;
 
 short u8_edge = RISE;
-long u8_time = 0;
+unsigned int u8_time = 0;
 
-int u8_time_i;
-int u8_time_f;
+unsigned int u8_time_i;
+unsigned int u8_time_f;
 
 void initSideUltras( void ){
     U5_RPOreg = OC1port; // set ultra1 RPO register to OC1 output
@@ -81,8 +83,8 @@ void initSideUltras( void ){
     //Setup OCM timers
     TMR3 = 0;   // clear
     T3CONbits.TON = 0; // turn off
-
     T3CONbits.TCKPS = 0b01; // set prescaler to 1:8
+
     OC1CON1 = 0; // clear control registers
     OC1CON2 = 0;
 
@@ -90,8 +92,8 @@ void initSideUltras( void ){
     OC1CON1bits.OCM = 0b110; // set to edge-aligned PWM
     OC1CON2bits.SYNCSEL = 0x1F; // set period control to OC1RS
 
-    OC1RS = 35000; // set period of OC1
-    OC1R = 15000; // set duration of OC1
+    OC1RS = 50000; // set period of OC1
+    OC1R = 5000; // set duration of OC1
 
     OC2CON1 = 0; // clear control registers
     OC2CON2 = 0;
@@ -100,8 +102,8 @@ void initSideUltras( void ){
     OC2CON1bits.OCM = 0b110; // set to edge-aligned PWM
     OC2CON2bits.SYNCSEL = 0x1F; // set period control to O2RS
 
-    OC2RS = 30000; // set period of OC1
-    OC2R = 10000; // set duration of OC1
+    OC2RS = 52000; // set period of OC2
+    OC2R = 5000; // set duration of OC2
 
     // setup input capture module 1
     IC1CON1bits.ICM = 0x000; // turn off
@@ -164,15 +166,14 @@ void initSideUltras( void ){
     T3CONbits.TON = 1;  // TMR3 ON
 } // end init
 
-double convertToDistance(double time){
+int convertToDistance(int time){
     // take in time and convert to distance
     double distance = 0;
 
-    // S = Cair * time (S = distance traveled)
-    // S/2 = distance to object
-    distance = (Cair*time) / 2;
+    // returned in CM
+    distance = ((double)400 * (double)time) / (double)maxPulse;
 
-    return distance;
+    return (int)distance;
 }
 
 double findObject(double leftLength, double rightLength){
@@ -212,7 +213,7 @@ double findObject(double leftLength, double rightLength){
 
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
-    _IC2IF = 0;
+    _IC1IF = 0;
 
     if((u5_edge == RISE) && (U5_RBIport == HIGH)){
         u5_time_i = IC1BUF;
@@ -224,9 +225,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     }else{
         u5_time_f = IC1BUF;
         u5_edge = RISE;
-        u5_time = u5_time_i - u5_time_f;
+        u5_time = u5_time_f - u5_time_i;
 
-        rightLeftLength = convertToDistance(u5_time * timerPeriod);
+        rightLeftLength = convertToDistance(u5_time);
 
         ULTRA_RIGHT_FRONT_DISTANCE = (int)rightLeftLength;
 
@@ -248,9 +249,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     }else{
         u6_time_f = IC2BUF;
         u6_edge = RISE;
-        u6_time = u6_time_i - u6_time_f;
+        u6_time = u6_time_f - u6_time_i;
 
-        rightRightLength = convertToDistance(u6_time * timerPeriod);
+        rightRightLength = convertToDistance(u6_time);
 
         ULTRA_RIGHT_REAR_DISTANCE = (int)rightRightLength;
 
@@ -263,18 +264,18 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
     _IC3IF = 0;
 
     if((u7_edge == RISE) && (U7_RBIport == HIGH)){
-        u7_time_i = IC2BUF;
+        u7_time_i = IC3BUF;
         u7_edge = FALL;
 
         ULTRA_LEFT_FRONT_DISTANCE = 0;
 
         foundLeftFront = false;
     }else{
-        u7_time_f = IC2BUF;
+        u7_time_f = IC3BUF;
         u7_edge = RISE;
-        u7_time = u7_time_i - u7_time_f;
+        u7_time = u7_time_f - u7_time_i;
 
-        leftRightLength = convertToDistance(u7_time * timerPeriod);
+        leftRightLength = convertToDistance(u7_time);
 
         ULTRA_LEFT_FRONT_DISTANCE = (int)leftRightLength;
 
@@ -296,9 +297,9 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
     }else{
         u8_time_f = IC4BUF;
         u8_edge = RISE;
-        u8_time = u8_time_i - u8_time_f;
+        u8_time = u8_time_f - u8_time_i;
 
-        leftLeftLength = convertToDistance(u8_time * timerPeriod);
+        leftLeftLength = convertToDistance(u8_time);
 
         ULTRA_LEFT_REAR_DISTANCE = (int)leftLeftLength;
 

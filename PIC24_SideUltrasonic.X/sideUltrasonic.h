@@ -29,18 +29,10 @@
 #define U8_RBIport _RB12
 #define U8_RBreg TRISBbits.TRISB12
 
-// init for sides
-// sides also have IC1 interrupt
-// sides also have IC2 interrupt
-// sides also have IC3 interrupt
-// sides also have IC4 interrupt
-// sides also have getDistance method
-// sides also have findObject method
-
 void initSideUltras(void);
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void);
 void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void);
 void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void);
 void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void);
-double convertToDistance(double time);
+int convertToDistance(int time);
 double findObject(double leftPulse, double rightPulse);
