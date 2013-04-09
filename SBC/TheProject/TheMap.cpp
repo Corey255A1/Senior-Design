@@ -228,9 +228,9 @@ int TheMap::getStepCount()
     return ((int) distToMove); //* PULSES_TO_CM;
 }
 
-int TheMap::spinDirection(double destHeading)
+int TheMap::spinDirection(double destHeading, double startHeading)
 {
-    if ((dCurHeading >= 0) && (dCurHeading < (M_PI / 2)))
+    if ((startHeading >= 0) && (startHeading < (M_PI / 2)))
     {
         if ((destHeading >= (5*M_PI/4)) && (destHeading < (2*M_PI)))
         {
@@ -241,9 +241,9 @@ int TheMap::spinDirection(double destHeading)
             return CLKWISE;
         }
     }
-    else if ((dCurHeading >= (M_PI / 2)) && (dCurHeading < M_PI))
+    else if ((startHeading >= (M_PI / 2)) && (startHeading < M_PI))
     {
-        if (destHeading < dCurHeading)
+        if (destHeading < startHeading)
         {
             return CCLKWISE;
         }
@@ -252,9 +252,9 @@ int TheMap::spinDirection(double destHeading)
             return CLKWISE;
         }
     }
-    else if ((dCurHeading >= M_PI) && (dCurHeading < (M_PI*3/2)))
+    else if ((startHeading >= M_PI) && (startHeading < (M_PI*3/2)))
     {
-        if (destHeading < dCurHeading)
+        if (destHeading < startHeading)
         {
             return CCLKWISE;
         }
@@ -281,10 +281,10 @@ void TheMap::setHeading(double newHeading)
     dCurHeading = newHeading;
 }
 
-int TheMap::checkCompassHeading(double curHeading)
+int TheMap::checkCompassHeading(double curHeading, double destHeading)
 {
-    double lowThresh = curHeading - COMPASS_ERROR;
-    double highThresh = curHeading + COMPASS_ERROR;
+    double lowThresh = destHeading - COMPASS_ERROR;
+    double highThresh = destHeading + COMPASS_ERROR;
 
     //-------------------------------------------------------------------------
     //  Problem where the low threshold rolls back over

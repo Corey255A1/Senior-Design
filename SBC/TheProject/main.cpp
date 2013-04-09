@@ -92,6 +92,14 @@ int main(int argc, char** argv)
     bool bGetUpperShelf = FALSE;
     float frgSoundSamps[NUM_SECONDS * SAMPLE_RATE];
     double dblFreqSamp;
+    long lRightMotorCount;
+    long lLeftMotorCount;
+    int nFrontUltDist;
+    int nBackUltDist;
+    int nRightFrontUltDist;
+    int nRightBackUltDist;
+    int nLeftFrontUltDist;
+    int nLeftBackUltDist;
     
     //-------------------------------------------------------------------------
     //  Function specific variables - Objects
@@ -168,38 +176,12 @@ int main(int argc, char** argv)
 //                    exit(-1);
 //                }
 
-                MOTOR_STOP();
-                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4);
-                WR_SET_MOTOR();
+  //              MOTOR_STOP();
+//                 BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, (unsigned char) 43);
+//                WR_SET_MOTOR();
                 
-                long shit;
-                int coreySucksPenis;
-                int danIsASissy;
-                do
-                {
-                    BuildSensGet(uszCommOutMsg, ucUltSel);
-                    WR_GET_SENS();
-                    
-                    coreySucksPenis = BytesToInt(uszCommInMsg, ucUltLeftFrontMSB, ucUltLeftFrontLSB);
-                    danIsASissy = BytesToInt(uszCommInMsg, ucUltLeftBackMSB, ucUltLeftBackLSB);
-
-                    
-                    
-                    
-                    
-                    
-                    BuildMotorGet(uszCommOutMsg);
-                    WR_GET_MOTOR();
-                    
-                    shit = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
-                    
-                }
-                while (shit < ((double)24.5 / CM_TO_PULSES));
                 
-                MOTOR_STOP();
-                //state = WAIT_FOR_TONE;
-                //state = SCAN_FOR_POS;
-                MOTOR_STOP();
+                state= WAIT_FOR_TONE;
                 break;
 
             case WAIT_FOR_TONE:
@@ -245,203 +227,116 @@ int main(int argc, char** argv)
                 break;
 
             case HARD_CODE:
-//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-//                WR_SET_MOTOR();
-//                
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < 85);
-//                
-//                MOTOR_STOP(); 
-//                state = HARD_END;
-//                break;
-//                
+            {
+                long shit;
+                long fuck;
+                int coreySucksPenis;
+                int danIsASissy;
+                int mikeSmellsBad;
+                int nickIsADumbShit;
+                int nReturnHeading;
+                double compHeading;
+                double updateHeading;
+                int freakingCount = 0;
+                
+
+                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, 100);
+                WR_SET_MOTOR();
+                
+                do
+                {
+                    BuildSensGet(uszCommOutMsg, ucUltSel);
+                    WR_GET_SENS();
+                    
+                    BuildMotorGet(uszCommOutMsg);
+                    WR_GET_MOTOR();
+                    
+
+                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
+                    
+                }
+                while ((shit < ((double)100 / CM_TO_PULSES)) && (fuck < (double) 100 / CM_TO_PULSES));
+                
+                MOTOR_STOP();
                 
                 
-                //---------------------------------------------------------
-                //  While the the robot has not spinned enough. Keep
-                //  writing set commands.
-                //---------------------------------------------------------
-                // Spin left and go strait
-//                SPIN_BOT_CCLK();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
+                
+                // Spinning 90 degrees
+                BuildSensGet(uszCommOutMsg, ucCompassSel);
+                WR_GET_SENS();
+                nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
+                compHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);                
+                updateHeading = compHeading + (M_PI / 2);
+                SPIN_BOT_CCLK();
+                
+                if (updateHeading > (2*M_PI))
+                {
+                    updateHeading -= 2*M_PI;
+                }
+                
+                do
+                {
+                    BuildSensGet(uszCommOutMsg, ucCompassSel);
+                    WR_GET_SENS();
+
+                    nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
+                    compHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);
+                    
+                    BuildMotorGet(uszCommOutMsg);
+                    WR_GET_MOTOR();
+                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2); 
+                    
+                    if ((shit >= ((double)95 / CM_TO_PULSES)) || (fuck >= (double) 95 / CM_TO_PULSES))
+                    {
+                        SPIN_BOT_CCLK();
+                    }
+                    
+//                    BuildSensGet(uszCommOutMsg, ucUltSel);
+//                    WR_GET_SENS();
+//                    
+//                    coreySucksPenis = BytesToInt(uszCommInMsg, ucUltLeftFrontMSB, ucUltLeftFrontLSB);
+//                    danIsASissy = BytesToInt(uszCommInMsg, ucUltLeftBackMSB, ucUltLeftBackLSB);
+//                    mikeSmellsBad = BytesToInt(uszCommInMsg, ucUltRightFrontMSB, ucUltRightFrontLSB);
+//                    nickIsADumbShit = BytesToInt(uszCommInMsg, ucUltRightBackMSB, ucUltRightBackLSB);
+//                    nFrontUltDist = BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB);
+//                    nBackUltDist = BytesToInt(uszCommInMsg, ucUltBackMSB, ucUltBackLSB);
+                    
+                    
+                    
+//                    if (nFrontUltDist < 10)
+//                    {
+//                        MOTOR_STOP();
+//                        break;
+//                    }
+                    
+                    
+//                    
+//                    BuildMotorGet(uszCommOutMsg);
 //                    WR_GET_MOTOR();
-//                } 
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double) 22.42 / PULSES_TO_CM));
-//                
-//                MOTOR_STOP();
-//                MOTOR_STOP();
-//                
-//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-//                WR_SET_MOTOR();
-//                
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)90 / PULSES_TO_CM));
-//                
-//                MOTOR_STOP();
-//                MOTOR_STOP();
-//                
-//                
-//                // Spin right and move forward
-//                SPIN_BOT_CLK();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                } 
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-//                
-//                MOTOR_STOP();
-//                MOTOR_STOP();
-//                
-//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-//                WR_SET_MOTOR();
-//                
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)200 / PULSES_TO_CM));
-//                MOTOR_STOP();
-//                 MOTOR_STOP();
-//                
-//                // Spin Right and move forward
-//                SPIN_BOT_CLK();
-//                
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-//                
-//                
-//                MOTOR_STOP();
-//                                MOTOR_STOP();
-//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-//                WR_SET_MOTOR();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)88 / PULSES_TO_CM));
-//                MOTOR_STOP();
-//                
-//                // Spin left and reverse?
-//                SPIN_BOT_CCLK();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-//                
-//                MOTOR_STOP();
-//                               MOTOR_STOP();
-//                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
-//                WR_SET_MOTOR();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)35 / PULSES_TO_CM));
-//                
-//                MOTOR_STOP();
-//                               MOTOR_STOP(); 
-//                // Set the Arm
-//                if (bGetLowShelf)
-//                {
-//                    BuildArmSet(uszCommOutMsg, 0,0);
-//                }
-//                else 
-//                {
-//                    BuildArmSet(uszCommOutMsg, 0,1);
-//                }
-//                WR_SET_ARM();
-//                
-//                // Move forward to fridge
-//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed2, ucForward, ucSpeed2);
-//                WR_SET_MOTOR();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)43 / PULSES_TO_CM));
-//                MOTOR_STOP();
-//                  MOTOR_STOP();              
-//                // Backup to close fridge
-//                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
-//                WR_SET_MOTOR();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)43 / PULSES_TO_CM));
-//                MOTOR_STOP();
-//                        MOTOR_STOP();        
-//                // Spin Left
-//                SPIN_BOT_CCLK();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-//                
-//                MOTOR_STOP();
-//                 MOTOR_STOP();               
-//                BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed5, ucReverse, ucSpeed5);
-//                WR_SET_MOTOR();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)35 / PULSES_TO_CM));
-//                MOTOR_STOP();
-//                             MOTOR_STOP();   
-//                // Spin left
-//                SPIN_BOT_CCLK();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-//                
-//                MOTOR_STOP();
-//                               MOTOR_STOP(); 
-//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-//                WR_SET_MOTOR();
-//                BuildMotorGet(uszCommInMsg);
-//                do
-//                {
-//                    WR_GET_MOTOR();
-//                }
-//                while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < ((double)22.42 / PULSES_TO_CM));
-//                
-//                MOTOR_STOP();
-//                                MOTOR_STOP();
-                state = HARD_END;
+////                    
+////
+//                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+//                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
+                    
+                }
+                //while ((shit < ((double)43 / CM_TO_PULSES)) && (fuck < (double) 43 / CM_TO_PULSES));
+                while (!theMap.checkCompassHeading(compHeading, updateHeading));
+                MOTOR_STOP();
+                //state = WAIT_FOR_TONE;
+                //state = SCAN_FOR_POS;
+                MOTOR_STOP();
+                if (freakingCount >= 4)
+                {
+                        state = HARD_END;
+                }
+                freakingCount++;
                 break;
-                
+            }
             case HARD_END:
                 MOTOR_STOP();
-                                MOTOR_STOP();
+                MOTOR_STOP();
                 break;
             case SCAN_FOR_POS:
             {
@@ -465,7 +360,7 @@ int main(int argc, char** argv)
                 //-----------------------------------------------------------------
                 if (nRightFrontDist > nRightBackDist)
                 {
-                    BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed4, ucForward, ucSpeed4);
+//                    BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed4, ucForward, ucSpeed4);
                 }
 
                 //-----------------------------------------------------------------
@@ -473,7 +368,7 @@ int main(int argc, char** argv)
                 //-----------------------------------------------------------------
                 else if (nRightFrontDist < nRightBackDist)
                 {
-                    BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4);
+                //    BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4);
                 }
 
                 //-----------------------------------------------------------------
@@ -589,36 +484,36 @@ int main(int argc, char** argv)
                         newHeading = theMap.determineHeading(theMap.destPt1);
 
                         //  Determine spin direction.
-                        if (theMap.spinDirection(newHeading) == CLKWISE)
-                        {
-                            SPIN_BOT_CLK();
-                        }
-                        else
-                        {
-                            SPIN_BOT_CCLK();
-                        }
+//                        if (theMap.spinDirection(newHeading) == CLKWISE)
+//                        {
+//                            
+//                        }
+//                        else
+//                        {
+//                            
+//                        }
 
                         //-----------------------------------------------------
                         //  While the compass heading is not matched with our
                         //  desired heading at destination point 1, we want to
                         //  keep spinning the robot.
                         //-----------------------------------------------------
-                        BuildSensGet(uszCommOutMsg, ucCompassSel);
-                        do 
-                        {
-                            WR_GET_SENS();
-                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-                            
-                        }
-                        while (!theMap.checkCompassHeading(curHeading));
-                        MOTOR_STOP();
+//                        BuildSensGet(uszCommOutMsg, ucCompassSel);
+//                        do 
+//                        {
+//                            WR_GET_SENS();
+//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+//                            
+//                        }
+//                        while (!theMap.checkCompassHeading(curHeading));
+//                        MOTOR_STOP();
                         
                         //-----------------------------------------------------
                         //  Need to go forward to finally move towards the
                         //  destination point 1.
                         //-----------------------------------------------------
-                        BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                        //BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
                         WR_SET_MOTOR();
                         
                         //-----------------------------------------------------
@@ -707,39 +602,39 @@ int main(int argc, char** argv)
                         //-----------------------------------------------------
                         //  Determine heading.
                         //-----------------------------------------------------
-                        newHeading = theMap.determineHeading(theMap.destPt2);
-                        
-                        //  Determine spin direction.
-                        if (theMap.spinDirection(newHeading) == CLKWISE)
-                        {
-                            SPIN_BOT_CLK();
-                        }
-                        else
-                        {
-                            SPIN_BOT_CCLK();
-                        }
+//                        newHeading = theMap.determineHeading(theMap.destPt2);
+//                        
+//                        //  Determine spin direction.
+//                        if (theMap.spinDirection(newHeading) == CLKWISE)
+//                        {
+//                            
+//                        }
+//                        else
+//                        {
+//                            
+//                        }
 
                         //-----------------------------------------------------
                         //  While the compass heading is not matched with our
                         //  desired heading at destination point 1, we want to
                         //  keep spinning the robot.
                         //-----------------------------------------------------
-                        BuildSensGet(uszCommOutMsg, ucCompassSel);
-                        do 
-                        {
-                            WR_GET_SENS();
-                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-                            
-                        }
-                        while (!theMap.checkCompassHeading(curHeading));
-                        MOTOR_STOP();
+//                        BuildSensGet(uszCommOutMsg, ucCompassSel);
+//                        do 
+//                        {
+//                            WR_GET_SENS();
+//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+//                            
+//                        }
+//                        while (!theMap.checkCompassHeading(curHeading));
+//                        MOTOR_STOP();
                         
                         //-----------------------------------------------------
                         //  Need to go forward to finally move towards the
                         //  destination point 1.
                         //-----------------------------------------------------
-                        BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                       // BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
 
                         WR_SET_MOTOR();
 
@@ -856,39 +751,39 @@ int main(int argc, char** argv)
                         //-----------------------------------------------------
                         //  Determine heading.
                         //-----------------------------------------------------
-                        newHeading = theMap.determineHeading(theMap.destPt3);
-                        
-                        //  Determine spin direction.
-                        if (theMap.spinDirection(newHeading) == CLKWISE)
-                        {
-                            SPIN_BOT_CLK();
-                        }
-                        else
-                        {
-                            SPIN_BOT_CCLK();
-                        }
+//                        newHeading = theMap.determineHeading(theMap.destPt3);
+//                        
+//                        //  Determine spin direction.
+//                        if (theMap.spinDirection(newHeading) == CLKWISE)
+//                        {
+//                            
+//                        }
+//                        else
+//                        {
+//                            
+//                        }
 
                         //-----------------------------------------------------
                         //  While the compass heading is not matched with our
                         //  desired heading at destination point 1, we want to
                         //  keep spinning the robot.
                         //-----------------------------------------------------
-                        BuildSensGet(uszCommOutMsg, ucCompassSel);
-                        do 
-                        {
-                            WR_GET_SENS();
-                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-                            
-                        }
-                        while (!theMap.checkCompassHeading(curHeading));
-                        MOTOR_STOP();
+//                        BuildSensGet(uszCommOutMsg, ucCompassSel);
+//                        do 
+//                        {
+//                            WR_GET_SENS();
+//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
+//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
+//                            
+//                        }
+//                        while (!theMap.checkCompassHeading(curHeading));
+//                        MOTOR_STOP();
                         
                         //-----------------------------------------------------
                         //  Need to go forward to finally move towards the
                         //  destination point 1.
                         //-----------------------------------------------------
-                        BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
+                    //    BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
 
                         WR_SET_MOTOR();
 
