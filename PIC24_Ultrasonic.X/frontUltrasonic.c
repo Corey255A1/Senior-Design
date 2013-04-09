@@ -187,7 +187,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
         u4_edge = RISE;
         u4_time = u4_time_f - u4_time_i;
         // once we have the time, convert to distance
-        backLength = (400 * u4_time) / maxPulse;
+        backLength = ((double)400 * (double)u4_time) / (double)maxPulse;
 
         ULTRA_BACK_DISTANCE = (int)backLength;
 
