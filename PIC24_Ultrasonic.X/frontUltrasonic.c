@@ -29,6 +29,7 @@ double baseLength = 7.3; //cm
 double angle = 0;
 
 double timerPeriod = 2e-6;
+double maxPulse = 12500;
 
 bool leftFound = false;
 bool rightFound = false;
@@ -186,7 +187,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
         u4_edge = RISE;
         u4_time = u4_time_i - u4_time_f;
         // once we have the time, convert to distance
-        backLength = convertToDistance(u4_time * timerPeriod);
+        backLength = (400 * u4_time) / maxPulse;
 
         ULTRA_BACK_DISTANCE = (int)backLength;
 

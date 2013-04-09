@@ -23,6 +23,8 @@ double Cair = 0;
 
 double timerPeriod = 2e-6;
 
+double maxPulse = 12500;
+
 double leftLeftLength = 0;
 double leftRightLength = 0;
 
@@ -100,8 +102,8 @@ void initSideUltras( void ){
     OC2CON1bits.OCM = 0b110; // set to edge-aligned PWM
     OC2CON2bits.SYNCSEL = 0x1F; // set period control to O2RS
 
-    OC2RS = 30000; // set period of OC1
-    OC2R = 10000; // set duration of OC1
+    OC2RS = 30000; // set period of OC2
+    OC2R = 10000; // set duration of OC2
 
     // setup input capture module 1
     IC1CON1bits.ICM = 0x000; // turn off
@@ -168,9 +170,8 @@ double convertToDistance(double time){
     // take in time and convert to distance
     double distance = 0;
 
-    // S = Cair * time (S = distance traveled)
-    // S/2 = distance to object
-    distance = (Cair*time) / 2;
+    // returned in CM
+    distance = (400 * time) / maxPulse;
 
     return distance;
 }
@@ -226,7 +227,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
         u5_edge = RISE;
         u5_time = u5_time_i - u5_time_f;
 
-        rightLeftLength = convertToDistance(u5_time * timerPeriod);
+        rightLeftLength = convertToDistance(u5_time);
 
         ULTRA_RIGHT_FRONT_DISTANCE = (int)rightLeftLength;
 
@@ -250,7 +251,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
         u6_edge = RISE;
         u6_time = u6_time_i - u6_time_f;
 
-        rightRightLength = convertToDistance(u6_time * timerPeriod);
+        rightRightLength = convertToDistance(u6_time);
 
         ULTRA_RIGHT_REAR_DISTANCE = (int)rightRightLength;
 
@@ -274,7 +275,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
         u7_edge = RISE;
         u7_time = u7_time_i - u7_time_f;
 
-        leftRightLength = convertToDistance(u7_time * timerPeriod);
+        leftRightLength = convertToDistance(u7_time);
 
         ULTRA_LEFT_FRONT_DISTANCE = (int)leftRightLength;
 
@@ -298,7 +299,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
         u8_edge = RISE;
         u8_time = u8_time_i - u8_time_f;
 
-        leftLeftLength = convertToDistance(u8_time * timerPeriod);
+        leftLeftLength = convertToDistance(u8_time);
 
         ULTRA_LEFT_REAR_DISTANCE = (int)leftLeftLength;
 
