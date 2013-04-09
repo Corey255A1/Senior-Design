@@ -24,10 +24,11 @@ using namespace std;
 
 #define NUM_THREADS     5
 
-void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm* serialPort, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance);
-void GetSensorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort);
-void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort);
-void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort);
+void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance);
+void GetSensorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
+void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
+void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
+SerialComm serialPort;
 
 char cDebug = TRUE;
 
@@ -110,7 +111,6 @@ int main(int argc, char** argv)
     //  Function specific variables - Objects
     //-------------------------------------------------------------------------
     pthread_t thread;
-    SerialComm serialPort;
     string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
     string sLogMsg;
     enum DEMO_STATE state = INITIALIZE;
@@ -119,10 +119,6 @@ int main(int argc, char** argv)
     SoundFFT soundFFT;
     TheMap theMap;
     COORDINATES roboCoord;
-    //roboCoord.x = 50;
-    //roboCoord.y = 50;
-    //theMap.setLocation(roboCoord);
-    //enum STATE state = WAIT_FOR_TONE;
     
     
     
@@ -155,37 +151,22 @@ int main(int argc, char** argv)
                 //  Create and let the color tracking thread start running.
                 //-----------------------------------------------------------------
 
-//                sLogMsg = "Creating thread...\n";
-//                WriteToLogFile(sLogMsg);
-//                nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
-
-//                sLogMsg = "Creating thread...\n";
-//                WriteToLogFile(sLogMsg);
-//                nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
+                sLogMsg = "Creating thread...\n";
+                WriteToLogFile(sLogMsg);
+                nRC = pthread_create(&thread, NULL, ColorTrackingThread, (void *)t);
 
                 //-----------------------------------------------------------------
                 //  Check to make sure thread executed successfully.
                 //-----------------------------------------------------------------
 
-//                if (nRC)
-//                {
-//                    sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(nRC) + ". Exiting...\n";
-//                    exit(-1);
-//                }
-               
-
-//                if (nRC)
-//                {
-//                    sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(nRC) + ". Exiting...\n";
-//                    exit(-1);
-//                }
-
-  //              MOTOR_STOP();
-//                 BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, (unsigned char) 43);
-//                WR_SET_MOTOR();
+                if (nRC)
+                {
+                    sLogMsg = "Thread Error: Bad return code on thread creation: " + IntToString(nRC) + ". Exiting...\n";
+                    exit(-1);
+                }
                 
-                
-                state= WAIT_FOR_TONE;
+                //state= WAIT_FOR_TONE;
+                state = HARD_CODE;
                 break;
 
             case WAIT_FOR_TONE:
@@ -240,29 +221,31 @@ int main(int argc, char** argv)
                 double compHeading;
                 double updateHeading;
                 int freakingCount = 0;
+                int shit;
+                int fuck;
                 
 
-                MoveForward(uszCommOutMsg, uszCommInMsg, &serialPort, ucSpeed5, ucSpeed5, 100);
-                //MoveForward(uszCommOutMsg, uszCommInMsg, serialPort, ucSpeed5, ucSpeed5, 100);
-//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, 100);
-//                WR_SET_MOTOR();
-//                
-//                do
-//                {
-//                    BuildSensGet(uszCommOutMsg, ucUltSel);
-//                    WR_GET_SENS();
-//                    
-//                    BuildMotorGet(uszCommOutMsg);
-//                    WR_GET_MOTOR();
-//                    
-//
-//                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
-//                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
-//                    
-//                }
-//                while ((shit < ((double)100 / CM_TO_PULSES)) && (fuck < (double) 100 / CM_TO_PULSES));
-//                
-//                MOTOR_STOP();
+                //MoveForward(uszCommOutMsg, uszCommInMsg, ucSpeed4, ucSpeed4, 100);
+                
+                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, 100);
+                WR_SET_MOTOR();
+                
+                do
+                {
+                    BuildSensGet(uszCommOutMsg, ucUltSel);
+                    WR_GET_SENS();
+                    
+                    BuildMotorGet(uszCommOutMsg);
+                    WR_GET_MOTOR();
+                    
+
+                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
+                    
+                }
+                while ((shit < ((double)100 / CM_TO_PULSES)) && (fuck < (double) 100 / CM_TO_PULSES));
+                
+                MOTOR_STOP();
                 
                 
                 
@@ -674,25 +657,24 @@ int main(int argc, char** argv)
 }
 
 
-void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm* serialPort, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance)
+void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance)
 {
     long lLeftWheelCount;
     long lRightWheelCount;
     
     //  Build message to move forward, then execute command.
     BuildMotorSet(puszCommOutMsg, M1speed, ucForward, M2speed, ucForward, cDistance);
-    
-    serialPort->WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
-    serialPort->ReadPort(puszCommInMsg);
+    serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
+    serialPort.ReadPort(puszCommInMsg);
          
     // Keep moving until one of the motors reaches the required count.
     do
     {
         //  Get updated sensor information.
-        GetSensorVals(puszCommOutMsg, puszCommInMsg, *serialPort);
+        GetSensorVals(puszCommOutMsg, puszCommInMsg);
 
         //  Get updated motor information.
-        GetMotorVals(puszCommOutMsg, puszCommInMsg, *serialPort);
+        GetMotorVals(puszCommOutMsg, puszCommInMsg);
 
 
         lLeftWheelCount = BytesToLong(puszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
@@ -702,24 +684,24 @@ void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, Se
     while ((lLeftWheelCount < ((double)cDistance / CM_TO_PULSES)) && (lRightWheelCount < (double) cDistance / CM_TO_PULSES));
 
     //  Stop moving.
-    StopMoving(puszCommOutMsg, puszCommInMsg, *serialPort);
+    StopMoving(puszCommOutMsg, puszCommInMsg);
 }
 
-void GetSensorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort)
+void GetSensorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
     BuildSensGet(puszCommOutMsg, ucUltSel);
     serialPort.WritePort(puszCommOutMsg, ucGetSensorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
 }
 
-void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort)
+void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
     BuildMotorGet(puszCommOutMsg);
     serialPort.WritePort(puszCommOutMsg, ucGetMotorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
 }
 
-void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort)
+void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
     BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0, 0); 
     serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
