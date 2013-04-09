@@ -225,7 +225,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     }else{
         u5_time_f = IC1BUF;
         u5_edge = RISE;
-        u5_time = u5_time_i - u5_time_f;
+        u5_time = u5_time_f - u5_time_i;
 
         rightLeftLength = convertToDistance(u5_time);
 
@@ -249,7 +249,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     }else{
         u6_time_f = IC2BUF;
         u6_edge = RISE;
-        u6_time = u6_time_i - u6_time_f;
+        u6_time = u6_time_f - u6_time_i;
 
         rightRightLength = convertToDistance(u6_time);
 
@@ -273,7 +273,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
     }else{
         u7_time_f = IC2BUF;
         u7_edge = RISE;
-        u7_time = u7_time_i - u7_time_f;
+        u7_time = u7_time_f - u7_time_i;
 
         leftRightLength = convertToDistance(u7_time);
 
@@ -297,7 +297,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC4Interrupt(void)
     }else{
         u8_time_f = IC4BUF;
         u8_edge = RISE;
-        u8_time = u8_time_i - u8_time_f;
+        u8_time = u8_time_f - u8_time_i;
 
         leftLeftLength = convertToDistance(u8_time);
 
