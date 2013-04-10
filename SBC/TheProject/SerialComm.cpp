@@ -167,7 +167,7 @@ int SerialComm::ConfigCommPort()
     //          VTIME   - Timeout in deciseconds for noncanonical read (1)
     //-------------------------------------------------------------------------
     config.c_cc[VMIN]  = 0;
-    config.c_cc[VTIME] = 1;
+    config.c_cc[VTIME] = 5;
     
     
     //-------------------------------------------------------------------------
@@ -200,15 +200,16 @@ void SerialComm::closeConnection(){
  * Write the port with the data passed in by writeData.
  * @param writeData
  */
-void SerialComm::WritePort(unsigned char* puszWriteBuff)
+void SerialComm::WritePort(unsigned char* puszWriteBuff, char buffSize)
 {
-    int rc = write(commPort, puszWriteBuff, strlen(reinterpret_cast <const char*>(puszWriteBuff)));
+    int rc = write(commPort, puszWriteBuff, buffSize);
 }
 
 void SerialComm::ZeroWritePort(unsigned char* puszWriteBuff, char buffSize)
 {
     int rc = write(commPort, puszWriteBuff, buffSize);
 }
+
 
 /**
  * Reads the communication port for any available data.

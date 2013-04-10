@@ -57,10 +57,10 @@ public:
     void display(void);
     void getMap(char[MAPSIZE][MAPSIZE]);
     double determineHeading( COORDINATES );
-    int spinDirection(double destHeading);
+    int spinDirection(double destHeading, double startHeading);
     void setHeading(double newHeading);
     int getStepCount();
-    int checkCompassHeading(double curHeading);
+    int checkCompassHeading(double curHeading, double destHeading);
     int checkHeadingDeviation(double curHeading);
     
     COORDINATES destPt1;

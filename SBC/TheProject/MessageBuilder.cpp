@@ -49,8 +49,8 @@ const unsigned char ucSpeed10           = 10;
 //-----------------------------------------------------------------------------
 // Direction Select Constants
 //-----------------------------------------------------------------------------
-const unsigned char ucForward           = 'F';
-const unsigned char ucReverse           = 'R';
+const unsigned char ucForward           = 0;
+const unsigned char ucReverse           = 1;
 
 //-----------------------------------------------------------------------------
 // Message Terminator
@@ -60,7 +60,7 @@ const unsigned char ucMsgStartSym       = '!';
 //-----------------------------------------------------------------------------
 // Data Size Constants
 //-----------------------------------------------------------------------------
-const unsigned char ucSetMotorDataSize  = 6;
+const unsigned char ucSetMotorDataSize  = 7;
 const unsigned char ucGetMotorDataSize  = 2;
 const unsigned char ucSetArmDataSize    = 4;
 const unsigned char ucGetArmDataSize    = 2;
@@ -69,7 +69,7 @@ const unsigned char ucGetSensorDataSize = 3;
 //-----------------------------------------------------------------------------
 // Packet Sizes
 //-----------------------------------------------------------------------------
-const unsigned char ucSetMotorPacketSize        = 8;
+const unsigned char ucSetMotorPacketSize        = 9;
 const unsigned char ucGetMotorPacketSize        = 4;
 const unsigned char ucSetArmPacketSize          = 6;
 const unsigned char ucGetArmPacketSize          = 4;
@@ -100,11 +100,17 @@ const unsigned char ucUltBackMSB          = 11;
 const unsigned char ucUltBackLSB          = 12;
 
 // Wheel Definitions
-const unsigned char ucLeftWheelMSB       = 1;
-const unsigned char ucLeftWheelLSB       = 2;
+const unsigned char ucLeftWheelMSB1     = 1;
+const unsigned char ucLeftWheelMSB2     = 2;
+const unsigned char ucLeftWheelLSB1     = 3;
+const unsigned char ucLeftWheelLSB2     = 4;
 
-const unsigned char ucRightWheelMSB      = 3;
-const unsigned char ucRightWheelLSB      = 4;
+const unsigned char ucRightWheelMSB1    = 5;
+const unsigned char ucRightWheelMSB2    = 6;
+const unsigned char ucRightWheelLSB1    = 7;
+const unsigned char ucRightWheelLSB2    = 8;
+
+
 
 // Compass Definitions
 const unsigned char ucCompassMSB        = 1;
@@ -128,7 +134,7 @@ void ResetMessage(unsigned char* msgBuff)
  * @param ucMD2 - Direction of Motor 2
  * @param ucMS2 - Speed of Motor 2
  */
-void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned char ucMS1, unsigned char ucMD2, unsigned char ucMS2)
+void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned char ucMS1, unsigned char ucMD2, unsigned char ucMS2, unsigned char distance)
 {
     puszMsgBuff[0]      = ucMsgStartSym;
     puszMsgBuff[1]      = ucSetMotorDataSize;
@@ -138,6 +144,7 @@ void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned cha
     puszMsgBuff[5]      = ucMD2;
     puszMsgBuff[6]      = ucMS1;
     puszMsgBuff[7]      = ucMD1;
+    puszMsgBuff[8]      = distance;
     
 }
 

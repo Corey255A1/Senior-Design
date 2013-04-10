@@ -67,3 +67,19 @@ char CheckAck(unsigned char* puszBuff)
         return TRUE;
     }
 }
+
+void MoveRobot(unsigned char* puszCommOutMsg, unsigned char M1speed, unsigned char M1dir, unsigned char M2speed, unsigned char M2dir, unsigned char distanceCM)
+{
+    
+}
+
+long BytesToLong(unsigned char* puszBuff, char pos1, char pos2, char pos3, char pos4)
+{
+    long motorCount = 0;
+    motorCount |= (long) (puszBuff[pos1] << 24);
+    motorCount |= (long) (puszBuff[pos2] << 16);
+    motorCount |= (long) (puszBuff[pos3] << 8);
+    motorCount |= (long) (puszBuff[pos4]);
+    //return (long)((puszBuff[pos1] << 24) | (puszBuff[pos2] << 16) | (puszBuff[pos3] << 8) | puszBuff[pos4]);
+    return motorCount;
+}

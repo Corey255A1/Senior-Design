@@ -73,8 +73,8 @@ void initSerial1 ( void ){
     U2MODEbits.UARTEN = 0;//disable;
     U2MODE = 0;//clear that bitch
     U2STA = 0;// clea this bitch
-    U2BRG = 103; // set baud to 38461
-    U2MODEbits.BRGH = 0; //this needs to be a 1 for High mode
+    U2BRG = 25; // set baud to 38461
+    U2MODEbits.BRGH = 1; //this needs to be a 1 for High mode
     U2STAbits.UTXEN = 1; // enable transmit
     IFS1bits.U2RXIF = 0;//clear interupt flag
     IEC1bits.U2RXIE = 1;//enable interrupt

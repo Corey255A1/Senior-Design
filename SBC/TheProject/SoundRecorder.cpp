@@ -43,7 +43,7 @@ SoundRecorder::SoundRecorder()
     int devcount = Pa_GetDeviceCount();
     printf("Dev Count: %d\n",devcount);
     inputParameters.device = Pa_GetDefaultInputDevice();
-    //inputParameters.device = 11;
+    //inputParameters.device = ;
     if (inputParameters.device == paNoDevice) {
       fprintf(stderr,"Error: No default input device.\n");
     }
@@ -105,6 +105,6 @@ void SoundRecorder::record(float rSamples[NUM_SECONDS * SAMPLE_RATE])
     //  - Close the stream
     //-------------------------------------------------------------------------
     Pa_StartStream( stream );
-    Pa_ReadStream( stream, rSamples, totalFrames );
+    int eer = Pa_ReadStream( stream, rSamples, totalFrames );
     Pa_CloseStream( stream );
 }
