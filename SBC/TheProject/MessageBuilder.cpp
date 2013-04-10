@@ -30,6 +30,7 @@ const unsigned char ucInfLEDSel         = 'I';
 const unsigned char ucCompassSel        = 'C';
 const unsigned char ucUltSel            = 'U';
 const unsigned char ucAllDevSel         = 'A';
+const unsigned char ucGyroSel           = 'Y';
 
 //-----------------------------------------------------------------------------
 // Speed Select Constants

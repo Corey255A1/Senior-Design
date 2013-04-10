@@ -41,6 +41,7 @@ using namespace std;
 #define ADJ_RIGHT               2
 #define NO_ADJ                  3
 #define COMPASS_THRESH          2000
+#define GYRO_THRESH             57
 
 #define MOTOR_STOP() BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0, 0, 0, 0); serialPort.WritePort(uszCommOutMsg, sizeof(uszCommOutMsg)); serialPort.ReadPort(uszCommInMsg)
 #define WR_SET_MOTOR() serialPort.WritePort(uszCommOutMsg, ucSetMotorPacketSize); serialPort.ReadPort(uszCommInMsg)
