@@ -8,4 +8,5 @@ motordrive.h  \
 spi.h  \
 A2D.h  \
 temperature.h  \
+nav.h  \
  ../../Senior-Design/Global_PIC/spiMessages.h 

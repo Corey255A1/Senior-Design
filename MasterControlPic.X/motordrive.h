@@ -20,6 +20,9 @@
 
 extern long IC1_COUNT;
 extern long IC2_COUNT;
+extern short useCompass;
+extern unsigned short f_Heading;
+extern unsigned int currentMotorSetting;
 #define IC1_COUNTS_BYTE4 ((IC1_COUNT&0xFF000000)>>24)
 #define IC1_COUNTS_BYTE3 ((IC1_COUNT&0x00FF0000)>>16)
 #define IC1_COUNTS_BYTE2 ((IC1_COUNT&0x0000FF00)>>8)
