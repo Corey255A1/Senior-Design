@@ -10,11 +10,17 @@
 #include "opencv2/opencv.hpp"
 #include "ColorTracking.h"
 
+#define hold 0
+#define left 1
+#define right 2
+
 int redDistance = 0;
 int blueDistance = 0;
 
 int validRedPoints = 0;
 int validBluePoints = 0;
+
+int midThresh = 100;
 
 /**
  * Constructor for the ColorTracking class.
@@ -73,7 +79,7 @@ IplImage* ColorTracking::GetBlueThresholdedImage(IplImage* img)
     IplImage* imgThreshed = cvCreateImage(cvGetSize(img), 8, 1);
     
     // Blue on phone
-    cvInRangeS(imgHSV, cvScalar(100, 240, 240), cvScalar(140, 255, 255), imgThreshed);
+    cvInRangeS(imgHSV, cvScalar(80, 220, 240), cvScalar(110, 255, 255), imgThreshed);
 
     cvReleaseImage(&imgHSV);
 
@@ -155,6 +161,22 @@ int ColorTracking::getRedCount(void)
     return validRedPoints;
 }
 
+int ColorTracking::getRedTurn(void)
+{
+    if (abs(redDistance) < midThresh)
+    {
+        return hold; // dont turn
+    }
+    else if (redDistance < 0)
+    {
+        return left; // left
+    }
+    else
+    {
+        return right; // right
+    }
+}
+
 /**
  *  Return count of valid blue objects
  *  @return Number of blue objects
@@ -162,6 +184,22 @@ int ColorTracking::getRedCount(void)
 int ColorTracking::getBlueCount(void)
 {
     return validBluePoints;
+}
+
+int ColorTracking::getBlueTurn(void)
+{
+    if (abs(blueDistance) < midThresh)
+    {
+        return 0; // dont turn
+    }
+    else if (blueDistance < 0)
+    {
+        return 1; // left
+    }
+    else
+    {
+        return 2; // right
+    }
 }
 
 /**
@@ -335,8 +373,8 @@ int ColorTracking::RunColorTracking(bool debug)
         // if D or d is pressed, tell us distance to blue
         else if (c == 68 || c == 100)
         {
-            std::cout << "Distance to red: " << redDistance << std::endl;
-            std::cout << "Distance to blue: " << blueDistance << std::endl;
+            std::cout << "Distance to red: " << getRedTurn() << std::endl;
+            std::cout << "Distance to blue: " << getBlueTurn() << std::endl;
         }
 
 		// Release all images and release the memory storage for contours

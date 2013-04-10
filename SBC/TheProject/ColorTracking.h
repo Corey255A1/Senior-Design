@@ -29,7 +29,9 @@ public:
     int drawWidthDiff (IplImage *image, CvPoint object, CvPoint middle);
     void DrawPoint(IplImage *frame, IplImage *thresh);
     int getRedCount(void);
+    int getRedTurn(void);
     int getBlueCount(void);
+    int getBlueTurn(void);
     ColorTracking();
     ~ColorTracking();
     int RunColorTracking(bool debug);

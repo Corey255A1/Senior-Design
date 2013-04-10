@@ -153,7 +153,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 
     if (!leftFound)
     {
-        leftLength = convertToDistance(IC1BUF * timerPeriod);
+        leftLength = convertToDistance((double)IC1BUF * (double)timerPeriod);
 
         leftFound = true;
     }
@@ -165,7 +165,7 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
 
     if (!rightFound)
     {
-        rightLength = convertToDistance(IC2BUF * timerPeriod);
+        rightLength = convertToDistance((double)IC2BUF * (double)timerPeriod);
 
         rightFound = true;
     }
