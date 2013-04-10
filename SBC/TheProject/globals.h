@@ -60,7 +60,7 @@ string IntToString(int nNumber);
 void UnCharCat(unsigned char* puszDestBuff, unsigned char* puszSourceBuff, int nDestBuffSize);
 int BytesToInt(unsigned char* puszBuff, char pos1, char pos2);
 char CheckAck(unsigned char* puszBuff);
-void MoveRobot(unsigned char* puszCommOutMsg, unsigned char M1speed, unsigned char M1dir, unsigned char M2speed, unsigned char M2dir);
 long BytesToLong(unsigned char* puszBuff, char pos1, char pos2, char pos3, char pos4);
+
 #endif	/* GLOBALS_H */
 

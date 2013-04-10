@@ -68,11 +68,6 @@ char CheckAck(unsigned char* puszBuff)
     }
 }
 
-void MoveRobot(unsigned char* puszCommOutMsg, unsigned char M1speed, unsigned char M1dir, unsigned char M2speed, unsigned char M2dir, unsigned char distanceCM)
-{
-    
-}
-
 long BytesToLong(unsigned char* puszBuff, char pos1, char pos2, char pos3, char pos4)
 {
     long motorCount = 0;

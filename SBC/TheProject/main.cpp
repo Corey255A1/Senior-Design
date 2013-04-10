@@ -24,6 +24,11 @@ using namespace std;
 
 #define NUM_THREADS     5
 
+void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm* serialPort, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance);
+void GetSensorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort);
+void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort);
+void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort);
+
 char cDebug = TRUE;
 
 enum DEMO_STATE {
@@ -108,7 +113,6 @@ int main(int argc, char** argv)
     SerialComm serialPort;
     string sLogFilePath = "/home/robowaiter/Desktop/logfile2.txt";
     string sLogMsg;
-    //enum STATE state = WAIT_FOR_TONE;
     enum DEMO_STATE state = INITIALIZE;
     enum DST_PT dstPt = DST_PT1;
     SoundRecorder soundRecorder;
@@ -228,8 +232,6 @@ int main(int argc, char** argv)
 
             case HARD_CODE:
             {
-                long shit;
-                long fuck;
                 int coreySucksPenis;
                 int danIsASissy;
                 int mikeSmellsBad;
@@ -240,25 +242,27 @@ int main(int argc, char** argv)
                 int freakingCount = 0;
                 
 
-                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, 100);
-                WR_SET_MOTOR();
-                
-                do
-                {
-                    BuildSensGet(uszCommOutMsg, ucUltSel);
-                    WR_GET_SENS();
-                    
-                    BuildMotorGet(uszCommOutMsg);
-                    WR_GET_MOTOR();
-                    
-
-                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
-                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
-                    
-                }
-                while ((shit < ((double)100 / CM_TO_PULSES)) && (fuck < (double) 100 / CM_TO_PULSES));
-                
-                MOTOR_STOP();
+                MoveForward(uszCommOutMsg, uszCommInMsg, &serialPort, ucSpeed5, ucSpeed5, 100);
+                //MoveForward(uszCommOutMsg, uszCommInMsg, serialPort, ucSpeed5, ucSpeed5, 100);
+//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, 100);
+//                WR_SET_MOTOR();
+//                
+//                do
+//                {
+//                    BuildSensGet(uszCommOutMsg, ucUltSel);
+//                    WR_GET_SENS();
+//                    
+//                    BuildMotorGet(uszCommOutMsg);
+//                    WR_GET_MOTOR();
+//                    
+//
+//                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+//                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
+//                    
+//                }
+//                while ((shit < ((double)100 / CM_TO_PULSES)) && (fuck < (double) 100 / CM_TO_PULSES));
+//                
+//                MOTOR_STOP();
                 
                 
                 
@@ -285,13 +289,13 @@ int main(int argc, char** argv)
                     
                     BuildMotorGet(uszCommOutMsg);
                     WR_GET_MOTOR();
-                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
-                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2); 
+//                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+//                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2); 
                     
-                    if ((shit >= ((double)95 / CM_TO_PULSES)) || (fuck >= (double) 95 / CM_TO_PULSES))
-                    {
-                        SPIN_BOT_CCLK();
-                    }
+//                    if ((shit >= ((double)95 / CM_TO_PULSES)) || (fuck >= (double) 95 / CM_TO_PULSES))
+//                    {
+//                        SPIN_BOT_CCLK();
+//                    }
                     
 //                    BuildSensGet(uszCommOutMsg, ucUltSel);
 //                    WR_GET_SENS();
@@ -483,16 +487,6 @@ int main(int argc, char** argv)
                         //-----------------------------------------------------
                         newHeading = theMap.determineHeading(theMap.destPt1);
 
-                        //  Determine spin direction.
-//                        if (theMap.spinDirection(newHeading) == CLKWISE)
-//                        {
-//                            
-//                        }
-//                        else
-//                        {
-//                            
-//                        }
-
                         //-----------------------------------------------------
                         //  While the compass heading is not matched with our
                         //  desired heading at destination point 1, we want to
@@ -597,329 +591,13 @@ int main(int argc, char** argv)
                         //dstPt = DST_PT2;
                         break;
                         
-                    case DST_PT2:
-                        
-                        //-----------------------------------------------------
-                        //  Determine heading.
-                        //-----------------------------------------------------
-//                        newHeading = theMap.determineHeading(theMap.destPt2);
-//                        
-//                        //  Determine spin direction.
-//                        if (theMap.spinDirection(newHeading) == CLKWISE)
-//                        {
-//                            
-//                        }
-//                        else
-//                        {
-//                            
-//                        }
-
-                        //-----------------------------------------------------
-                        //  While the compass heading is not matched with our
-                        //  desired heading at destination point 1, we want to
-                        //  keep spinning the robot.
-                        //-----------------------------------------------------
-//                        BuildSensGet(uszCommOutMsg, ucCompassSel);
-//                        do 
-//                        {
-//                            WR_GET_SENS();
-//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-//                            
-//                        }
-//                        while (!theMap.checkCompassHeading(curHeading));
-//                        MOTOR_STOP();
-                        
-                        //-----------------------------------------------------
-                        //  Need to go forward to finally move towards the
-                        //  destination point 1.
-                        //-----------------------------------------------------
-                       // BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-
-                        WR_SET_MOTOR();
-
-                        //
-
-                        
-                        //-----------------------------------------------------
-                        //  As we move forward to get to the destination, we
-                        //  do the following...
-                        //-----------------------------------------------------
-//                        do
-//                        {
-//                            //  See if we are running into anything
-//                            BuildSensGet(uszCommOutMsg, ucUltSel);
-//
-//                            WR_GET_SENS();
-//
-//                            //
-//
-//                            
-//                            //-------------------------------------------------
-//                            //  If we are going to run into anything then stop.
-//                            //-------------------------------------------------
-//                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
-//                            {
-//                                MOTOR_STOP();
-//                                
-//                                //---------------------------------------------
-//                                //  Check to make sure if we received a return 
-//                                //  ACK, if we did not then just send it again.
-//                                //---------------------------------------------
-//                                if (!CheckAck(uszCommInMsg))
-//                                {
-//                                    MOTOR_STOP();
-//                                    break;
-//                                }
-//                            }
-//                            
-//                            
-//                            //  Make sure we keep traveling strait.
-//                            
-//                            BuildSensGet(uszCommOutMsg, ucCompassSel);
-//
-//                            WR_GET_SENS();
-//
-//                            //
-//
-//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-//                            int nAdj = theMap.checkHeadingDeviation(curHeading);
-//                           
-//                            //  Adjust right, left, or keep going strait
-//                            if (nAdj == ADJ_RIGHT)
-//                            {
-//                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
-//
-//                                  WR_SET_MOTOR();
-//
-//                                  //
-//
-//                            }
-//                            else if (nAdj == ADJ_LEFT)
-//                            {
-//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
-//
-//                                WR_SET_MOTOR();
-//
-//                                //
-//
-//                            }
-//                            else 
-//                            {
-//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-//
-//                                WR_SET_MOTOR();
-//
-//                                
-//
-//                            }
-//                            
-//                           
-//                            
-//                            
-//                            //  Get the steps again
-//                            BuildMotorGet(uszCommOutMsg);
-//
-//                            WR_GET_MOTOR();
-//
-//                            
-//
-//                            
-//                            //-------------------------------------------------------------
-//                            //  Check to make sure if we received a return ACK, if we did
-//                            //  not then just send it again...
-//                            //-------------------------------------------------------------
-//                            if (!CheckAck(uszCommInMsg))
-//                            {
-//                                MOTOR_STOP();
-//                                break;
-//                            }
-//                            
-//                            
-//                            
-//                        }
-//                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
-                        
-                        MOTOR_STOP();
-                        
-                        dstPt = DST_PT3;
-                        break;
-                        
-                    case DST_PT3:
-                        
-                        //-----------------------------------------------------
-                        //  Determine heading.
-                        //-----------------------------------------------------
-//                        newHeading = theMap.determineHeading(theMap.destPt3);
-//                        
-//                        //  Determine spin direction.
-//                        if (theMap.spinDirection(newHeading) == CLKWISE)
-//                        {
-//                            
-//                        }
-//                        else
-//                        {
-//                            
-//                        }
-
-                        //-----------------------------------------------------
-                        //  While the compass heading is not matched with our
-                        //  desired heading at destination point 1, we want to
-                        //  keep spinning the robot.
-                        //-----------------------------------------------------
-//                        BuildSensGet(uszCommOutMsg, ucCompassSel);
-//                        do 
-//                        {
-//                            WR_GET_SENS();
-//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-//                            
-//                        }
-//                        while (!theMap.checkCompassHeading(curHeading));
-//                        MOTOR_STOP();
-                        
-                        //-----------------------------------------------------
-                        //  Need to go forward to finally move towards the
-                        //  destination point 1.
-                        //-----------------------------------------------------
-                    //    BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-
-                        WR_SET_MOTOR();
-
-                        //
-
-                        
-                        //-----------------------------------------------------
-                        //  As we move forward to get to the destination, we
-                        //  do the following...
-                        //-----------------------------------------------------
-//                        do
-//                        {
-//                            //  See if we are running into anything
-//                            BuildSensGet(uszCommOutMsg, ucUltSel);
-//
-//                            WR_GET_SENS();
-//
-//                           // 
-//
-//                            
-//                            //-------------------------------------------------
-//                            //  If we are going to run into anything then stop.
-//                            //-------------------------------------------------
-//                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
-//                            {
-//                                MOTOR_STOP();
-//                                
-//                                //---------------------------------------------
-//                                //  Check to make sure if we received a return 
-//                                //  ACK, if we did not then just send it again.
-//                                //---------------------------------------------
-//                                if (!CheckAck(uszCommInMsg))
-//                                {
-//                                    MOTOR_STOP();
-//                                    break;
-//                                }
-//                            }
-//                            
-//                            
-//                            //  Make sure we keep traveling strait.
-//                            
-//                            BuildSensGet(uszCommOutMsg, ucCompassSel);
-//
-//                            WR_GET_SENS();
-//
-//                            
-//
-//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-//                            int nAdj = theMap.checkHeadingDeviation(curHeading);
-//                           
-//                            //  Adjust right, left, or keep going strait
-//                            if (nAdj == ADJ_RIGHT)
-//                            {
-//                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
-//
-//                                  WR_SET_MOTOR();
-//
-//                                  
-//
-//                            }
-//                            else if (nAdj == ADJ_LEFT)
-//                            {
-//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
-//
-//                                WR_SET_MOTOR();
-//
-//                                
-//
-//                            }
-//                            else 
-//                            {
-//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-//
-//                                WR_SET_MOTOR();
-//
-//                                
-//
-//                            }
-//                            
-//                           
-//                            
-//                            
-//                            //  Get the steps again
-//                            BuildMotorGet(uszCommOutMsg);
-//
-//                            WR_GET_MOTOR();
-//
-//                            
-//
-//                            
-//                            //-------------------------------------------------------------
-//                            //  Check to make sure if we received a return ACK, if we did
-//                            //  not then just send it again...
-//                            //-------------------------------------------------------------
-//                            if (!CheckAck(uszCommInMsg))
-//                            {
-//                                MOTOR_STOP();
-//                                break;
-//                            }
-//                            
-//                            
-//                            
-//                        }
-//                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
-                        
-                        MOTOR_STOP();
-                        
-                        dstPt = DST_PT2;
-                        break;
                 }
                 
                 state = DETECT_FRIDGE_IR;
                 break;
             }
             case DETECT_FRIDGE_IR:
-            {
-                int nFrontDist;
-                
-                // Mesaure distance from bottom wall
-                BuildSensGet(uszCommOutMsg, ucUltSel);
-
-                WR_GET_SENS();
-
-                
-
-
-                //-----------------------------------------------------------------
-                //  Find Ultrasonic distances to wall.
-                //-----------------------------------------------------------------
-                nFrontDist = BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB);
-                
-                
-                // Spin 90 degrees CCW (or whatever amount to point map-north)
-                // Detect the Fridge IR emitter.
-                
+            { 
                 break;
             }
             case OPEN_DOOR:
@@ -986,66 +664,64 @@ int main(int argc, char** argv)
 
     }
     
-    
-    //-------------------------------------------------------------------------
-    //  Determine Location
-    //-------------------------------------------------------------------------
-    
-    
-    
-    
-    int tempCount = 0;
-    float pi = 3.14;
-    unsigned char piFixed = pi * 32;
-    
-    
-    //BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4);
-    //BuildMotorGet(uszCommOutMsg);
-    BuildSensGet(uszCommOutMsg, ucCompassSel);
-    //unsigned char testChar[5] = "!2GM";
-//    BuildSensGet(uszCommOutMsg, ucTempSensSel);
-//    BuildMotorGet(uszCommOutMsg);
-//    BuildArmSet(uszCommOutMsg, 4, 6);
-//    BuildArmGet(uszCommOutMsg);
-    //uszCommOutMsg[0] = 'G';
-    //uszCommOutMsg[1] = 'S';
-    //commOutMsg[2] = piFixed;
-    //uszCommOutMsg[2] = '!';
-    //int tempSize = sizeof(uszCommOutMsg);
-    //UnCharCat(uszCommOutMsg, uszCommOutMsg, tempSize);
-    //int temp = strlen(reinterpret_cast <const char*>(commOutMsg));
-    
-    //commOutMsg[2] = piFixed;
-    //-------------------------------------------------------------------------
-    //  Main Working loop. Exit still has yet to be determined.
-    //-------------------------------------------------------------------------
-    while (1)
-    {
-            //serialPort.WritePort(uszCommOutMsg);
-            
-            //serialPort.ReadPort(uszCommInMsg);
-            
-            
-            
-        //---------------------------------------------------------------------
-        //  Gather camera information.
-        //---------------------------------------------------------------------
-        
-        //---------------------------------------------------------------------
-        //  Write or Query PIC information.
-        //---------------------------------------------------------------------
-        
-        ++tempCount;
-    }
-    serialPort.closeConnection();
-    
-    
-    
     //-------------------------------------------------------------------------
     //  Cleanup
     //-------------------------------------------------------------------------
+    serialPort.closeConnection();
     //pthread_exit(NULL);
     CloseLogFile();
     return 0;
 }
 
+
+void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm* serialPort, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance)
+{
+    long lLeftWheelCount;
+    long lRightWheelCount;
+    
+    //  Build message to move forward, then execute command.
+    BuildMotorSet(puszCommOutMsg, M1speed, ucForward, M2speed, ucForward, cDistance);
+    
+    serialPort->WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
+    serialPort->ReadPort(puszCommInMsg);
+         
+    // Keep moving until one of the motors reaches the required count.
+    do
+    {
+        //  Get updated sensor information.
+        GetSensorVals(puszCommOutMsg, puszCommInMsg, *serialPort);
+
+        //  Get updated motor information.
+        GetMotorVals(puszCommOutMsg, puszCommInMsg, *serialPort);
+
+
+        lLeftWheelCount = BytesToLong(puszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+        lRightWheelCount = BytesToLong(puszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
+
+    }
+    while ((lLeftWheelCount < ((double)cDistance / CM_TO_PULSES)) && (lRightWheelCount < (double) cDistance / CM_TO_PULSES));
+
+    //  Stop moving.
+    StopMoving(puszCommOutMsg, puszCommInMsg, *serialPort);
+}
+
+void GetSensorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort)
+{
+    BuildSensGet(puszCommOutMsg, ucUltSel);
+    serialPort.WritePort(puszCommOutMsg, ucGetSensorPacketSize); 
+    serialPort.ReadPort(puszCommInMsg);
+}
+
+void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort)
+{
+    BuildMotorGet(puszCommOutMsg);
+    serialPort.WritePort(puszCommOutMsg, ucGetMotorPacketSize); 
+    serialPort.ReadPort(puszCommInMsg);
+}
+
+void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, SerialComm serialPort)
+{
+    BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0, 0); 
+    serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
+    serialPort.ReadPort(puszCommInMsg);
+}
