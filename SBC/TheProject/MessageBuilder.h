@@ -16,7 +16,7 @@ extern "C" {
     // Functions
     //-------------------------------------------------------------------------
     void ResetMessage(unsigned char* puszmMgBuff);
-    void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned char ucMS1, unsigned char ucMD2, unsigned char ucMS2, unsigned char distance);
+    void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned char ucMS1, unsigned char ucMD2, unsigned char ucMS2, unsigned char distance, unsigned char ucUseHeading, int nHeading);
     void BuildMotorGet(unsigned char* puszMsgBuff);
     void BuildArmSet(unsigned char* puszMsgBuff, unsigned char ucX, unsigned char ucY);
     void BuildArmGet(unsigned char* puszMsgBuff);
@@ -116,6 +116,8 @@ extern "C" {
     extern const unsigned char ucRightWheelLSB1;
     extern const unsigned char ucRightWheelLSB2;
    
+    extern const unsigned char ucArmMSB;
+    extern const unsigned char ucArmLSB;
     
     extern const unsigned char ucCompassMSB;
     extern const unsigned char ucCompassLSB;

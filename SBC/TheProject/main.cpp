@@ -24,13 +24,16 @@ using namespace std;
 
 #define NUM_THREADS     5
 
-void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance);
+void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance, unsigned char ucUseHeading, int nCurHeading);
 void GetSensorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
 void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
 void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
+void GetCompassVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
+void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int nHeading);
 SerialComm serialPort;
+ColorTracking colorTracker;
 
-char cDebug = TRUE;
+char cDebug = FALSE;
 
 enum DEMO_STATE {
     
@@ -75,7 +78,7 @@ void* ColorTrackingThread(void *threadid)
     
     printf("Starting Color Tracking Thread with thread id: #%ld\n", tID);
     
-    ColorTracking colorTracker;
+    
     colorTracker.RunColorTracking(cDebug);
     
     pthread_exit(NULL);
@@ -106,6 +109,7 @@ int main(int argc, char** argv)
     int nRightBackUltDist;
     int nLeftFrontUltDist;
     int nLeftBackUltDist;
+    double curHeading;
     
     //-------------------------------------------------------------------------
     //  Function specific variables - Objects
@@ -127,6 +131,7 @@ int main(int argc, char** argv)
         switch (state)
         {
             case INITIALIZE:
+                StopMoving(uszCommOutMsg, uszCommInMsg);
                 //-----------------------------------------------------------------
                 //  Open file hand for log output.
                 //-----------------------------------------------------------------
@@ -165,8 +170,8 @@ int main(int argc, char** argv)
                     exit(-1);
                 }
                 
-                //state= WAIT_FOR_TONE;
-                state = HARD_CODE;
+                state= WAIT_FOR_TONE;
+                //state = HARD_CODE;
                 break;
 
             case WAIT_FOR_TONE:
@@ -177,6 +182,7 @@ int main(int argc, char** argv)
                 soundRecorder.record(frgSoundSamps);
                 dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
                 printf("Tone: %f\n", dblFreqSamp);
+                
                 //-----------------------------------------------------------------
                 //  If the higher frequency is heard, then RoboWaiter needs to get
                 //  the plate on the lower shelf, and the state needs to advance
@@ -218,60 +224,82 @@ int main(int argc, char** argv)
                 int mikeSmellsBad;
                 int nickIsADumbShit;
                 int nReturnHeading;
-                double compHeading;
                 double updateHeading;
                 int freakingCount = 0;
                 int shit;
                 int fuck;
+                int armTest;
                 
-
-                //MoveForward(uszCommOutMsg, uszCommInMsg, ucSpeed4, ucSpeed4, 100);
+                // ARM TEST
+                // Position "1"
+//                BuildArmSet(uszCommOutMsg, 1, 0);
+//                WR_SET_ARM();
+//                
+//                do
+//                {
+//                    BuildArmGet(uszCommOutMsg);
+//                    WR_GET_ARM();
+//                    armTest = BytesToInt(uszCommInMsg, ucArmMSB, ucArmLSB);
+//                }
+//                while (armTest != 1);
                 
-                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, 100);
-                WR_SET_MOTOR();
+                MoveForward(uszCommOutMsg, uszCommInMsg, ucSpeed4, ucSpeed4, 100, 0, 25000);
                 
-                do
-                {
-                    BuildSensGet(uszCommOutMsg, ucUltSel);
-                    WR_GET_SENS();
-                    
-                    BuildMotorGet(uszCommOutMsg);
-                    WR_GET_MOTOR();
-                    
-
-                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
-                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
-                    
-                }
-                while ((shit < ((double)100 / CM_TO_PULSES)) && (fuck < (double) 100 / CM_TO_PULSES));
+                GetCompassVals(uszCommOutMsg, uszCommInMsg);
+                nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
+                int n90Turn = (int) ((M_PI/2) * COMPASS_DIVISOR);
+                SpinRobot(uszCommOutMsg, uszCommInMsg, nReturnHeading + n90Turn);
                 
-                MOTOR_STOP();
-                
+//                BuildSensGet(uszCommOutMsg, ucCompassSel);
+//                WR_GET_SENS();
+//                nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
+//                curHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);  
+//                
+//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, 100, 1, (int) (curHeading * COMPASS_DIVISOR));
+//                WR_SET_MOTOR();
+//                
+//                do
+//                {
+//                    BuildSensGet(uszCommOutMsg, ucUltSel);
+//                    WR_GET_SENS();
+//                    
+//                    BuildMotorGet(uszCommOutMsg);
+//                    WR_GET_MOTOR();
+//                    
+//
+//                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+//                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
+//                    
+//                }
+//                while ((shit < ((double)100 / CM_TO_PULSES)) && (fuck < (double) 100 / CM_TO_PULSES));
+//                
+//                MOTOR_STOP();
+//                
                 
                 
                 // Spinning 90 degrees
-                BuildSensGet(uszCommOutMsg, ucCompassSel);
-                WR_GET_SENS();
-                nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
-                compHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);                
-                updateHeading = compHeading + (M_PI / 2);
-                SPIN_BOT_CCLK();
-                
-                if (updateHeading > (2*M_PI))
-                {
-                    updateHeading -= 2*M_PI;
-                }
-                
-                do
-                {
-                    BuildSensGet(uszCommOutMsg, ucCompassSel);
-                    WR_GET_SENS();
-
-                    nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
-                    compHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);
-                    
-                    BuildMotorGet(uszCommOutMsg);
-                    WR_GET_MOTOR();
+//                BuildSensGet(uszCommOutMsg, ucCompassSel);
+//                WR_GET_SENS();
+//                nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
+//                curHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);                
+//                updateHeading = curHeading + (M_PI / 2);
+////                SPIN_BOT_CCLK();
+//                
+//                if (updateHeading > (2*M_PI))
+//                {
+//                    updateHeading -= 2*M_PI;
+//                }
+//                
+//                do
+//                {
+//                    BuildSensGet(uszCommOutMsg, ucCompassSel);
+//                    WR_GET_SENS();
+//
+//                    nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
+//                    curHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);
+//                    
+//                    BuildMotorGet(uszCommOutMsg);
+//                    WR_GET_MOTOR();
 //                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
 //                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2); 
                     
@@ -307,9 +335,9 @@ int main(int argc, char** argv)
 //                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
 //                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
                     
-                }
+                //}
                 //while ((shit < ((double)43 / CM_TO_PULSES)) && (fuck < (double) 43 / CM_TO_PULSES));
-                while (!theMap.checkCompassHeading(compHeading, updateHeading));
+                //while (!theMap.checkCompassHeading(curHeading, updateHeading));
                 MOTOR_STOP();
                 //state = WAIT_FOR_TONE;
                 //state = SCAN_FOR_POS;
@@ -657,13 +685,13 @@ int main(int argc, char** argv)
 }
 
 
-void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance)
+void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance, unsigned char ucUseHeading, int nCurHeading)
 {
     long lLeftWheelCount;
     long lRightWheelCount;
     
     //  Build message to move forward, then execute command.
-    BuildMotorSet(puszCommOutMsg, M1speed, ucForward, M2speed, ucForward, cDistance);
+    BuildMotorSet(puszCommOutMsg, ucForward, M1speed, ucForward, M2speed, cDistance, ucUseHeading, nCurHeading);
     serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
          
@@ -703,7 +731,42 @@ void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 
 void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
-    BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0, 0); 
+    BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0, 0, 0, 0); 
     serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
+    serialPort.ReadPort(puszCommInMsg);
+}
+
+void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int nHeading)
+{
+    int nLastHeading;
+    
+    //  Build message to move forward, then execute command.
+    BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4, 100, 1, nHeading);
+    serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
+    serialPort.ReadPort(puszCommInMsg);
+         
+    // Keep moving until we reach the required heading.
+    do
+    {
+        //  Get updated sensor information.
+        GetCompassVals(puszCommOutMsg, puszCommInMsg);
+        nLastHeading = BytesToInt(puszCommInMsg, ucCompassMSB, ucCompassLSB);
+        
+        if ((nLastHeading >= (nHeading - COMPASS_THRESH)) && (nLastHeading <= (nHeading + COMPASS_THRESH)))
+        {
+            break;
+        }
+
+    }
+    while ( nLastHeading != nHeading);
+
+    //  Stop moving.
+    StopMoving(puszCommOutMsg, puszCommInMsg);
+}
+
+void GetCompassVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
+{
+    BuildSensGet(puszCommOutMsg, ucCompassSel);
+    serialPort.WritePort(puszCommOutMsg, ucGetSensorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
 }
