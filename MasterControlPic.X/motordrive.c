@@ -13,6 +13,7 @@ int IC1_PULSE_STATE=LOW;
 int IC2_PULSE_STATE=LOW;
 long IC1_COUNT=0;
 long IC2_COUNT=0;
+int IC_GO_COUNTS = 0;
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
 {
     _IC1IF = 0; // Clear the interrupt flag
@@ -31,7 +32,11 @@ void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
     {
         IC1_PULSE_STATE    = RISE;     // Next interrupt occurs on rising edge
         ++IC1_COUNT;       // increase the sample count
-    }
+        if(IC2_COUNT>=IC_GO_COUNTS || IC1_COUNT>=IC_GO_COUNTS){
+            setMotor(0);
+            IC_GO_COUNTS = 0;
+        }//endif
+    }//endelse
 }//endic1
 
 /**
@@ -58,8 +63,18 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     {
         IC2_PULSE_STATE    = RISE;     // Next interrupt occurs on rising edge
         ++IC2_COUNT;       // increase the sample count
+        if(IC2_COUNT>=IC_GO_COUNTS || IC1_COUNT>=IC_GO_COUNTS){
+            IC_GO_COUNTS = 0;
+            1+1;
+            setMotor(0);
+
+        }//endif
     }
 }//endic2
+
+void setDistance(int dist){
+    IC_GO_COUNTS = (int)((double) dist / (double) CM_TO_IC_COUNTS);
+}
 
 void configOutputCompare(void)
 {
@@ -125,8 +140,10 @@ void setMotor(int control){
         speedM1         = (0x00F0 & control) >> 4;
         forwardDirM2    = (0x0F00 & control) >> 8;
         speedM2         = (0xF000 & control) >> 12;
-        IC1_COUNT =0;
-        IC2_COUNT =0;
+        if(control != 0){
+            IC1_COUNT =0;
+            IC2_COUNT =0;
+        }
 
             //-----------------------------------------------------------------
             //  The speed is based on the percentage of the duty cycle.

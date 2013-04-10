@@ -41,7 +41,7 @@ int main( void ) {
     while(1){
        //readADC(advals);
        heading_d = updateHeading();
-       HEADING = (int) (heading_d*FIXEDPOINT_13BIT); //cast as an integer after shifting 14
+       HEADING = (int) ((heading_d)*FIXEDPOINT_13BIT); //cast as an integer after shifting 14
     }//end while
     return (EXIT_SUCCESS);
 }

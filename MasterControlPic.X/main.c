@@ -22,14 +22,15 @@
  * while loop and wait for a serial message to parse and take
  * appropriate actions
  */
-int FAKE_HEADING = (int)((double)3.14*(8192));
-
+//int FAKE_HEADING = (int)((double)3.14*(8192));
+int tempSPIC;
 int main( void ) {
     initSerial1();
     configOutputCompare();
     configInputCaptures();
     initSPI();
     initADC();
+   // setDistance(24);
 setMotor(
        (0x0 MOTOR_LEFT_SPEED) |
        (MOTOR_FWD MOTOR_LEFT_DIR) |
@@ -39,11 +40,13 @@ setMotor(
 int test = readSlave(SENSOR_BOARD, COMPASS_HEADING);
 //
     while(1){
+       // tempSPIC = readSlave(SENSOR_BOARD,COMPASS_HEADING);
         if(RXMessage.Received){
             switch(RXMessage.Msg[GSHEADER]){
                 case SET:
                     switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:
+                            setDistance(RXMessage.Msg[DEVICEHEADER+5]);
                             setMotor(
                                    (RXMessage.Msg[DEVICEHEADER+3] MOTOR_LEFT_SPEED) |
                                    (RXMessage.Msg[DEVICEHEADER+4] MOTOR_LEFT_DIR) |
@@ -67,7 +70,7 @@ int test = readSlave(SENSOR_BOARD, COMPASS_HEADING);
                         case DCMOTOR:{
                             char txMSG[11];
                             txMSG[0] = '!';
-                            txMSG[1] = 8;
+                            txMSG[1] = 9;
                             txMSG[2] = 'M';
                             txMSG[3] = IC1_COUNTS_BYTE4;
                             txMSG[4] = IC1_COUNTS_BYTE3;
@@ -120,13 +123,13 @@ int test = readSlave(SENSOR_BOARD, COMPASS_HEADING);
                                     break;}
                                 case COMPASS:{
                                     char txMSG[5];
-                                    int tempSPI;
+                                    
                                     txMSG[0] = '!';
                                     txMSG[1] = 3;
                                     txMSG[2] = 'S';
-                                    tempSPI = readSlave(SENSOR_BOARD,COMPASS_HEADING);
-                                    txMSG[3] = (tempSPI&0xFF00)>>8;
-                                    txMSG[4] = (tempSPI&0x00FF);
+                                    tempSPIC = readSlave(SENSOR_BOARD,COMPASS_HEADING);
+                                    txMSG[3] = (tempSPIC&0xFF00)>>8;
+                                    txMSG[4] = (tempSPIC&0x00FF);
                                     txSerial1(txMSG,5);
                                     break;}
                                 case ULTRAS:{
@@ -183,7 +186,7 @@ int test = readSlave(SENSOR_BOARD, COMPASS_HEADING);
 //}else if(strncmp(msg,"Does Dan Suck?!",15)==0){
 //    txSerial1_str("\r\nNo, he is dastardly, but cool. :^)\r\n");
 //}else if(strncmp(msg,"Does Corey Suck?!",17)==0){
-//    txSerial1_str("\r\nNo he is cool.\r\n");
+//    txSerial1str("\r\nNo he is cool.\r\n");
 //}else if(strncmp(msg,"Does Nick Suck?!",16)==0){
 //    txSerial1_str("\r\nHe is a Greek bastard!!\r\n");
 //}else if(strncmp(msg,"clear!",6)==0){
