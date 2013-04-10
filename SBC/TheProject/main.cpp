@@ -719,21 +719,43 @@ int main(int argc, char** argv)
                 // Measure distance to fridge
                 // Isolate location and update our map for precision
                 // drive backwards to get to the bottom sensor position
+                //      coordinate about (90, 62-63O
                 // See if we detect floor LED.
                 // Go to LINE_UP_WITH_FRIDGE
                 break;
 
             case LINE_UP_WITH_FRIDGE:
+                // This state is probably not needed, because we can do it in
+                // OPEN_DOOR
+                // go to GET_PLATE_FRIDGE
                 state = GET_PLATE_FRIDGE;
                 break;
 
             case GET_PLATE_FRIDGE:
+                
+                //  Go forward a certain distance.
+                //  Adjust to maintain a steady path as usual
+                //  Once a certain distance from the fridge stop 
+                //  Extend arm
+                //  Open the gripper.
+                //  Go forward more
+                //  Close the gripper.
+                //  back up
+                //  Pull back arm
+                // go to CLOSE_DOOR
                 break;
 
             case CLOSE_DOOR:
+                // Back up back to switch spot again. (should be strait back)
+                // Sense the LED on the floor.
+                // Turn on LED on robot to show door is closed.
+                // go to GO_TO_TABLE
+                
                 break;
 
             case GO_TO_TABLE:
+                
+                // go to PLACE_PLATE
                 break;
 
             case PLACE_PLATE:
