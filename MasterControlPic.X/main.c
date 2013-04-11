@@ -38,7 +38,7 @@ int compareGyro(double acc, int compRad){
     if(acc<0){
         acc = -acc;
     }//if
-    if((acc>theDeg-GYRO_ERROR) && (acc<theDeg+GYRO_ERROR)){
+    if((acc>theDeg-GYRO_ERROR)){
         return 1;
     }
     else{
@@ -53,14 +53,18 @@ int main( void ) {
     initSPI();
     initADC();
     initGyroAcc();
-//setDistance(75);
+setDistance(75);
 
 //headingSet = 35000;
+int j=0;
+for(j=0;j<2500;j++){
+    Nop();Nop();
+};
 setMotor(
-       (0x0 MOTOR_LEFT_SPEED) |
+       (0x3 MOTOR_LEFT_SPEED) |
        (MOTOR_FWD MOTOR_LEFT_DIR) |
-       (0x0 MOTOR_RIGHT_SPEED) |
-       (MOTOR_FWD MOTOR_RIGHT_DIR)
+       (0x3 MOTOR_RIGHT_SPEED) |
+       (MOTOR_REV MOTOR_RIGHT_DIR)
         );
 //while(1){
 //        headingRaw = readSlave(SENSOR_BOARD,COMPASS_HEADING);
@@ -69,7 +73,7 @@ setMotor(
 //}
 //radSet = (int)((double)(pi/2)*COMPASS_FIXED);
 //useCompass = 1;
-int j=0;
+j=0;
 for(j=0;j<2500;j++){
     Nop();Nop();
 };

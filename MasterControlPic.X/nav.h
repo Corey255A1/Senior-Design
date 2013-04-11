@@ -11,7 +11,7 @@
 //#define COMPASS_ERROR 2000
 #define GYRO_ZAXIS 3
 #define ACC_SPEED 0.01
-#define GYRO_ERROR 0.4
+#define GYRO_ERROR 7
 extern double accDegrees;
 extern short f_gyro_reset;
 
