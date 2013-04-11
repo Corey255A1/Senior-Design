@@ -1,12 +1,13 @@
 #include <p24FJ128GB106.h>
 #include "nav.h"
-int gyroVal;
-short resetFlag;
-double accDegrees;
+int gyroVal=0;
+short resetFlag=0;
+double accDegrees=0;
 void __attribute__((__interrupt__, auto_psv)) _T5Interrupt(void){
     if(resetFlag){
-        resetFlag =0;
+        resetFlag=0;
         accDegrees=0;
+        gyroVal=0;
     }else{
         accDegrees = accDegrees + ((double)gyroVal*ACC_SPEED);
     }
