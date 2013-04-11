@@ -53,7 +53,12 @@ enum DEMO_STATE {
     GET_PLATE_TABLE,
     GO_TO_SINK,
     HARD_CODE,
-    HARD_END
+    HARD_END,
+    DEMO_ULT,
+    DEMO_SPEED,
+    DEMO_COURSE,
+    DEMO_COLOR,
+    DEMO_STOP
 };
 
 //enum DEMO_STATE
@@ -132,13 +137,12 @@ int main(int argc, char** argv)
         switch (state)
         {
             case INITIALIZE:
-                theMap.display();
-<<<<<<< HEAD
+
                 StopMoving(uszCommOutMsg, uszCommInMsg);
-=======
+
                 //StopMoving(uszCommOutMsg, uszCommInMsg);
                 //MOTOR_STOP();
->>>>>>> 1b8d891369cb51f6e0b84ad25e7cecf71b4cab2a
+
                 //-----------------------------------------------------------------
                 //  Open file hand for log output.
                 //-----------------------------------------------------------------
@@ -190,37 +194,57 @@ int main(int argc, char** argv)
                 dblFreqSamp = soundFFT.getFreq(frgSoundSamps);
                 printf("Tone: %f\n", dblFreqSamp);
                 
+                if ((dblFreqSamp <= DEMO_SPEED_FREQ + FREQ_THRESH) && (dblFreqSamp >= DEMO_SPEED_FREQ - FREQ_THRESH))
+                {
+                    state = DEMO_SPEED;
+                }
+                else if ((dblFreqSamp <= DEMO_ULT_FREQ + FREQ_THRESH) && (dblFreqSamp >= DEMO_ULT_FREQ - FREQ_THRESH))
+                {
+                    state = DEMO_ULT;
+                }
+                else if ((dblFreqSamp <= DEMO_COURSE_FREQ + FREQ_THRESH) && (dblFreqSamp >= DEMO_COURSE_FREQ - FREQ_THRESH))
+                {
+                    state = DEMO_COURSE;
+                }
+                else if ((dblFreqSamp <= DEMO_STOP_FREQ + FREQ_THRESH) && (dblFreqSamp >= DEMO_STOP_FREQ - FREQ_THRESH))
+                {
+                    state = DEMO_COLOR;
+                }
+                else if ((dblFreqSamp <= DEMO_STOP_FREQ + FREQ_THRESH) && (dblFreqSamp >= DEMO_STOP_FREQ - FREQ_THRESH))
+                {
+                    state = DEMO_STOP;
+                }
                 //-----------------------------------------------------------------
                 //  If the higher frequency is heard, then RoboWaiter needs to get
                 //  the plate on the lower shelf, and the state needs to advance
                 //  to SCAN_FOR_POS...
                 //-----------------------------------------------------------------
-                if ((dblFreqSamp <= LOW_SHELF_CLEAN_FREQ+FREQ_THRESH) && (dblFreqSamp > LOW_SHELF_CLEAN_FREQ-FREQ_THRESH))
-                {
-                    bGetUpperShelf  = FALSE;
-                    bGetLowShelf    = TRUE;
-                    
-                }
+//                if ((dblFreqSamp <= LOW_SHELF_CLEAN_FREQ+FREQ_THRESH) && (dblFreqSamp > LOW_SHELF_CLEAN_FREQ-FREQ_THRESH))
+//                {
+//                    bGetUpperShelf  = FALSE;
+//                    bGetLowShelf    = TRUE;
+//                    
+//                }
 
                 //-----------------------------------------------------------------
                 //  ... Else if the lower frequency is heard, then RoboWaiter needs 
                 //  to get the plate on the lower shelf, and the state needs to 
                 //  advance to SCAN_FOR_POS...
                 //-----------------------------------------------------------------
-                else if ((dblFreqSamp <= UPPER_SHELF_FREQ+FREQ_THRESH) && (dblFreqSamp > UPPER_SHELF_FREQ-FREQ_THRESH))
-                {
-                    bGetLowShelf    = FALSE;
-                    bGetUpperShelf  = TRUE;
-                    state = HARD_CODE;
-                }
+//                else if ((dblFreqSamp <= UPPER_SHELF_FREQ+FREQ_THRESH) && (dblFreqSamp > UPPER_SHELF_FREQ-FREQ_THRESH))
+//                {
+//                    bGetLowShelf    = FALSE;
+//                    bGetUpperShelf  = TRUE;
+//                    state = HARD_CODE;
+//                }
 
                 //-----------------------------------------------------------------
                 //  ... Else remain at the current state.
                 //-----------------------------------------------------------------
-                else
-                {
-                    state = state;
-                }
+//                else
+//                {
+//                    state = state;
+//                }
 
                 break;
 
@@ -262,6 +286,7 @@ int main(int argc, char** argv)
                 break; 
             }
             case HARD_END:
+                
                 MOTOR_STOP();
                 MOTOR_STOP();
                 break;
@@ -270,6 +295,86 @@ int main(int argc, char** argv)
             
                 break;
                 
+            case DEMO_SPEED:
+                
+                MoveForward(uszCommOutMsg, uszCommInMsg, ucSpeed10, ucSpeed10, 300);
+                
+                state = WAIT_FOR_TONE;
+                break;
+                
+            case DEMO_ULT:
+                
+                
+                break;
+                
+            case DEMO_COURSE:
+                
+                state = HARD_END;
+                break;
+                
+            case DEMO_COLOR:
+            {
+                long lLeftWheelCount;
+                long lRightWheelCount;
+                unsigned char cDistance = 200;
+                int redCount = 0;
+                int blueCount = 0;
+                int bStopped = FALSE;
+
+                //-------------------------------------------------------------------------
+                //  Build message to move forward, then execute command.
+                //-------------------------------------------------------------------------
+                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, cDistance, 0, 0);
+                serialPort.WritePort(uszCommOutMsg, ucSetMotorPacketSize); 
+                serialPort.ReadPort(uszCommInMsg);
+
+                //----------------------------------------------------------------
+                // Keep moving until one of the motors reaches the required count.
+                //----------------------------------------------------------------
+                do
+                {
+                    //---------------------------------------------------------
+                    //  Get Color Count      
+                    //---------------------------------------------------------
+                    redCount = colorTracker.getRedCount();
+                    blueCount = colorTracker.getBlueCount();
+                    
+                    if (redCount > 0)
+                    {
+                        BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed0, ucForward, ucSpeed0, 0, 0, 0);
+                        redCount = 0;
+                        bStopped = TRUE;
+                    }
+                    
+                    if (blueCount > 0 && bStopped == TRUE)
+                    {
+                        BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, cDistance, 0, 0);
+                        serialPort.WritePort(uszCommOutMsg, ucSetMotorPacketSize); 
+                        serialPort.ReadPort(uszCommInMsg);
+                        blueCount = 0;
+                    }
+                    
+                    //---------------------------------------------------------
+                    //  Get updated motor information.
+                    //---------------------------------------------------------
+                    GetMotorVals(uszCommOutMsg, uszCommInMsg);
+                    lLeftWheelCount = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+                    lRightWheelCount = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
+
+                }
+                while ((lLeftWheelCount < ((double)cDistance / CM_TO_PULSES)) && (lRightWheelCount < (double) cDistance / CM_TO_PULSES));
+
+                //-------------------------------------------------------------
+                //  Stop moving.
+                //-------------------------------------------------------------
+                StopMoving(uszCommOutMsg, uszCommInMsg);
+                break;
+            }
+            case DEMO_STOP:
+                
+                MOTOR_STOP();
+                MOTOR_STOP();
+                break;
             case FIND_FRIDGE_TRIGGER:
                 
                 state = DETECT_FRIDGE_IR;
@@ -404,7 +509,7 @@ void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
  */
 void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
-    BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0, 0, 0, 0); 
+    BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed0, ucForward, ucSpeed0, 0, 0, 0); 
     serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
 }
@@ -469,4 +574,43 @@ void GetGyroVal(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
     BuildSensGet(puszCommOutMsg, ucGyroSel);
     serialPort.WritePort(puszCommOutMsg, ucGetSensorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
+}
+
+void MoveForwardColor(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance)
+{
+    long lLeftWheelCount;
+    long lRightWheelCount;
+    
+    //-------------------------------------------------------------------------
+    //  Build message to move forward, then execute command.
+    //-------------------------------------------------------------------------
+    BuildMotorSet(puszCommOutMsg, ucForward, M1speed, ucForward, M2speed, cDistance, 0, 0);
+    serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
+    serialPort.ReadPort(puszCommInMsg);
+      
+    //-------------------------------------------------------------------------
+    // Keep moving until one of the motors reaches the required count.
+    //-------------------------------------------------------------------------
+    do
+    {
+        //---------------------------------------------------------------------
+        //  Get Color Count      
+        //---------------------------------------------------------------------
+        
+        //---------------------------------------------------------------------
+        //  Get updated motor information.
+        //---------------------------------------------------------------------
+        GetMotorVals(puszCommOutMsg, puszCommInMsg);
+
+
+        lLeftWheelCount = BytesToLong(puszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
+        lRightWheelCount = BytesToLong(puszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
+
+    }
+    while ((lLeftWheelCount < ((double)cDistance / CM_TO_PULSES)) && (lRightWheelCount < (double) cDistance / CM_TO_PULSES));
+
+    //-------------------------------------------------------------------------
+    //  Stop moving.
+    //-------------------------------------------------------------------------
+    StopMoving(puszCommOutMsg, puszCommInMsg);
 }
