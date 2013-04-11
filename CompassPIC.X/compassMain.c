@@ -23,6 +23,9 @@
  * Defines
  */
 #define HEADING SLAVEData.outData[0] // The port that will be read by mcp
+#define GYRO_X SLAVEData.outData[1]
+#define GYRO_Y SLAVEData.outData[2]
+#define GYRO_Z SLAVEData.outData[3]
 #define FIXEDPOINT_13BIT 8192 // the Shifting value to pass the radians value
                               // as a fixed point integer.
 
@@ -41,6 +44,10 @@ int main( void ) {
     while(1){
        //readADC(advals);
        heading_d = updateHeading();
+       GYRO_X = (int)((maxGyro) * ((float) global_gyr[xaxis]/maxGyroRaw));
+       GYRO_Y = (int)((maxGyro) * ((float) global_gyr[yaxis]/maxGyroRaw));
+       GYRO_Z = (int)((maxGyro) * ((float) global_gyr[zaxis]/maxGyroRaw));
+
        HEADING = (int) ((heading_d)*FIXEDPOINT_13BIT); //cast as an integer after shifting 14
     }//end while
     return (EXIT_SUCCESS);

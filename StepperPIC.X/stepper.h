@@ -27,6 +27,10 @@
 #define MIDSTEP 40000
 #define RADPERSECTION .03
 #define MAXANGLE 500
+#define LMAXRAD 4
+#define SMAXRAD 3.3
+//#define LMAXANGLE 420
+//#define SMAXANGLE 500
 
 
 extern int global_stepsInProgress;

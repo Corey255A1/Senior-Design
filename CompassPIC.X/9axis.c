@@ -61,7 +61,7 @@ void init9axis(){
 
     i2c_Start(gyr_i2c_addr,I2C_WRITE);
     i2c_Write(0x16);
-    i2c_Write(0x18);
+    i2c_Write(0b0001000); //FS_SEL +-500deg
     i2c_ResetBus();
 
     //Setup Timer4 to be used as a trigger for information collection

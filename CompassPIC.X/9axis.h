@@ -33,6 +33,8 @@
 #define maxAccGRaw 32768
 #define maxMag 2.5
 #define maxMagRaw 32768
+#define maxGyro 500
+#define maxGyroRaw 32768
 
 #define xaxis 0
 #define yaxis 1
