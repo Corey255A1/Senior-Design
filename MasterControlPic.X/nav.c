@@ -1,14 +1,16 @@
 #include <p24FJ128GB106.h>
 #include "nav.h"
+#include "motordrive.h"
 int gyroVal=0;
-short resetFlag=0;
+short f_gyro_reset=0;
 double accDegrees=0;
 void __attribute__((__interrupt__, auto_psv)) _T5Interrupt(void){
-    if(resetFlag){
-        resetFlag=0;
+    if(f_gyro_reset){
+        f_gyro_reset=0;
         accDegrees=0;
         gyroVal=0;
-    }else{
+        useCompass = 0;
+    }else if(useCompass){
         accDegrees = accDegrees + ((double)gyroVal*ACC_SPEED);
     }
     _T5IF = 0; // Clear the IC1 interrupt status flag
@@ -29,7 +31,7 @@ void setGyro ( int gyro ){
     gyroVal = gyro;
 }
 void resetGyroAccum(){
-    resetFlag = 1;
+    f_gyro_reset = 1;
 }
 
 //short compareCompass(unsigned int headingReal, unsigned int headingIntended){

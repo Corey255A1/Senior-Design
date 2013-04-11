@@ -13,6 +13,7 @@
 #define ACC_SPEED 0.01
 #define GYRO_ERROR 0.4
 extern double accDegrees;
+extern short f_gyro_reset;
 
 void initGyroAcc( void );
 void setGyro ( int gyro );

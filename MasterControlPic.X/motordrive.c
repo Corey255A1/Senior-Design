@@ -13,9 +13,11 @@ int IC1_PULSE_STATE=LOW;
 int IC2_PULSE_STATE=LOW;
 long IC1_COUNT=0;
 long IC2_COUNT=0;
-int IC_GO_COUNTS = 0;
+unsigned int IC_GO_COUNTS = 0;
 short useCompass = 0;
 unsigned short f_Heading=0;
+unsigned short f_MotorOn1 = 0;
+unsigned short f_MotorOn2 = 0;
 unsigned int currentMotorSetting;
 
 void __attribute__((__interrupt__, auto_psv)) _IC1Interrupt(void)
@@ -92,8 +94,8 @@ void __attribute__((__interrupt__, auto_psv)) _IC2Interrupt(void)
     }
 }//endic2
 
-void setDistance(int dist){
-    IC_GO_COUNTS = (int)((double) dist / (double) CM_TO_IC_COUNTS);
+void setDistance(unsigned int dist){
+    IC_GO_COUNTS = (unsigned int)((double) dist / (double) CM_TO_IC_COUNTS);
 }
 
 void configOutputCompare(void)

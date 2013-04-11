@@ -22,6 +22,8 @@ extern long IC1_COUNT;
 extern long IC2_COUNT;
 extern short useCompass;
 extern unsigned short f_Heading;
+extern unsigned short f_MotorOn1;
+extern unsigned short f_MotorOn2;
 extern unsigned int currentMotorSetting;
 #define IC1_COUNTS_BYTE4 ((IC1_COUNT&0xFF000000)>>24)
 #define IC1_COUNTS_BYTE3 ((IC1_COUNT&0x00FF0000)>>16)
@@ -37,5 +39,5 @@ extern unsigned int currentMotorSetting;
 
 void configOutputCompare(void);
 void setMotor(int);
-void setDistance(int);
+void setDistance(unsigned int);
 void configInputCaptures();

@@ -54,7 +54,7 @@ int main( void ) {
     initADC();
     initGyroAcc();
 //setDistance(75);
-useCompass = 1;
+
 //headingSet = 35000;
 setMotor(
        (0x0 MOTOR_LEFT_SPEED) |
@@ -69,6 +69,12 @@ setMotor(
 //}
 //radSet = (int)((double)(pi/2)*COMPASS_FIXED);
 //useCompass = 1;
+int j=0;
+for(j=0;j<2500;j++){
+    Nop();Nop();
+};
+//useCompass = 1;
+//radSet = (int)((double)(pi/4)*COMPASS_FIXED);
 //setMotor(
 //       (0x4 MOTOR_LEFT_SPEED) |
 //       (MOTOR_REV MOTOR_LEFT_DIR) |
@@ -79,8 +85,37 @@ setMotor(
 //        gyro_Z = readSlave(SENSOR_BOARD,GYRO_ZAXIS);
 //        setGyro(gyro_Z);
 //        f_Heading = compareGyro(accDegrees,radSet);
+//        if(f_Heading){
+//            break;
+//        }
 //}//while
-resetGyroAccum();
+//
+//for(j=0;j<2500;j++){
+//    Nop();Nop();
+//};
+//resetGyroAccum();
+//f_Heading = 0;
+//while(f_gyro_reset);
+//useCompass = 1;
+//radSet = (int)((double)(pi/4)*COMPASS_FIXED);
+//setMotor(
+//       (0x6 MOTOR_LEFT_SPEED) |
+//       (MOTOR_REV MOTOR_LEFT_DIR) |
+//       (0x6 MOTOR_RIGHT_SPEED) |
+//       (MOTOR_FWD MOTOR_RIGHT_DIR)
+//        );
+//while(1){
+//        gyro_Z = readSlave(SENSOR_BOARD,GYRO_ZAXIS);
+//        setGyro(gyro_Z);
+//        f_Heading = compareGyro(accDegrees,radSet);
+//        if(f_Heading){
+//            break;
+//        }
+//}//while
+//while(currentMotorSetting);
+//resetGyroAccum();
+//f_Heading = 0;
+while(f_gyro_reset);
     while(1){
 //        headingRaw = readSlave(SENSOR_BOARD,COMPASS_HEADING);
 //        heading = (double) headingRaw / (double) COMPASS_FIXED_POINT;
@@ -93,12 +128,14 @@ resetGyroAccum();
                 case SET:
                     switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:
-                            setDistance(RXMessage.Msg[DEVICEHEADER+5]);
+                            setDistance((unsigned char)RXMessage.Msg[DEVICEHEADER+5]);
                             useCompass = 0;
                             if(RXMessage.Msg[DEVICEHEADER+6]){
                                 radSet = ((0x00FF&RXMessage.Msg[DEVICEHEADER+7])<<8)|(0x00FF&RXMessage.Msg[DEVICEHEADER+8]);
-                                useCompass = 1;
                                 resetGyroAccum();
+                                f_Heading =0;
+                                while(f_gyro_reset);
+                                useCompass = 1;
                             };
                             currentMotorSetting = (RXMessage.Msg[DEVICEHEADER+3] MOTOR_LEFT_SPEED) |
                                                (RXMessage.Msg[DEVICEHEADER+4] MOTOR_LEFT_DIR) |
