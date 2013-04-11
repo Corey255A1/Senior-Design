@@ -24,8 +24,8 @@ using namespace std;
 
 #define NUM_THREADS     5
 
-void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance, unsigned char ucUseHeading, int nCurHeading);
-void GetSensorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
+void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance);
+void GetUltSensVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
 void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
 void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
 void GetCompassVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
@@ -219,17 +219,14 @@ int main(int argc, char** argv)
 
             case HARD_CODE:
             {
-                int coreySucksPenis;
-                int danIsASissy;
-                int mikeSmellsBad;
-                int nickIsADumbShit;
-                int nReturnHeading;
-                double updateHeading;
+                int nHeadingGetVal;
                 int freakingCount = 0;
-                int shit;
-                int fuck;
-                int armTest;
                 
+                ////********
+                //      TEST STOPMOVING
+//                MoveForward(uszCommOutMsg, uszCommInMsg, ucSpeed4, ucSpeed4, 100);
+//                StopMoving(uszCommOutMsg, uszCommInMsg);
+                ////********
                 // ARM TEST
                 // Position "1"
 //                BuildArmSet(uszCommOutMsg, 1, 0);
@@ -243,436 +240,79 @@ int main(int argc, char** argv)
 //                }
 //                while (armTest != 1);
                 
-                MoveForward(uszCommOutMsg, uszCommInMsg, ucSpeed4, ucSpeed4, 100, 0, 25000);
+                MoveForward(uszCommOutMsg, uszCommInMsg, ucSpeed4, ucSpeed4, 100);
                 
                 GetCompassVals(uszCommOutMsg, uszCommInMsg);
-                nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
+                nHeadingGetVal = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
                 int n90Turn = (int) ((M_PI/2) * COMPASS_DIVISOR);
-                SpinRobot(uszCommOutMsg, uszCommInMsg, nReturnHeading + n90Turn);
-                
-//                BuildSensGet(uszCommOutMsg, ucCompassSel);
-//                WR_GET_SENS();
-//                nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
-//                curHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);  
-//                
-//                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucForward, ucSpeed4, 100, 1, (int) (curHeading * COMPASS_DIVISOR));
-//                WR_SET_MOTOR();
-//                
-//                do
-//                {
-//                    BuildSensGet(uszCommOutMsg, ucUltSel);
-//                    WR_GET_SENS();
-//                    
-//                    BuildMotorGet(uszCommOutMsg);
-//                    WR_GET_MOTOR();
-//                    
-//
-//                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
-//                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
-//                    
-//                }
-//                while ((shit < ((double)100 / CM_TO_PULSES)) && (fuck < (double) 100 / CM_TO_PULSES));
-//                
-//                MOTOR_STOP();
-//                
-                
-                
-                // Spinning 90 degrees
-//                BuildSensGet(uszCommOutMsg, ucCompassSel);
-//                WR_GET_SENS();
-//                nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
-//                curHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);                
-//                updateHeading = curHeading + (M_PI / 2);
-////                SPIN_BOT_CCLK();
-//                
-//                if (updateHeading > (2*M_PI))
-//                {
-//                    updateHeading -= 2*M_PI;
-//                }
-//                
-//                do
-//                {
-//                    BuildSensGet(uszCommOutMsg, ucCompassSel);
-//                    WR_GET_SENS();
-//
-//                    nReturnHeading = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
-//                    curHeading = (((double) nReturnHeading)  / COMPASS_DIVISOR);
-//                    
-//                    BuildMotorGet(uszCommOutMsg);
-//                    WR_GET_MOTOR();
-//                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
-//                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2); 
-                    
-//                    if ((shit >= ((double)95 / CM_TO_PULSES)) || (fuck >= (double) 95 / CM_TO_PULSES))
-//                    {
-//                        SPIN_BOT_CCLK();
-//                    }
-                    
-//                    BuildSensGet(uszCommOutMsg, ucUltSel);
-//                    WR_GET_SENS();
-//                    
-//                    coreySucksPenis = BytesToInt(uszCommInMsg, ucUltLeftFrontMSB, ucUltLeftFrontLSB);
-//                    danIsASissy = BytesToInt(uszCommInMsg, ucUltLeftBackMSB, ucUltLeftBackLSB);
-//                    mikeSmellsBad = BytesToInt(uszCommInMsg, ucUltRightFrontMSB, ucUltRightFrontLSB);
-//                    nickIsADumbShit = BytesToInt(uszCommInMsg, ucUltRightBackMSB, ucUltRightBackLSB);
-//                    nFrontUltDist = BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB);
-//                    nBackUltDist = BytesToInt(uszCommInMsg, ucUltBackMSB, ucUltBackLSB);
-                    
-                    
-                    
-//                    if (nFrontUltDist < 10)
-//                    {
-//                        MOTOR_STOP();
-//                        break;
-//                    }
-                    
-                    
-//                    
-//                    BuildMotorGet(uszCommOutMsg);
-//                    WR_GET_MOTOR();
-////                    
-////
-//                    shit = BytesToLong(uszCommInMsg, ucLeftWheelMSB1, ucLeftWheelMSB2, ucLeftWheelLSB1, ucLeftWheelLSB2);
-//                    fuck = BytesToLong(uszCommInMsg, ucRightWheelMSB1, ucRightWheelMSB2, ucRightWheelLSB1, ucRightWheelLSB2);
-                    
-                //}
-                //while ((shit < ((double)43 / CM_TO_PULSES)) && (fuck < (double) 43 / CM_TO_PULSES));
-                //while (!theMap.checkCompassHeading(curHeading, updateHeading));
-                MOTOR_STOP();
-                //state = WAIT_FOR_TONE;
-                //state = SCAN_FOR_POS;
+                SpinRobot(uszCommOutMsg, uszCommInMsg, nHeadingGetVal + n90Turn);
+
                 MOTOR_STOP();
                 if (freakingCount >= 4)
                 {
                         state = HARD_END;
                 }
                 freakingCount++;
-                break;
+                break; 
             }
             case HARD_END:
                 MOTOR_STOP();
                 MOTOR_STOP();
                 break;
+                
             case SCAN_FOR_POS:
-            {
-                int nRightFrontDist;
-                int nRightBackDist;
-
-                //-----------------------------------------------------------------
-                //  Build ultrasonic messages.
-                //-----------------------------------------------------------------
-                BuildSensGet(uszCommOutMsg, ucUltSel);
-                WR_GET_SENS();
-
-                //-----------------------------------------------------------------
-                //  Find Ultrasonic distances to wall.
-                //-----------------------------------------------------------------
-                nRightFrontDist = BytesToInt(uszCommInMsg, ucUltRightFrontMSB, ucUltRightFrontLSB);
-                nRightBackDist = BytesToInt(uszCommInMsg, ucUltRightBackMSB, ucUltRightBackLSB);
-
-                //-----------------------------------------------------------------
-                //  If the front right ultrasonic is farther away we turn right...
-                //-----------------------------------------------------------------
-                if (nRightFrontDist > nRightBackDist)
-                {
-//                    BuildMotorSet(uszCommOutMsg, ucReverse, ucSpeed4, ucForward, ucSpeed4);
-                }
-
-                //-----------------------------------------------------------------
-                //  ... Else if the front right ultrasonic is close turn left
-                //-----------------------------------------------------------------
-                else if (nRightFrontDist < nRightBackDist)
-                {
-                //    BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4);
-                }
-
-                //-----------------------------------------------------------------
-                //  ... Else we good.
-                //-----------------------------------------------------------------
-                else
-                {
-                    double heading;
-
-                    //-------------------------------------------------------------
-                    //  Get the distance from the back of the robot to the wall.
-                    //-------------------------------------------------------------
-                    int nBackDist = BytesToInt(uszCommInMsg, ucUltBackMSB, ucUltBackLSB);
-
-                    //-------------------------------------------------------------
-                    //  Get the compass value for our heading offset.
-                    //-------------------------------------------------------------
-                    BuildSensGet(uszCommOutMsg, ucCompassSel);
-                    WR_GET_SENS();
-                    heading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-                    theMap.orientNorth(heading / ((double) COMPASS_DIVISOR));
-                    theMap.setHeading(heading / ((double) COMPASS_DIVISOR));
-
-                    //-------------------------------------------------------------
-                    //  Update the map with the robot's current position.
-                    //-------------------------------------------------------------
-                    roboCoord.x = nBackDist + CENTER_OFFSET;
-                    roboCoord.y = nRightFrontDist + CENTER_OFFSET;
-                    theMap.setLocation(roboCoord);
-
-                    //-------------------------------------------------------------
-                    //  Go to the next state (Find fridge trigger)
-                    //-------------------------------------------------------------
-                    theMap.destPt1.x = (int) theMap.getX();
-                    dstPt = DST_PT1;
-                    state = FIND_FRIDGE_TRIGGER;
-                    break;
-                }
-                
-                //-------------------------------------------------------------
-                //  Write the serial port with the set motor command built 
-                //  from above
-                //-------------------------------------------------------------
-                WR_SET_MOTOR();
-
-                //-------------------------------------------------------------
-                //  Check to make sure if we received a return ACK, if we did
-                //  not then just send it again...
-                //-------------------------------------------------------------
-                if (!CheckAck(uszCommInMsg))
-                {
-                    MOTOR_STOP();
-                    break;
-                }
-                
-                //-------------------------------------------------------------
-                //  ... Else continue and monitor the stepper count of the turn
-                //-------------------------------------------------------------
-                else
-                {
-                    //---------------------------------------------------------
-                    //  While the the robot has not spinned enough. Keep
-                    //  writing set commands.
-                    //---------------------------------------------------------
-//                    BuildMotorGet(uszCommOutMsg);
-//                    do 
-//                    {
-//                        WR_GET_MOTOR();
-//                    } 
-//                    while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < 100);
-//
-//                    //---------------------------------------------------------
-                    //  Once we move enough, stop the robot.
-                    //---------------------------------------------------------
-                    MOTOR_STOP();
-
-                    //---------------------------------------------------------
-                    //  Check to make sure the stop command was received.
-                    //---------------------------------------------------------
-                    if (!CheckAck(uszCommInMsg))
-                    {
-                        //-----------------------------------------------------
-                        //  Send stop again
-                        //-----------------------------------------------------
-                        MOTOR_STOP();
-                        break;
-                    }
-                }
-                
+            
                 break;
-            }
                 
             case FIND_FRIDGE_TRIGGER:
-            {
-                double newHeading;
-                double curHeading;
-                char inRange = FALSE;
-                
-                //-------------------------------------------------------------
-                //  We have set locations on the path to get to the door
-                //  trigger, so go to each one sequentually
-                //-------------------------------------------------------------
-                switch (dstPt)
-                {
-                    //---------------------------------------------------------
-                    //  Go to destination 1
-                    //---------------------------------------------------------
-                    case DST_PT1:
-                        
-                        //-----------------------------------------------------
-                        //  Determine heading.
-                        //-----------------------------------------------------
-                        newHeading = theMap.determineHeading(theMap.destPt1);
-
-                        //-----------------------------------------------------
-                        //  While the compass heading is not matched with our
-                        //  desired heading at destination point 1, we want to
-                        //  keep spinning the robot.
-                        //-----------------------------------------------------
-//                        BuildSensGet(uszCommOutMsg, ucCompassSel);
-//                        do 
-//                        {
-//                            WR_GET_SENS();
-//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-//                            
-//                        }
-//                        while (!theMap.checkCompassHeading(curHeading));
-//                        MOTOR_STOP();
-                        
-                        //-----------------------------------------------------
-                        //  Need to go forward to finally move towards the
-                        //  destination point 1.
-                        //-----------------------------------------------------
-                        //BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-                        WR_SET_MOTOR();
-                        
-                        //-----------------------------------------------------
-                        //  As we move forward to get to the destination, we
-                        //  do the following...
-                        //-----------------------------------------------------
-//                        do
-//                        {
-//                            //  See if we are running into anything
-////                            BuildSensGet(uszCommOutMsg, ucUltSel);
-////                            WR_GET_SENS();
-////                            
-////                            //-------------------------------------------------
-////                            //  If we are going to run into anything then stop.
-////                            //-------------------------------------------------
-////                            if (BytesToInt(uszCommInMsg, ucUltFrontMSB, ucUltFrontLSB) < ULT_STOP_THRESH)
-////                            {
-////                                MOTOR_STOP();
-////                                
-////                                //---------------------------------------------
-////                                //  Check to make sure if we received a return 
-////                                //  ACK, if we did not then just send it again.
-////                                //---------------------------------------------
-////                                if (!CheckAck(uszCommInMsg))
-////                                {
-////                                    MOTOR_STOP();
-////                                    break;
-////                                }
-////                            }
-//                            
-//                            
-//                            //  Make sure we keep traveling strait.
-//                            
-//                            BuildSensGet(uszCommOutMsg, ucCompassSel);
-//                            WR_GET_SENS();
-//                            curHeading = ((int)(uszCommInMsg[ucCompassMSB] << 8)) | uszCommInMsg[ucCompassLSB];
-//                            curHeading = curHeading / ((double) COMPASS_DIVISOR);
-//                            int nAdj = theMap.checkHeadingDeviation(curHeading);
-//                           
-//                            //  Adjust right, left, or keep going strait
-//                            if (nAdj == ADJ_RIGHT)
-//                            {
-//                                  BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed6, ucForward, ucSpeed5);
-//                                  WR_SET_MOTOR();
-//                            }
-//                            else if (nAdj == ADJ_LEFT)
-//                            {
-//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed6);
-//                                WR_SET_MOTOR();
-//                            }
-//                            else 
-//                            {
-//                                BuildMotorSet(uszCommOutMsg, ucForward, ucSpeed5, ucForward, ucSpeed5);
-//                                WR_SET_MOTOR();
-//                            }
-//                            
-//                           
-//                            
-//                            
-//                            //  Get the steps again
-//                            BuildMotorGet(uszCommOutMsg);
-//                            WR_GET_MOTOR();
-//                            
-//                            //-------------------------------------------------------------
-//                            //  Check to make sure if we received a return ACK, if we did
-//                            //  not then just send it again...
-//                            //-------------------------------------------------------------
-//                            if (!CheckAck(uszCommInMsg))
-//                            {
-//                                MOTOR_STOP();
-//                                break;
-//                            }
-//                            
-//                            
-//                            
-//                        }
-//                        while (BytesToInt(uszCommInMsg, ucLeftWheelMSB, ucLeftWheelLSB) < theMap.getStepCount());
-                        
-                        MOTOR_STOP();
-                        
-                        //dstPt = DST_PT2;
-                        break;
-                        
-                }
                 
                 state = DETECT_FRIDGE_IR;
                 break;
-            }
+            
             case DETECT_FRIDGE_IR:
-            { 
+            
                 break;
-            }
+            
             case OPEN_DOOR:
-                
-                // Measure distance and parallelism from bottom wall
-                // Adjust as usual to be parallel (and get distance to bot wall)
-                // Measure distance to fridge
-                // Isolate location and update our map for precision
-                // drive backwards to get to the bottom sensor position
-                //      coordinate about (90, 62-63O
-                // See if we detect floor LED.
-                // Go to LINE_UP_WITH_FRIDGE
+              
                 break;
 
             case LINE_UP_WITH_FRIDGE:
-                // This state is probably not needed, because we can do it in
-                // OPEN_DOOR
-                // go to GET_PLATE_FRIDGE
+                
                 state = GET_PLATE_FRIDGE;
                 break;
 
             case GET_PLATE_FRIDGE:
                 
-                //  Go forward a certain distance.
-                //  Adjust to maintain a steady path as usual
-                //  Once a certain distance from the fridge stop 
-                //  Extend arm
-                //  Open the gripper.
-                //  Go forward more
-                //  Close the gripper.
-                //  back up
-                //  Pull back arm
-                // go to CLOSE_DOOR
                 break;
 
             case CLOSE_DOOR:
-                // Back up back to switch spot again. (should be strait back)
-                // Sense the LED on the floor.
-                // Turn on LED on robot to show door is closed.
-                // go to GO_TO_TABLE
                 
                 break;
 
             case GO_TO_TABLE:
                 
-                // go to PLACE_PLATE
                 break;
 
             case PLACE_PLATE:
+                
                 break;
 
             case RETURN_START:
+                
                 break;
 
             case GET_PLATE_TABLE:
+                
                 break;
 
             case GO_TO_SINK:
+                
                 break;
 
             default:
                 break;
         }
-
     }
     
     //-------------------------------------------------------------------------
@@ -684,24 +324,34 @@ int main(int argc, char** argv)
     return 0;
 }
 
-
-void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance, unsigned char ucUseHeading, int nCurHeading)
+/**
+ * Function to move the robot forward a specified number of centimeters.
+ * @param puszCommOutMsg buffer to store the output message to write.
+ * @param puszCommInMsg buffer to store the input message.
+ * @param M1speed speed of the right motor.
+ * @param M2speed speed of the left motor.
+ * @param cDistance distance we want the robot to travel.
+ */
+void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, unsigned char M1speed, unsigned char M2speed, unsigned char cDistance)
 {
     long lLeftWheelCount;
     long lRightWheelCount;
     
+    //-------------------------------------------------------------------------
     //  Build message to move forward, then execute command.
-    BuildMotorSet(puszCommOutMsg, ucForward, M1speed, ucForward, M2speed, cDistance, ucUseHeading, nCurHeading);
+    //-------------------------------------------------------------------------
+    BuildMotorSet(puszCommOutMsg, ucForward, M1speed, ucForward, M2speed, cDistance, 0, 0);
     serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
-         
+      
+    //-------------------------------------------------------------------------
     // Keep moving until one of the motors reaches the required count.
+    //-------------------------------------------------------------------------
     do
     {
-        //  Get updated sensor information.
-        GetSensorVals(puszCommOutMsg, puszCommInMsg);
-
+        //-------------------------------------------------------------------------
         //  Get updated motor information.
+        //-------------------------------------------------------------------------
         GetMotorVals(puszCommOutMsg, puszCommInMsg);
 
 
@@ -711,17 +361,29 @@ void MoveForward(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, un
     }
     while ((lLeftWheelCount < ((double)cDistance / CM_TO_PULSES)) && (lRightWheelCount < (double) cDistance / CM_TO_PULSES));
 
+    //-------------------------------------------------------------------------
     //  Stop moving.
+    //-------------------------------------------------------------------------
     StopMoving(puszCommOutMsg, puszCommInMsg);
 }
 
-void GetSensorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
+/**
+ * Gets Ultrasonic sensor information
+ * @param puszCommOutMsg buffer used to store the output message to write.
+ * @param puszCommInMsg buffer used to store the received message from querey
+ */
+void GetUltSensVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
     BuildSensGet(puszCommOutMsg, ucUltSel);
     serialPort.WritePort(puszCommOutMsg, ucGetSensorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
 }
 
+/**
+ * Gets the current step values for the motors.
+ * @param puszCommOutMsg buffer used to store the output message to write.
+ * @param puszCommInMsg buffer used to store the received message from querey.
+ */
 void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
     BuildMotorGet(puszCommOutMsg);
@@ -729,6 +391,11 @@ void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
     serialPort.ReadPort(puszCommInMsg);
 }
 
+/**
+ * Command to stop moving the robot
+ * @param puszCommOutMsg buffer used to store the output message to write.
+ * @param puszCommInMsg buffer used to store the received message.
+ */
 void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
     BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed0, ucReverse, ucSpeed0, 0, 0, 0); 
@@ -736,19 +403,31 @@ void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
     serialPort.ReadPort(puszCommInMsg);
 }
 
+/**
+ * Spins the robot either clockwise or counter-clockwise
+ * @param puszCommOutMsg buffer used to store the output message to write.
+ * @param puszCommInMsg buffer used to store the received message.
+ * @param nHeading the heading that we want to turn to.
+ */
 void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int nHeading)
 {
     int nLastHeading;
     
+    //-------------------------------------------------------------------------
     //  Build message to move forward, then execute command.
+    //-------------------------------------------------------------------------
     BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4, 100, 1, nHeading);
     serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
          
+    //-------------------------------------------------------------------------
     // Keep moving until we reach the required heading.
+    //-------------------------------------------------------------------------
     do
     {
+        //-------------------------------------------------------------------------
         //  Get updated sensor information.
+        //-------------------------------------------------------------------------
         GetCompassVals(puszCommOutMsg, puszCommInMsg);
         nLastHeading = BytesToInt(puszCommInMsg, ucCompassMSB, ucCompassLSB);
         
@@ -760,10 +439,17 @@ void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int 
     }
     while ( nLastHeading != nHeading);
 
+    //-------------------------------------------------------------------------
     //  Stop moving.
+    //-------------------------------------------------------------------------
     StopMoving(puszCommOutMsg, puszCommInMsg);
 }
 
+/**
+ * Function to get the values from the compass.
+ * @param puszCommOutMsg buffer to store the message to write.
+ * @param puszCommInMsg buffer to store the received message from querey.
+ */
 void GetCompassVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
     BuildSensGet(puszCommOutMsg, ucCompassSel);
