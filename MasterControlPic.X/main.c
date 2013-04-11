@@ -16,42 +16,95 @@
 #include "spi.h"
 #include "A2D.h"
 #include "temperature.h"
+#include "nav.h"
 #include "../../Senior-Design/Global_PIC/spiMessages.h"
+#define COMPASS_FIXED 8192
 /*
  * This is the MCP main; Basically all it does is spin inside it's
  * while loop and wait for a serial message to parse and take
  * appropriate actions
  */
 //int FAKE_HEADING = (int)((double)3.14*(8192));
-int tempSPIC;
+unsigned int headingRaw;
+//unsigned int headingSet;
+//double heading;
+int radSet=0;
+int gyro_Z=0;
+
+//Take in the accumulator value and the value to compare too
+//return whether or not the acc val lies with in the intended value
+int compareGyro(double acc, int compRad){
+    double theDeg = ((double)compRad/(double)COMPASS_FIXED * 180)/(double)pi;
+    if(acc<0){
+        acc = -acc;
+    }//if
+    if((acc>theDeg-GYRO_ERROR) && (acc<theDeg+GYRO_ERROR)){
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}//endcompare
+
 int main( void ) {
     initSerial1();
     configOutputCompare();
     configInputCaptures();
     initSPI();
     initADC();
-   // setDistance(24);
+    initGyroAcc();
+//setDistance(75);
+useCompass = 1;
+//headingSet = 35000;
 setMotor(
        (0x0 MOTOR_LEFT_SPEED) |
        (MOTOR_FWD MOTOR_LEFT_DIR) |
        (0x0 MOTOR_RIGHT_SPEED) |
        (MOTOR_FWD MOTOR_RIGHT_DIR)
         );
-int test = readSlave(SENSOR_BOARD, COMPASS_HEADING);
-//
+//while(1){
+//        headingRaw = readSlave(SENSOR_BOARD,COMPASS_HEADING);
+//        heading = (double) headingRaw / (double) COMPASS_FIXED_POINT;
+//        f_Heading = compareCompass(headingRaw,headingSet);
+//}
+//radSet = (int)((double)(pi/2)*COMPASS_FIXED);
+//useCompass = 1;
+//setMotor(
+//       (0x4 MOTOR_LEFT_SPEED) |
+//       (MOTOR_REV MOTOR_LEFT_DIR) |
+//       (0x4 MOTOR_RIGHT_SPEED) |
+//       (MOTOR_FWD MOTOR_RIGHT_DIR)
+//        );
+//while(1){
+//        gyro_Z = readSlave(SENSOR_BOARD,GYRO_ZAXIS);
+//        setGyro(gyro_Z);
+//        f_Heading = compareGyro(accDegrees,radSet);
+//}//while
+resetGyroAccum();
     while(1){
-       // tempSPIC = readSlave(SENSOR_BOARD,COMPASS_HEADING);
+//        headingRaw = readSlave(SENSOR_BOARD,COMPASS_HEADING);
+//        heading = (double) headingRaw / (double) COMPASS_FIXED_POINT;
+//        f_Heading = compareCompass(headingRaw,headingSet);
+        gyro_Z = readSlave(SENSOR_BOARD,GYRO_ZAXIS);
+        setGyro(gyro_Z);
+        f_Heading = compareGyro(accDegrees,radSet);
         if(RXMessage.Received){
             switch(RXMessage.Msg[GSHEADER]){
                 case SET:
                     switch(RXMessage.Msg[DEVICEHEADER]){
                         case DCMOTOR:
                             setDistance(RXMessage.Msg[DEVICEHEADER+5]);
-                            setMotor(
-                                   (RXMessage.Msg[DEVICEHEADER+3] MOTOR_LEFT_SPEED) |
-                                   (RXMessage.Msg[DEVICEHEADER+4] MOTOR_LEFT_DIR) |
-                                   (RXMessage.Msg[DEVICEHEADER+1] MOTOR_RIGHT_SPEED) |
-                                   (RXMessage.Msg[DEVICEHEADER+2] MOTOR_RIGHT_DIR));
+                            useCompass = 0;
+                            if(RXMessage.Msg[DEVICEHEADER+6]){
+                                radSet = ((0x00FF&RXMessage.Msg[DEVICEHEADER+7])<<8)|(0x00FF&RXMessage.Msg[DEVICEHEADER+8]);
+                                useCompass = 1;
+                                resetGyroAccum();
+                            };
+                            currentMotorSetting = (RXMessage.Msg[DEVICEHEADER+3] MOTOR_LEFT_SPEED) |
+                                               (RXMessage.Msg[DEVICEHEADER+4] MOTOR_LEFT_DIR) |
+                                               (RXMessage.Msg[DEVICEHEADER+1] MOTOR_RIGHT_SPEED) |
+                                               (RXMessage.Msg[DEVICEHEADER+2] MOTOR_RIGHT_DIR);
+                            setMotor(currentMotorSetting);
                             SEND_ACK;
                             break;
                         case ARM:
@@ -123,15 +176,32 @@ int test = readSlave(SENSOR_BOARD, COMPASS_HEADING);
                                     break;}
                                 case COMPASS:{
                                     char txMSG[5];
-                                    
+                                    int tempSPI;
                                     txMSG[0] = '!';
                                     txMSG[1] = 3;
                                     txMSG[2] = 'S';
-                                    tempSPIC = readSlave(SENSOR_BOARD,COMPASS_HEADING);
-                                    txMSG[3] = (tempSPIC&0xFF00)>>8;
-                                    txMSG[4] = (tempSPIC&0x00FF);
+                                    tempSPI = readSlave(SENSOR_BOARD,COMPASS_HEADING);
+                                    txMSG[3] = (headingRaw&0xFF00)>>8;
+                                    txMSG[4] = (headingRaw&0x00FF);
                                     txSerial1(txMSG,5);
                                     break;}
+                                case GYRO:{
+                                    double magAccDeg;
+                                    if(accDegrees<0){
+                                        magAccDeg = -accDegrees;
+                                    }else{
+                                        magAccDeg = accDegrees;
+                                    }
+                                    int accRadFixed = (int)(((magAccDeg * pi)/180)*COMPASS_FIXED);
+                                    char txMSG[5];
+                                    txMSG[0] = '!';
+                                    txMSG[1] = 3;
+                                    txMSG[2] = 'S';
+                                    txMSG[3] = (accRadFixed&0xFF00)>>8;
+                                    txMSG[4] = (accRadFixed&0x00FF);
+                                    txSerial1(txMSG,5);
+                                    break;
+                                }
                                 case ULTRAS:{
                                     char txMSG[15];
                                     int tempSPI;

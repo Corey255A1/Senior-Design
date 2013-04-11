@@ -19,6 +19,7 @@
 #include "configs.h"
 #include "../Global_PIC/spiMessages.h"
 #include "A2D.h"
+#include "servo.h"
 
 //Define the ports for information passing over SPI
 #define STEPPER_SPEED SLAVEData.inData[SPI_STEPPER_SPEED]
@@ -35,19 +36,44 @@ int main( void ) {
     _TRISB5=0;
     initStepper();//intialize stepper
     initADC();
-
+    initServo();
     configSPICommunication();//turn on spi communication
     int currentSpeed=0;//set initial current speed
    // double angle;
-    stepperSpeed(30000);
+    stepperSpeed(55000);
+    double stepp;
+    stepp = getAngle();
+    while(1){
+        posRad(3);
+        stepp = getAngle();
+//       takeSteps(100,FWD);
+//       while(PTCONbits.PTEN);
+    }
     STEPPER_SPEED=1;
     while(1){
         STEPPER_MOVING = 0xAD;
         if(STEPPER_SPEED>0){
-            takeSteps(10000,FWD);
+            takeSteps(100,FWD);
             while(PTCONbits.PTEN);
             STEPPER_SPEED=0;
         }
+
+            int i;
+//    int j;
+//    while(1){
+//        for(i=0;i<165;i++){
+//            posServo(i);
+//            for(j=0;j<10000;j++){
+//                Nop();Nop();
+//            }
+//        }
+//        for(i=165;i>0;i--){
+//            posServo(i);
+//           for(j=0;j<10000;j++){
+//                Nop();Nop();
+//            }
+//        }
+//    }
 //        angle = getAngle();
 //        posRad(angle);
 //       stepperSpeed(25000);

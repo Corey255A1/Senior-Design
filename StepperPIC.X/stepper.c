@@ -100,10 +100,10 @@ void stepperSpeed(unsigned int speed){
  * @param dir -- the Direction to step
  */
 void takeSteps(unsigned int steps, char dir){
-    if(dir==FWD){
+    if(dir==REV){
       PHASE1 = 0;
       PHASE2 = local_stepper_speed/4;
-    }else if(dir==REV){
+    }else if(dir==FWD){
       PHASE1 = local_stepper_speed/4;
       PHASE2 =  0;
     }
@@ -187,7 +187,17 @@ void posXY(int x, int y){
     }
 }//end posXY
 void posRad(double rad){
-    if(rad>local_R+(0.314) || rad<local_R-(0.314)){
+#ifdef LONGARM
+    if(rad>LMAXRAD){
+        rad = LMAXRAD;
+    }
+#endif
+#ifdef SHORTARM
+    if(rad>LMAXRAD){
+        rad = LMAXRAD;
+    }
+#endif
+    if(rad>local_R+(0.09) || rad<local_R-(0.09)){
         double temp_r;
         if(local_R<0){
             temp_r = local_R+(2*pi);
@@ -197,10 +207,20 @@ void posRad(double rad){
         double delRad = temp_r - rad;
         char dir;
         if(delRad<0){
+#ifdef LONGARM
             dir = REV;
+#endif
+#ifdef SHORTARM
+            dir = FWD;
+#endif
             delRad = -delRad;
         }else{
+#ifdef LONGARM
             dir = FWD;
+#endif
+#ifdef SHORTARM
+            dir = REV;
+#endif
         }
         int steps = floor(delRad*STEPPERRAD);
         stepperSpeed(30000);
@@ -211,7 +231,8 @@ void posRad(double rad){
 }
 
 double getAngle ( void ){
-    int raw = readADC_single(AN1);
+    int raw = readADC_single(AN0);
     double angle = (double) raw * ((double)((3*pi)/2)/ (double)MAXANGLE);
+    local_R = angle;
     return angle;
 }

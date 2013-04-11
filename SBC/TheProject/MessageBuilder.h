@@ -11,6 +11,9 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
+    
+#define GYRO_GET_MSB    1
+#define GYRO_GET_LSB    2
 
     //-------------------------------------------------------------------------
     // Functions
@@ -49,6 +52,7 @@ extern "C" {
     extern const unsigned char ucCompassSel;
     extern const unsigned char ucUltSel;
     extern const unsigned char ucAllDevSel;
+    extern const unsigned char ucGyroSel;
     
     //-------------------------------------------------------------------------
     // Speed Select Constant.

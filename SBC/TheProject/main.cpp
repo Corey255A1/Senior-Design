@@ -29,7 +29,8 @@ void GetUltSensVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 void GetMotorVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
 void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
 void GetCompassVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
-void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int nHeading);
+void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int nSpinDegrees);
+void GetGyroVal(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg);
 SerialComm serialPort;
 ColorTracking colorTracker;
 
@@ -132,7 +133,12 @@ int main(int argc, char** argv)
         {
             case INITIALIZE:
                 theMap.display();
+<<<<<<< HEAD
                 StopMoving(uszCommOutMsg, uszCommInMsg);
+=======
+                //StopMoving(uszCommOutMsg, uszCommInMsg);
+                //MOTOR_STOP();
+>>>>>>> 1b8d891369cb51f6e0b84ad25e7cecf71b4cab2a
                 //-----------------------------------------------------------------
                 //  Open file hand for log output.
                 //-----------------------------------------------------------------
@@ -243,10 +249,9 @@ int main(int argc, char** argv)
                 
                 MoveForward(uszCommOutMsg, uszCommInMsg, ucSpeed4, ucSpeed4, 100);
                 
-                GetCompassVals(uszCommOutMsg, uszCommInMsg);
-                nHeadingGetVal = BytesToInt(uszCommInMsg, ucCompassMSB, ucCompassLSB);
                 int n90Turn = (int) ((M_PI/2) * COMPASS_DIVISOR);
-                SpinRobot(uszCommOutMsg, uszCommInMsg, nHeadingGetVal + n90Turn);
+                
+                SpinRobot(uszCommOutMsg, uszCommInMsg, n90Turn);
 
                 MOTOR_STOP();
                 if (freakingCount >= 4)
@@ -410,14 +415,15 @@ void StopMoving(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
  * @param puszCommInMsg buffer used to store the received message.
  * @param nHeading the heading that we want to turn to.
  */
-void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int nHeading)
+void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int nSpinDegrees)
 {
     int nLastHeading;
+    int nDegreesTurned;
     
     //-------------------------------------------------------------------------
     //  Build message to move forward, then execute command.
     //-------------------------------------------------------------------------
-    BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4, 100, 1, nHeading);
+    BuildMotorSet(puszCommOutMsg, ucForward, ucSpeed4, ucReverse, ucSpeed4, 100, 1, nSpinDegrees);
     serialPort.WritePort(puszCommOutMsg, ucSetMotorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
          
@@ -429,16 +435,16 @@ void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int 
         //-------------------------------------------------------------------------
         //  Get updated sensor information.
         //-------------------------------------------------------------------------
-        GetCompassVals(puszCommOutMsg, puszCommInMsg);
-        nLastHeading = BytesToInt(puszCommInMsg, ucCompassMSB, ucCompassLSB);
+        GetGyroVal(puszCommOutMsg, puszCommInMsg);
+        nDegreesTurned = BytesToInt(puszCommInMsg, GYRO_GET_MSB, GYRO_GET_LSB);
         
-        if ((nLastHeading >= (nHeading - COMPASS_THRESH)) && (nLastHeading <= (nHeading + COMPASS_THRESH)))
+        if ((nDegreesTurned >= (nSpinDegrees - GYRO_THRESH)) && (nDegreesTurned <= (nSpinDegrees + GYRO_THRESH)))
         {
             break;
         }
 
     }
-    while ( nLastHeading != nHeading);
+    while (nDegreesTurned != nSpinDegrees);
 
     //-------------------------------------------------------------------------
     //  Stop moving.
@@ -454,6 +460,13 @@ void SpinRobot(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg, int 
 void GetCompassVals(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
 {
     BuildSensGet(puszCommOutMsg, ucCompassSel);
+    serialPort.WritePort(puszCommOutMsg, ucGetSensorPacketSize); 
+    serialPort.ReadPort(puszCommInMsg);
+}
+
+void GetGyroVal(unsigned char* puszCommOutMsg, unsigned char* puszCommInMsg)
+{
+    BuildSensGet(puszCommOutMsg, ucGyroSel);
     serialPort.WritePort(puszCommOutMsg, ucGetSensorPacketSize); 
     serialPort.ReadPort(puszCommInMsg);
 }
