@@ -29,7 +29,7 @@ double baseLength = 7.3; //cm
 double angle = 0;
 
 double timerPeriod = 2e-6;
-double maxPulse = 12500;
+int maxPulse = 12500;
 
 bool leftFound = false;
 bool rightFound = false;
@@ -70,7 +70,7 @@ void initFrontUltras( void ){
     OC1CON2bits.SYNCSEL = 0x1F; // set period control to OC1RS
 
     OC1RS = 30000; // set period of OC1 - This gives us a period of ~68ms
-    OC1R = 15000; // set duration of OC1 -
+    OC1R = 20000; // set duration of OC1 -
 
     IPC0bits.OC1IP = 1;
     IFS0bits.OC1IF = 0;
@@ -176,14 +176,14 @@ void __attribute__((__interrupt__, auto_psv)) _IC3Interrupt(void)
     _IC3IF = 0;
     
     if((u4_edge == RISE) && (U4_RBIport == HIGH)){
-        u4_time_i = IC1BUF;
+        u4_time_i = IC3BUF;
         u4_edge = FALL;
 
         ULTRA_BACK_DISTANCE = 0;
 
         backClose = false;
     }else{
-        u4_time_f = IC1BUF;
+        u4_time_f = IC3BUF;
         u4_edge = RISE;
         u4_time = u4_time_f - u4_time_i;
         // once we have the time, convert to distance
