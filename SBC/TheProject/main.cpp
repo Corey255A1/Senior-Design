@@ -131,6 +131,7 @@ int main(int argc, char** argv)
         switch (state)
         {
             case INITIALIZE:
+                theMap.display();
                 StopMoving(uszCommOutMsg, uszCommInMsg);
                 //-----------------------------------------------------------------
                 //  Open file hand for log output.
