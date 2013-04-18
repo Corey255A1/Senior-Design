@@ -34,7 +34,13 @@ void initServo( void ){
  * @param pos - servo position
  */
 void posServo( int pos ){
-    if((SERVO_MIN + pos)<SERVO_MAX){
+    if (pos>SERVO_STEPS){
+        pos = SERVO_STEPS;
+    }
+    if(pos<0){
+        pos=0;
+    }
+    if((SERVO_MIN + pos)<=SERVO_MAX){
         OC1R = SERVO_MIN + pos;
     }
 }//end posServo

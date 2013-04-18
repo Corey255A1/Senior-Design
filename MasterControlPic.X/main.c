@@ -53,17 +53,17 @@ int main( void ) {
     initSPI();
     initADC();
     initGyroAcc();
-setDistance(75);
 
+//setDistance(75);
 //headingSet = 35000;
 int j=0;
 for(j=0;j<2500;j++){
     Nop();Nop();
 };
 setMotor(
-       (0x3 MOTOR_LEFT_SPEED) |
+       (0x0 MOTOR_LEFT_SPEED) |
        (MOTOR_FWD MOTOR_LEFT_DIR) |
-       (0x3 MOTOR_RIGHT_SPEED) |
+       (0x0 MOTOR_RIGHT_SPEED) |
        (MOTOR_REV MOTOR_RIGHT_DIR)
         );
 //while(1){
@@ -116,6 +116,13 @@ for(j=0;j<2500;j++){
 //            break;
 //        }
 //}//while
+//writeSlave(STEPPER_DRIVER1,0,22940);
+//writeSlave(STEPPER_DRIVER2,0,32000);
+//writeSlave(STEPPER_DRIVER1,0,28672);
+writeSlave(STEPPER_DRIVER1,0,32768);
+writeSlave(STEPPER_DRIVER2,1,0);
+//   writeSlave(STEPPER_DRIVER1,0,30000);
+//    writeSlave(STEPPER_DRIVER2,0,24576);
 //while(currentMotorSetting);
 //resetGyroAccum();
 //f_Heading = 0;
@@ -148,13 +155,16 @@ while(f_gyro_reset);
                             setMotor(currentMotorSetting);
                             SEND_ACK;
                             break;
-                        case ARM:
-                            writeSlave(STEPPER_DRIVER1,SPI_STEPPER_X,RXMessage.Msg[DEVICEHEADER+1]);
-                            writeSlave(STEPPER_DRIVER1,SPI_STEPPER_Y,RXMessage.Msg[DEVICEHEADER+2]);
-                            writeSlave(STEPPER_DRIVER2,SPI_STEPPER_X,RXMessage.Msg[DEVICEHEADER+1]);
-                            writeSlave(STEPPER_DRIVER2,SPI_STEPPER_Y,RXMessage.Msg[DEVICEHEADER+2]);
-                            //writeSlave(STEPPER_DRIVER3,SPI_STEPPER_X,RXMessage.Msg[DEVICEHEADER+1]);
-                            //writeSlave(STEPPER_DRIVER3,SPI_STEPPER_Y,RXMessage.Msg[DEVICEHEADER+2]);
+                        case LARM:
+                            writeSlave(STEPPER_DRIVER1,0,(0x00FF&RXMessage.Msg[DEVICEHEADER+1]<<8)|(0x00FF&RXMessage.Msg[DEVICEHEADER+2]));
+                            SEND_ACK;
+                            break;
+                        case SARM:
+                            writeSlave(STEPPER_DRIVER2,0,(0x00FF&RXMessage.Msg[DEVICEHEADER+1]<<8)|(0x00FF&RXMessage.Msg[DEVICEHEADER+2]));
+                            SEND_ACK;
+                            break;
+                        case SERVO:
+                            writeSlave(STEPPER_DRIVER2,1,(0x00FF&(unsigned char)RXMessage.Msg[DEVICEHEADER+1]));
                             SEND_ACK;
                             break;
                     }//switch
@@ -176,10 +186,6 @@ while(f_gyro_reset);
                             txMSG[10] = IC2_COUNTS_BYTE1;
                             txSerial1(txMSG,11);
                             break;}
-                        case ARM:{
-                         //TO-DO Figure out what to return from the ARM
-                         //If this is infact needed
-                        }break;
                         case SENSORS:
                             switch(RXMessage.Msg[SENSEHEADER]){
                                 case TEMP:{

@@ -14,7 +14,7 @@
 #include "globals.h"
 #include "A2D.h"
 #include <math.h>
-#define SHORTARM
+
 int local_stepCount=0;
 int global_stepsInProgress=0;
 unsigned int local_stepper_speed=50000;
@@ -191,13 +191,16 @@ void posRad(double rad){
     if(rad>LMAXRAD){
         rad = LMAXRAD;
     }
+    if(rad<LMINRAD){
+        rad = LMINRAD;
+    }
 #endif
 #ifdef SHORTARM
     if(rad>LMAXRAD){
         rad = LMAXRAD;
     }
 #endif
-    if(rad>local_R+(0.09) || rad<local_R-(0.09)){
+    if(rad>local_R+(RAD_ERROR) || rad<local_R-(RAD_ERROR)){
         double temp_r;
         if(local_R<0){
             temp_r = local_R+(2*pi);
@@ -232,7 +235,13 @@ void posRad(double rad){
 
 double getAngle ( void ){
     int raw = readADC_single(AN0);
-    double angle = (double) raw * ((double)((3*pi)/2)/ (double)MAXANGLE);
-    local_R = angle;
-    return angle;
+    double AvgAngle = (double) raw * ((double)((3*pi)/2)/ (double)MAXANGLE);
+    int i;
+    for(i=0;i<20;i++){
+        raw = readADC_single(AN0);
+        AvgAngle += (double) raw * ((double)((3*pi)/2)/ (double)MAXANGLE);
+    }
+    AvgAngle = AvgAngle/20;
+    local_R = AvgAngle;
+    return AvgAngle;
 }

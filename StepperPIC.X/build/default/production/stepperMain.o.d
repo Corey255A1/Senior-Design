@@ -5,4 +5,5 @@ stepper.h  \
  globals.h  \
 configs.h  \
 ../Global_PIC/spiMessages.h  \
-A2D.h 
+A2D.h  \
+servo.h 

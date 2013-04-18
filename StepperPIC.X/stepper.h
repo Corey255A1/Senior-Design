@@ -4,7 +4,8 @@
  *
  * Created on March 11, 2013, 4:25 PM
  */
-
+#define LONGARM
+//#define SHORTARM
 #define DEGPERSTEP (.067)
 #define RADPERSTEP (.00117)
 #define STEPPERDEG (14.916)
@@ -27,8 +28,16 @@
 #define MIDSTEP 40000
 #define RADPERSECTION .03
 #define MAXANGLE 500
-#define LMAXRAD 4
-#define SMAXRAD 3.3
+#define LMAXRAD (double)4
+#define LMINRAD (double)(2.5)
+#define SHOME (double)2.4
+#define SMAXRAD (double)3.5
+#ifdef LONGARM
+#define RAD_ERROR 0.15
+#endif
+#ifdef SHORTARM
+#define RAD_ERROR 0.17
+#endif
 //#define LMAXANGLE 420
 //#define SMAXANGLE 500
 
