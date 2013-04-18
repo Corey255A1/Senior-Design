@@ -26,7 +26,7 @@ public:
     IplImage* GetRedThresholdedImage(IplImage* img);
     IplImage* GetBlueThresholdedImage(IplImage* img);
     void addObjectToVideo (IplImage *image, CvPoint pos, CvScalar color, int thickness);
-    int drawWidthDiff (IplImage *image, CvPoint object, CvPoint middle);
+    int drawWidthDiff (IplImage *image, CvPoint object, CvPoint middlePoint);
     void DrawPoint(IplImage *frame, IplImage *thresh);
     int getRedCount(void);
     int getRedTurn(void);

@@ -14,6 +14,9 @@
 const unsigned char ucMotor             = 'M';
 const unsigned char ucArm               = 'A';
 const unsigned char ucSensor            = 'S';
+const unsigned char ucClaw              = 'C';
+const unsigned char ucShortArm          = 'D';
+const unsigned char ucLongArm           = 'A';
     
 //-----------------------------------------------------------------------------
 // Serial Port Request Options.
@@ -63,18 +66,24 @@ const unsigned char ucMsgStartSym       = '!';
 //-----------------------------------------------------------------------------
 const unsigned char ucSetMotorDataSize  = 10;
 const unsigned char ucGetMotorDataSize  = 2;
-const unsigned char ucSetArmDataSize    = 4;
+const unsigned char ucSetArmDataSize    = 6;
 const unsigned char ucGetArmDataSize    = 2;
 const unsigned char ucGetSensorDataSize = 3;
-
+const unsigned char ucSetClawDataSize   = 3;
+const unsigned char ucSetLongArmDataSize        = 4;
+const unsigned char ucSetShortArmDataSize       = 4;
+    
 //-----------------------------------------------------------------------------
 // Packet Sizes
 //-----------------------------------------------------------------------------
 const unsigned char ucSetMotorPacketSize        = 12;
 const unsigned char ucGetMotorPacketSize        = 4;
-const unsigned char ucSetArmPacketSize          = 6;
+const unsigned char ucSetArmPacketSize          = 8;
 const unsigned char ucGetArmPacketSize          = 4;
 const unsigned char ucGetSensorPacketSize       = 5;
+const unsigned char ucSetClawPacketSize         = 5;
+const unsigned char ucSetLongArmPacketSize      = 6;
+const unsigned char ucSetShortArmPacketSize     = 6;
 
 //-----------------------------------------------------------------------------
 // Array Message Positions.
@@ -119,6 +128,9 @@ const unsigned char ucArmLSB = 2;
 const unsigned char ucCompassMSB        = 1;
 const unsigned char ucCompassLSB        = 2;
 
+const unsigned char ucClawOpenPos       = 0;
+const unsigned char ucClawClosedPos     = 165;
+
 /**
  * Fills the whole buffer with only null (0) values.
  * @param msgBuff - Buffer to hold message
@@ -154,6 +166,15 @@ void BuildMotorSet(unsigned char* puszMsgBuff, unsigned char ucMD1, unsigned cha
     
 }
 
+void BuildClawSet(unsigned char* puszMsgBuff, unsigned char ucClawPos)
+{
+    puszMsgBuff[0]      = ucMsgStartSym;
+    puszMsgBuff[1]      = ucSetClawDataSize;
+    puszMsgBuff[2]      = ucSet;
+    puszMsgBuff[3]      = ucClaw;
+    puszMsgBuff[4]      = ucClawPos;
+}
+
 /**
  * Builds the message for a command to get the state of both motors.
  * @param puszMsgBuff - Buffer to hold the message
@@ -172,14 +193,36 @@ void BuildMotorGet(unsigned char* puszMsgBuff)
  * @param ucX - X position of the arm.
  * @param ucY - Y position of the arm.
  */
-void BuildArmSet(unsigned char* puszMsgBuff, unsigned char ucX, unsigned char ucY)
+void BuildArmSet(unsigned char* puszMsgBuff, int nLink1Rad, int nLink2Rad)
 {
     puszMsgBuff[0] = ucMsgStartSym;
     puszMsgBuff[1] = ucSetArmDataSize;
     puszMsgBuff[2] = ucSet;
     puszMsgBuff[3] = ucArm;
-    puszMsgBuff[4] = ucX;
-    puszMsgBuff[5] = ucY;
+    puszMsgBuff[4] = (unsigned char) (nLink1Rad >> 8);
+    puszMsgBuff[5] = (unsigned char) nLink1Rad;
+    puszMsgBuff[6] = (unsigned char) (nLink2Rad >> 8);
+    puszMsgBuff[7] = (unsigned char) nLink2Rad;
+}
+
+void BuildLongArmSet(unsigned char* puszMsgBuff, int nLink1Rad)
+{
+    puszMsgBuff[0] = ucMsgStartSym;
+    puszMsgBuff[1] = ucSetLongArmDataSize;
+    puszMsgBuff[2] = ucSet;
+    puszMsgBuff[3] = ucLongArm;
+    puszMsgBuff[4] = (unsigned char) (nLink1Rad >> 8);
+    puszMsgBuff[5] = (unsigned char) nLink1Rad;
+}
+
+void BuildShortArmSet(unsigned char* puszMsgBuff, int nLink2Rad)
+{
+    puszMsgBuff[0] = ucMsgStartSym;
+    puszMsgBuff[1] = ucSetShortArmDataSize;
+    puszMsgBuff[2] = ucSet;
+    puszMsgBuff[3] = ucShortArm;
+    puszMsgBuff[4] = (unsigned char) (nLink2Rad >> 8);
+    puszMsgBuff[5] = (unsigned char) nLink2Rad;
 }
 
 /**

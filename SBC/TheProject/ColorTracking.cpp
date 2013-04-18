@@ -14,13 +14,15 @@
 #define left 1
 #define right 2
 
+#define middle cvPoint(frame->width/2 + 50, frame->height/2)
+
 int redDistance = 0;
 int blueDistance = 0;
 
 int validRedPoints = 0;
 int validBluePoints = 0;
 
-int midThresh = 100;
+int midThresh = 50;
 
 /**
  * Constructor for the ColorTracking class.
@@ -55,7 +57,7 @@ IplImage* ColorTracking::GetRedThresholdedImage(IplImage* img)
     IplImage* imgThreshed = cvCreateImage(cvGetSize(img), 8, 1);
 
     // Red LED - seen as white (need to fix)
-    cvInRangeS(imgHSV, cvScalar(0, 0, 255), cvScalar(0, 0, 255), imgThreshed);
+    cvInRangeS(imgHSV, cvScalar(60, 190, 170), cvScalar(80, 255, 200), imgThreshed);
 
     cvReleaseImage(&imgHSV);
 
@@ -79,8 +81,9 @@ IplImage* ColorTracking::GetBlueThresholdedImage(IplImage* img)
     IplImage* imgThreshed = cvCreateImage(cvGetSize(img), 8, 1);
     
     // Blue on phone
-    cvInRangeS(imgHSV, cvScalar(80, 220, 240), cvScalar(110, 255, 255), imgThreshed);
-
+    //cvInRangeS(imgHSV, cvScalar(50, 220, 240), cvScalar(140, 255, 255), imgThreshed);
+    cvInRangeS(imgHSV, cvScalar(50, 130, 240), cvScalar(140, 255, 255), imgThreshed);
+    
     cvReleaseImage(&imgHSV);
 
     return imgThreshed;
@@ -103,13 +106,13 @@ void ColorTracking::addObjectToVideo (IplImage *image, CvPoint pos, CvScalar col
  *  @param Object to draw line to
  *  @param Middle of frame
  */
-int ColorTracking::drawWidthDiff (IplImage *image, CvPoint object, CvPoint middle)
+int ColorTracking::drawWidthDiff (IplImage *image, CvPoint object, CvPoint middlePoint)
 {
-	int xDistance = object.x - middle.x;
+    int xDistance = object.x - middlePoint.x;
 	
-    cvDrawLine(image, object, middle, CV_RGB(0, 255, 0), 2);
+    cvDrawLine(image, object, middlePoint, CV_RGB(0, 255, 0), 2);
 	
-	return xDistance;
+    return xDistance;
 }
 
 /**
@@ -146,7 +149,7 @@ void ColorTracking::DrawPoint(IplImage *frame, IplImage *thresh)
         //addObjectToVideo(frame, cvPoint(posX, posY));
 
         // find x distance from middle to object
-        drawWidthDiff(frame, cvPoint(posX, posY), cvPoint(frame->width / 2, frame->height /2));
+        drawWidthDiff(frame, cvPoint(posX, posY), middle);
     }
     
     delete moments;
@@ -212,7 +215,8 @@ int ColorTracking::RunColorTracking(bool debug)
 	CvCapture* capture = 0;
 	capture = cvCaptureFromCAM( CV_CAP_ANY );	
     
-    //cvSetCaptureProperty(capture, CV_CAP_PROP_CONTRAST, 0);
+    cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH, 320);
+    cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, 240);
 
 	// Couldn't get a device? Throw an error and quit
 	if(!capture)
@@ -241,7 +245,7 @@ int ColorTracking::RunColorTracking(bool debug)
             break;
 
         // Create two images and grab red and blue thresholds
-		IplImage* imgRedThresh = GetRedThresholdedImage(frame);
+	IplImage* imgRedThresh = GetRedThresholdedImage(frame);
         IplImage* imgBlueThresh = GetBlueThresholdedImage(frame);
         
         // turn the thresholded image into a binary image (white and black only)
@@ -264,6 +268,8 @@ int ColorTracking::RunColorTracking(bool debug)
         // Find contours returns the number of contours found
         int redCount = cvFindContours(imgRedSmooth, redStorage, &redContours);
         
+        validRedPoints = redCount;
+        
         int redPointXAvg = 0;
         int redPointYAvg = 0;
         
@@ -278,7 +284,7 @@ int ColorTracking::RunColorTracking(bool debug)
                 addObjectToVideo(frame, cvPoint(x + w/2, y + h/2), CV_RGB(255, 0, 0), 2);
                 redPointXAvg += x + w/2;
                 redPointYAvg += y + h/2;
-                validRedPoints += 1;
+                //validRedPoints += 1;
             }
             redContours = redContours->h_next;
         }
@@ -288,7 +294,11 @@ int ColorTracking::RunColorTracking(bool debug)
             redPointXAvg = redPointXAvg / validRedPoints;
             redPointYAvg = redPointYAvg / validRedPoints;
             addObjectToVideo(frame, cvPoint(redPointXAvg, redPointYAvg), CV_RGB(255, 0, 255), 2);
-            blueDistance = drawWidthDiff(frame, cvPoint(redPointXAvg, redPointYAvg), cvPoint(frame->width/2, frame->height/2));
+            redDistance = drawWidthDiff(frame, cvPoint(redPointXAvg, redPointYAvg), middle);
+        }
+        else
+        {
+            redDistance = 0;
         }
         
         
@@ -306,6 +316,8 @@ int ColorTracking::RunColorTracking(bool debug)
         
         int blueCount = cvFindContours(imgBlueSmooth, blueStorage, &blueContours);
         
+        validBluePoints = blueCount;
+        
         int bluePointXAvg = 0;
         int bluePointYAvg = 0;
         
@@ -320,7 +332,7 @@ int ColorTracking::RunColorTracking(bool debug)
                 addObjectToVideo(frame, cvPoint(x + w/2, y + h/2), CV_RGB(0, 0, 255), 2);
                 bluePointXAvg += x + w/2;
                 bluePointYAvg += y + h/2;
-                validBluePoints += 1;
+                //validBluePoints += 1;
             }
             blueContours = blueContours->h_next;
         }
@@ -333,11 +345,15 @@ int ColorTracking::RunColorTracking(bool debug)
             bluePointXAvg = bluePointXAvg / validBluePoints;
             bluePointYAvg = bluePointYAvg / validBluePoints;
             addObjectToVideo(frame, cvPoint(bluePointXAvg, bluePointYAvg), CV_RGB(255, 0, 255), 2);
-            blueDistance = drawWidthDiff(frame, cvPoint(bluePointXAvg, bluePointYAvg), cvPoint(frame->width/2, frame->height/2));
+            blueDistance = drawWidthDiff(frame, cvPoint(bluePointXAvg, bluePointYAvg), middle);
+        }
+        else
+        {
+            blueDistance = 0;
         }
         
         // middle dot - do this at the end so it shows up in front for debugging
-        addObjectToVideo(frame, cvPoint(frame->width/2, frame->height/2), CV_RGB(0, 0, 0), 3);
+        addObjectToVideo(frame, middle, CV_RGB(0, 0, 0), 3);
         
         // Add the two thresholded images into one - for viewing
         cvAdd(imgRedSmooth, imgBlueSmooth, imgRedSmooth); 
@@ -388,10 +404,10 @@ int ColorTracking::RunColorTracking(bool debug)
         cvReleaseImage(&imgBlueSmooth);
         cvReleaseMemStorage(&blueStorage);
         
-        redDistance = 0;
-        blueDistance = 0;
-        validRedPoints = 0;
-        validBluePoints = 0;
+        //redDistance = 0;
+        //blueDistance = 0;
+        //validRedPoints = 0;
+        //validBluePoints = 0;
     }
     
 	// We're done using the camera. Other applications can now use it
